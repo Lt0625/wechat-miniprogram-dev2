@@ -1,0 +1,75 @@
+<view class="container">
+  <view class="calendar-header">
+    <view class="month-nav">
+      <view class="nav-btn" bindtap="prevMonth">←</view>
+      <view class="current-month">{{currentYear}}年{{currentMonth}}月</view>
+      <view class="nav-btn" bindtap="nextMonth">→</view>
+    </view>
+  </view>
+
+  <view class="calendar-week">
+    <view class="week-day">日</view>
+    <view class="week-day">一</view>
+    <view class="week-day">二</view>
+    <view class="week-day">三</view>
+    <view class="week-day">四</view>
+    <view class="week-day">五</view>
+    <view class="week-day">六</view>
+  </view>
+
+  <view class="calendar-days">
+    <view 
+      class="day {{item.isCurrentMonth ? 'current' : 'other'}} {{selectedDate === item.fullDate ? 'selected' : ''}} {{item.hasBills ? 'has-bills' : ''}} {{item.isFuture ? 'future' : ''}}" 
+      wx:for="{{calendarDays}}" 
+      wx:key="index"
+      bindtap="selectDate"
+      data-date="{{item.fullDate}}"
+    >
+      <view class="day-number">{{item.day}}</view>
+      <view class="day-amount" wx:if="{{item.amount > 0}}">
+        ¥{{item.amount || 0}}
+      </view>
+    </view>
+  </view>
+
+  <view class="date-detail {{showDetail && selectedDate ? 'expand' : ''}}" wx:if="{{showDetail && selectedDate}}">
+    <view class="detail-header">
+      <view class="detail-date">{{selectedDate}}</view>
+      <view class="detail-summary" wx:if="{{dateDetail.length > 0}}">
+        <text>支出: ¥{{dateExpense || 0}}</text>
+        <text style="margin-left: 20rpx;">收入: ¥{{dateIncome || 0}}</text>
+      </view>
+    </view>
+
+    <view class="detail-list" wx:if="{{dateDetail.length > 0}}">
+      <view class="bill-card" wx:for="{{dateDetail}}" wx:key="id" bindtap="editBill" data-id="{{item.id}}">
+        <view class="card-icon">
+          <text>{{item.icon || '📊'}}</text>
+        </view>
+        <view class="card-content">
+          <view class="card-main">
+            <text class="card-category">{{item.category || '未分类'}}</text>
+            <text class="card-amount {{item.type || 'expense'}}">{{item.type === 'expense' ? '-' : '+'}}¥{{item.amount || 0}}</text>
+          </view>
+          <view class="card-sub">
+            <text class="card-time">{{item.time || ''}}</text>
+            <text class="card-notes" wx:if="{{item.notes}}">· {{item.notes}}</text>
+            <text class="card-account">{{item.account || ''}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-detail" wx:if="{{dateDetail.length === 0}}">
+      <text>该日暂无账单记录</text>
+    </view>
+
+    <view class="detail-actions">
+      <button class="add-bill-btn" bindtap="addBillForDate">添加账单</button>
+    </view>
+  </view>
+
+  <view class="add-btn" bindtap="goToAddBill">
+    <text>+</text>
+  </view>
+</view>

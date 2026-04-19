@@ -1,0 +1,86 @@
+<view class="container">
+  <view class="section">
+    <view class="section-title">支出分类</view>
+    <scroll-view scroll-y class="category-list" wx:if="{{expenseCategories.length > 0}}">
+      <view 
+        class="category-item" 
+        wx:for="{{expenseCategories}}" 
+        wx:key="name"
+      >
+        <view class="category-info">
+          <text class="icon">{{item.icon || '📦'}}</text>
+          <text class="name">{{item.name || '未命名'}}</text>
+        </view>
+        <view class="actions">
+          <button class="edit-btn" bindtap="editCategory" data-type="expense" data-name="{{item.name}}" data-icon="{{item.icon}}">编辑</button>
+          <button class="delete-btn" bindtap="deleteCategory" data-type="expense" data-name="{{item.name}}">删除</button>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="empty-state" wx:else>
+      <text>暂无支出分类</text>
+    </view>
+    <view class="add-category-btn" bindtap="showAddModal" data-type="expense">
+      <text>+ 添加支出分类</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">收入分类</view>
+    <scroll-view scroll-y class="category-list" wx:if="{{incomeCategories.length > 0}}">
+      <view 
+        class="category-item" 
+        wx:for="{{incomeCategories}}" 
+        wx:key="name"
+      >
+        <view class="category-info">
+          <text class="icon">{{item.icon || '📦'}}</text>
+          <text class="name">{{item.name || '未命名'}}</text>
+        </view>
+        <view class="actions">
+          <button class="edit-btn" bindtap="editCategory" data-type="income" data-name="{{item.name}}" data-icon="{{item.icon}}">编辑</button>
+          <button class="delete-btn" bindtap="deleteCategory" data-type="income" data-name="{{item.name}}">删除</button>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="empty-state" wx:else>
+      <text>暂无收入分类</text>
+    </view>
+    <view class="add-category-btn" bindtap="showAddModal" data-type="income">
+      <text>+ 添加收入分类</text>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showModal}}" catchtap="hideModal">
+    <view class="modal-content" catchtap="preventClose">
+      <view class="modal-title">{{isEdit ? '编辑' : '添加'}}{{currentType === 'expense' ? '支出' : '收入'}}分类</view>
+      
+      <view class="form-group">
+        <input 
+          class="form-input" 
+          placeholder="请输入分类名称" 
+          value="{{newCategoryName}}" 
+          bindinput="onNameInput"
+          maxlength="10"
+        />
+      </view>
+
+      <view class="icon-selector">
+        <view 
+          class="icon-option {{selectedIcon === item.icon ? 'active' : ''}}"
+          wx:for="{{availableIcons}}"
+          wx:key="icon"
+          bindtap="selectIcon"
+          data-icon="{{item.icon}}"
+        >
+          {{item.icon}}
+        </view>
+      </view>
+
+      <view class="modal-actions">
+        <button class="cancel-btn" bindtap="hideModal">取消</button>
+        <button class="confirm-btn" bindtap="saveCategory">{{isEdit ? '保存' : '添加'}}</button>
+      </view>
+    </view>
+  </view>
+</view>

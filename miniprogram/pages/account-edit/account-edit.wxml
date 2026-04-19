@@ -1,0 +1,45 @@
+<view class="container">
+  <view class="form-section">
+    <view class="form-item">
+      <view class="label">账户名称</view>
+      <input 
+        class="form-input" 
+        placeholder="请输入账户名称" 
+        value="{{accountName}}" 
+        bindinput="onAccountNameInput"
+        maxlength="20"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="label">账户图标</view>
+      <view class="icon-grid">
+        <view 
+          class="icon-option {{selectedIcon === item.icon ? 'active' : ''}}"
+          wx:for="{{availableIcons}}"
+          wx:key="icon"
+          bindtap="selectIcon"
+          data-icon="{{item.icon}}"
+        >
+          {{item.icon}}
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <view class="label">初始余额</view>
+      <input 
+        class="form-input" 
+        type="digit" 
+        placeholder="0.00" 
+        value="{{initialBalance}}" 
+        bindinput="onBalanceInput"
+      />
+    </view>
+  </view>
+
+  <view class="action-section">
+    <button class="save-btn" bindtap="saveAccount">{{isEdit ? '保存修改' : '添加账户'}}</button>
+    <button class="delete-btn" wx:if="{{isEdit}}" bindtap="deleteAccount">删除账户</button>
+  </view>
+</view>

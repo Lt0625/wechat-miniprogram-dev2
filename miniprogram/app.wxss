@@ -1,0 +1,59 @@
+/* 全局样式 - 暖黄色主题 */
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+  background-color: #FFF8E7;
+}
+
+/* 暖黄色主题色变量 */
+:root {
+  --theme-primary: #FFB347;
+  --theme-secondary: #FF9800;
+  --theme-bg: #FFF8E7;
+  --theme-bg-light: #FFFDF5;
+  --theme-text: #333333;
+  --theme-text-light: #666666;
+  --theme-text-muted: #999999;
+  --theme-border: #FFE4B5;
+  --theme-success: #4CAF50;
+  --theme-danger: #e74c3c;
+}
+
+/* 通用卡片样式 */
+.card {
+  background-color: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.15);
+}
+
+/* 通用按钮样式 */
+.btn-primary {
+  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  color: #fff;
+  border: none;
+  border-radius: 48rpx;
+  box-shadow: 0 8rpx 24rpx rgba(255, 179, 71, 0.4);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 通用输入框样式 */
+.input {
+  background-color: #FFF8E7;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  font-size: 30rpx;
+}
+
+/* 通用标签样式 */
+.tag {
+  background-color: #FFF8E7;
+  color: #FF9800;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+}

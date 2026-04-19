@@ -1,0 +1,263 @@
+.container {
+  padding: 20rpx;
+  min-height: 100vh;
+  background-color: #FFF8E7;
+}
+
+.type-switch {
+  display: flex;
+  margin-bottom: 30rpx;
+  background-color: #fff;
+  border-radius: 25rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+}
+
+.type-btn {
+  flex: 1;
+  padding: 24rpx;
+  text-align: center;
+  font-size: 32rpx;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.type-btn.active {
+  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  color: white;
+  font-weight: bold;
+}
+
+.amount-input {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+}
+
+.amount-input input {
+  width: 100%;
+  height: 120rpx;
+  line-height: 120rpx;
+  font-size: 72rpx;
+  text-align: center;
+  border: none;
+  outline: none;
+  color: #333;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
+.quick-amount {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+  margin-bottom: 25rpx;
+}
+
+.quick-btn {
+  min-width: 100rpx;
+  padding: 20rpx 28rpx;
+  background-color: #fff;
+  border-radius: 25rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #333;
+  box-shadow: 0 4rpx 15rpx rgba(255, 179, 71, 0.1);
+  transition: all 0.3s ease;
+}
+
+.quick-btn:active {
+  transform: scale(0.95);
+  background-color: #FFE4B5;
+}
+
+.template-section {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+}
+
+.template-title {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+}
+
+.template-scroll {
+  white-space: nowrap;
+}
+
+.template-item {
+  display: inline-block;
+  padding: 14rpx 28rpx;
+  margin-right: 15rpx;
+  background-color: #FFF8E7;
+  border-radius: 25rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.template-item.add-template {
+  background-color: #FFE4B5;
+  color: #FF9800;
+  font-weight: 600;
+}
+
+.form-item {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 18rpx;
+  font-weight: 500;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 12rpx;
+  border-radius: 16rpx;
+  border: 4rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.category-item.active {
+  border-color: #FF9800;
+  background-color: #FFF8E7;
+}
+
+.category-icon {
+  font-size: 40rpx;
+  margin-bottom: 10rpx;
+}
+
+.category-name {
+  font-size: 24rpx;
+  color: #333;
+  text-align: center;
+}
+
+.account-scroll {
+  display: flex;
+  gap: 15rpx;
+  overflow-x: auto;
+  padding-bottom: 8rpx;
+}
+
+.account-item {
+  padding: 16rpx 32rpx;
+  background-color: #FFF8E7;
+  border-radius: 25rpx;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.account-item.active {
+  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  color: white;
+  font-weight: 600;
+}
+
+.date-picker {
+  padding: 14rpx 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-picker text:first-child {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.arrow {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.form-item input {
+  width: 100%;
+  padding: 14rpx 0;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.action-buttons {
+  margin-top: 35rpx;
+  gap: 20rpx;
+}
+
+.delete-btn {
+  background-color: #fff;
+  color: #e74c3c;
+  font-size: 30rpx;
+  border-radius: 25rpx;
+  margin-bottom: 20rpx;
+  border: 2rpx solid #e74c3c;
+  padding: 24rpx;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  color: white;
+  font-size: 34rpx;
+  font-weight: bold;
+  border-radius: 50rpx;
+  padding: 28rpx;
+  box-shadow: 0 8rpx 30rpx rgba(255, 179, 71, 0.4);
+  border: none;
+}
+
+.delete-btn::after,
+.save-btn::after {
+  border: none;
+}
+
+.save-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.account-other {
+  border: 2rpx dashed #FF9800;
+  background-color: #fff;
+}
+
+.account-other.active {
+  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  border-style: solid;
+  color: white;
+}
+
+.custom-account-input {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background-color: #FFF8E7;
+  border-radius: 16rpx;
+  border: 2rpx solid #FFE4B5;
+}
+
+.custom-account-input input {
+  width: 100%;
+  padding: 12rpx 0;
+  font-size: 28rpx;
+  color: #333;
+  background-color: transparent;
+}

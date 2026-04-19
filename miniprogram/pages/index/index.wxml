@@ -1,0 +1,120 @@
+<view class="container">
+  <view class="header">
+    <view class="date-tabs">
+      <view class="tab {{currentPeriod === 'week' ? 'active' : ''}}" bindtap="switchPeriod" data-period="week">近一周</view>
+      <view class="tab {{currentPeriod === 'month' ? 'active' : ''}}" bindtap="switchPeriod" data-period="month">本月</view>
+    </view>
+    <view class="summary">
+      <view class="summary-item">
+        <view class="label">总支出</view>
+        <view class="value expense">¥{{summary.expense || 0}}</view>
+      </view>
+      <view class="summary-item">
+        <view class="label">总收入</view>
+        <view class="value income">¥{{summary.income || 0}}</view>
+      </view>
+      <view class="summary-item">
+        <view class="label">结余</view>
+        <view class="value balance">¥{{summary.balance || 0}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="budget-card" wx:if="{{budgetInfo.monthlyBudget > 0}}">
+    <view class="budget-header">
+      <text class="budget-title">{{budgetInfo.currentMonth}}月预算</text>
+      <text class="budget-edit" bindtap="editBudget">✏️</text>
+    </view>
+    <view class="progress-bar-wrapper">
+      <view class="progress-bar" style="width: {{budgetInfo.progressPercent}}%"></view>
+    </view>
+    <view class="budget-info">
+      <view class="budget-left">
+        <text class="budget-label">已支出：</text>
+        <text class="budget-value spent">¥{{budgetInfo.spentAmount}}</text>
+      </view>
+      <view class="budget-right">
+        <text class="budget-label">剩余：</text>
+        <text class="budget-value {{budgetInfo.remaining >= 0 ? 'remaining-positive' : 'remaining-negative'}}">¥{{budgetInfo.remaining}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="no-budget-tip" wx:else bindtap="setBudget">
+    <text>💰 点击设置月度预算</text>
+  </view>
+
+  <view class="search-filter">
+    <view class="search-box">
+      <input type="text" placeholder="搜索账单..." value="{{searchKeyword}}" bindinput="onSearchInput" bindconfirm="onSearch" />
+    </view>
+    <view class="filter-btn" bindtap="toggleFilter">
+      <text>筛选</text>
+    </view>
+  </view>
+
+  <view class="filter-panel {{showFilter ? 'show' : ''}}">
+    <view class="filter-title">筛选条件</view>
+    <view class="filter-row">
+      <view class="filter-label">类型：</view>
+      <view class="filter-options">
+        <view class="filter-option {{filterType === '' ? 'active' : ''}}" bindtap="setFilterType" data-type="">全部</view>
+        <view class="filter-option {{filterType === 'expense' ? 'active' : ''}}" bindtap="setFilterType" data-type="expense">支出</view>
+        <view class="filter-option {{filterType === 'income' ? 'active' : ''}}" bindtap="setFilterType" data-type="income">收入</view>
+      </view>
+    </view>
+    <view class="filter-row">
+      <view class="filter-label">分类：</view>
+      <scroll-view scroll-x class="filter-scroll">
+        <view class="filter-options">
+          <view class="filter-option {{filterCategory === '' ? 'active' : ''}}" bindtap="setFilterCategory" data-category="">全部</view>
+          <view class="filter-option {{filterCategory === item.name ? 'active' : ''}}" wx:for="{{categories}}" wx:key="name" bindtap="setFilterCategory" data-category="{{item.name}}">{{item.name}}</view>
+        </view>
+      </scroll-view>
+    </view>
+    <view class="filter-actions">
+      <button class="reset-btn" bindtap="resetFilter">重置</button>
+      <button class="apply-btn" bindtap="applyFilter">应用</button>
+    </view>
+  </view>
+
+  <view class="bill-list">
+    <block wx:if="{{filteredBills.length > 0}}">
+      <view class="bill-group" wx:for="{{groupedBills}}" wx:key="date">
+        <view class="group-header">
+          <view class="date-info">
+            <text class="date-text">{{item.date}}</text>
+            <text class="weekday">{{item.weekday}}</text>
+          </view>
+          <view class="day-summary">
+            <text class="summary-income">收 {{item.dayIncome || '0.00'}}</text>
+            <text class="summary-expense">支 {{item.dayExpense || '0.00'}}</text>
+          </view>
+        </view>
+        <view class="bill-card" wx:for="{{item.bills}}" wx:for-item="bill" wx:key="id" bindtap="editBill" data-id="{{bill.id}}" bindlongpress="deleteBill" data-id="{{bill.id}}">
+          <view class="card-icon">
+            <text>{{bill.icon || '📊'}}</text>
+          </view>
+          <view class="card-content">
+            <view class="card-main">
+              <text class="card-category">{{bill.category || '未分类'}}</text>
+              <text class="card-amount {{bill.type}}">{{bill.type === 'expense' ? '-' : '+'}}¥{{bill.amount || 0}}</text>
+            </view>
+            <view class="card-sub">
+              <text class="card-time">{{bill.time || ''}}</text>
+              <text class="card-notes" wx:if="{{bill.notes}}">· {{bill.notes}}</text>
+              <text class="card-account">{{bill.account || ''}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view class="empty-state" wx:else>
+      <text>暂无账单记录</text>
+    </view>
+  </view>
+
+  <view class="add-btn" bindtap="goToAddBill">
+    <text>+</text>
+  </view>
+</view>

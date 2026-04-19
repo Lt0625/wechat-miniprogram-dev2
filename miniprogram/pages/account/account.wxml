@@ -1,0 +1,54 @@
+<view class="container">
+  <view class="account-summary">
+    <view class="total-assets">
+      <text class="label">总资产</text>
+      <text class="amount">¥{{totalAssets || 0}}</text>
+    </view>
+    <view class="summary-tabs">
+      <view class="summary-tab {{summaryType === 'total' ? 'active' : ''}}" bindtap="switchSummaryType" data-type="total">总资产</view>
+      <view class="summary-tab {{summaryType === 'liability' ? 'active' : ''}}" bindtap="switchSummaryType" data-type="liability">总负债</view>
+      <view class="summary-tab {{summaryType === 'net' ? 'active' : ''}}" bindtap="switchSummaryType" data-type="net">净资产</view>
+    </view>
+  </view>
+
+  <view class="account-header">
+    <view class="account-count">共 {{accounts.length}} 个账户</view>
+    <view class="sort-btn" bindtap="toggleSortMenu">
+      <text>{{sortLabel}}</text>
+      <text class="arrow">▼</text>
+    </view>
+  </view>
+
+  <view class="sort-menu {{showSortMenu ? 'show' : ''}}" wx:if="{{showSortMenu}}">
+    <view class="sort-option {{sortType === 'name' ? 'active' : ''}}" bindtap="setSortType" data-type="name">按名称</view>
+    <view class="sort-option {{sortType === 'balance-desc' ? 'active' : ''}}" bindtap="setSortType" data-type="balance-desc">余额降序</view>
+    <view class="sort-option {{sortType === 'balance-asc' ? 'active' : ''}}" bindtap="setSortType" data-type="balance-asc">余额升序</view>
+  </view>
+
+  <view class="account-list">
+    <view 
+      class="account-item" 
+      wx:for="{{sortedAccounts}}" 
+      wx:key="name"
+      bindtap="editAccount"
+      data-name="{{item.name}}"
+      data-icon="{{item.icon}}"
+      data-balance="{{item.balance}}"
+    >
+      <view class="account-info">
+        <view class="account-icon">{{item.icon || '💰'}}</view>
+        <view class="account-name">{{item.name || '未知账户'}}</view>
+      </view>
+      <view class="account-right">
+        <view class="account-balance {{item.balance >= 0 ? 'positive' : 'negative'}}">
+          ¥{{item.balance || 0}}
+        </view>
+        <view class="account-arrow">></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="add-account-btn" bindtap="goToAddAccount">
+    <text>+ 添加账户</text>
+  </view>
+</view>

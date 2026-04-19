@@ -1,0 +1,129 @@
+<view class="container">
+  <view class="period-selector">
+    <view class="period-btn {{period === 'week' ? 'active' : ''}}" bindtap="selectPeriod" data-period="week">近一周</view>
+    <view class="period-btn {{period === 'month' ? 'active' : ''}}" bindtap="selectPeriod" data-period="month">本月</view>
+    <view class="period-btn {{period === 'quarter' ? 'active' : ''}}" bindtap="selectPeriod" data-period="quarter">本季</view>
+    <view class="period-btn {{period === 'year' ? 'active' : ''}}" bindtap="selectPeriod" data-period="year">本年</view>
+  </view>
+
+  <view class="tab-bar">
+    <view
+      class="tab-item {{currentTab === 'expense' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="expense"
+    >
+      <text>支出</text>
+      <view class="tab-amount expense">¥{{summary.expense || 0}}</view>
+    </view>
+    <view
+      class="tab-item {{currentTab === 'income' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="income"
+    >
+      <text>收入</text>
+      <view class="tab-amount income">¥{{summary.income || 0}}</view>
+    </view>
+    <view
+      class="tab-item {{currentTab === 'balance' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="balance"
+    >
+      <text>结余</text>
+      <view class="tab-amount balance">{{summary.balance >= 0 ? '+' : ''}}¥{{summary.balance || 0}}</view>
+    </view>
+    <view
+      class="tab-item {{currentTab === 'category' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="category"
+    >
+      <text>分类</text>
+      <view class="tab-amount">📊</view>
+    </view>
+  </view>
+
+  <view class="chart-section">
+    <view class="chart-title">
+      {{currentTab === 'expense' ? '支出走势' : currentTab === 'income' ? '收入走势' : currentTab === 'balance' ? '结余趋势' : '支出分类占比'}}
+    </view>
+    <canvas
+      wx:if="{{currentTab !== 'category'}}"
+      type="2d"
+      id="trendChart"
+      class="chart-container"
+      style="width: 100%; height: 450rpx;"
+    ></canvas>
+    <canvas
+      wx:if="{{currentTab === 'category'}}"
+      type="2d"
+      id="pieChart"
+      class="chart-container"
+      style="width: 100%; height: 450rpx;"
+    ></canvas>
+    <view class="chart-summary" wx:if="{{currentTab !== 'category' && currentTab !== 'balance'}}">
+      <view class="summary-item">
+        <view class="summary-dot {{currentTab}}"></view>
+        <text class="summary-text">{{currentTab === 'expense' ? '支出' : '收入'}}:</text>
+        <text class="summary-value {{currentTab}}">{{currentTab === 'expense' ? '-' : '+'}}¥{{currentTab === 'expense' ? summary.expense : summary.income}}</text>
+      </view>
+    </view>
+    <view class="chart-summary" wx:if="{{currentTab === 'balance'}}">
+      <view class="summary-item">
+        <view class="summary-dot expense"></view>
+        <text class="summary-text">支出:</text>
+        <text class="summary-value expense">-¥{{summary.expense}}</text>
+      </view>
+      <view class="summary-item">
+        <view class="summary-dot income"></view>
+        <text class="summary-text">收入:</text>
+        <text class="summary-value income">+¥{{summary.income}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="category-section">
+    <view class="section-title">
+      {{currentTab === 'category' ? '支出分类详情' : (currentTab === 'expense' ? '支出分类统计' : currentTab === 'income' ? '收入来源分析' : '收支对比')}}
+    </view>
+
+    <scroll-view scroll-y class="category-list" wx:if="{{categoryData.length > 0}}">
+      <view class="category-item" wx:for="{{categoryData}}" wx:key="name">
+        <view class="category-info">
+          <view class="category-icon">{{item.icon || '📊'}}</view>
+          <view class="category-name">{{item.name || '未分类'}}</view>
+        </view>
+        <view class="category-stats">
+          <view class="category-amount {{item.type || 'expense'}}">
+            ¥{{item.amount || 0}}
+          </view>
+          <view class="category-percent">
+            {{item.percent || 0}}%
+          </view>
+          <view class="progress-bar">
+            <view
+              class="progress-fill {{item.type || 'expense'}}"
+              style="width: {{item.percent > 100 ? 100 : (item.percent > 0 ? item.percent : 0)}}%"
+            ></view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="empty-state" wx:else>
+      <text>暂无{{currentTab === 'expense' ? '支出' : currentTab === 'income' ? '收入' : currentTab === 'category' ? '分类' : '数据'}}记录</text>
+    </view>
+  </view>
+
+  <view class="detail-section" wx:if="{{topBills.length > 0 && currentTab !== 'category'}}">
+    <view class="section-title">{{currentTab === 'expense' ? '最高支出' : currentTab === 'income' ? '最高收入' : 'Top账单'}} TOP5</view>
+    <view class="bill-item" wx:for="{{topBills}}" wx:key="id">
+      <view class="bill-rank">{{index + 1}}</view>
+      <view class="bill-info">
+        <view class="bill-category">{{item.category || '未分类'}}</view>
+        <view class="bill-date">{{item.date || '未知日期'}}</view>
+      </view>
+      <view class="bill-amount {{item.type || 'expense'}}">
+        {{item.type === 'expense' ? '-' : '+'}}¥{{item.amount || 0}}
+      </view>
+    </view>
+  </view>
+</view>
