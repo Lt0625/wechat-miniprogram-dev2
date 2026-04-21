@@ -1,12 +1,98 @@
 const themeManager = require('./utils/theme-manager')
 const config = require('./utils/config')
 const themeConfig = require('./themes/theme-config')
+const bookManager = require('./utils/book-manager')
 
 App({
   onLaunch() {
     console.log('小程序启动')
     this.initTheme()
+    this.initBooks()
     this.initCache()
+    this.initCloud()
+
+    // 检查今日到期的周期账单
+    setTimeout(() => {
+      this.checkDueRecurringBills()
+    }, 1000)  // 延迟1秒执行，避免影响启动速度
+  },
+
+  // 初始化账本（迁移旧数据）
+  initBooks() {
+    // 初始化账本
+    bookManager.initBooks()
+
+    // 迁移旧账单数据（添加 bookId）
+    try {
+      const bills = wx.getStorageSync('bills') || []
+      let needsUpdate = false
+
+      bills.forEach(bill => {
+        if (!bill.bookId) {
+          bill.bookId = 'default'
+          needsUpdate = true
+        }
+      })
+
+      if (needsUpdate) {
+        wx.setStorageSync('bills', bills)
+        console.log('账单数据已迁移，添加 bookId')
+      }
+    } catch (error) {
+      console.error('迁移账单数据失败:', error)
+    }
+
+    // 迁移旧分类数据
+    try {
+      const categories = wx.getStorageSync('categories') || []
+      let needsUpdate = false
+
+      categories.forEach(cat => {
+        if (!cat.bookId) {
+          cat.bookId = 'default'
+          needsUpdate = true
+        }
+      })
+
+      if (needsUpdate) {
+        wx.setStorageSync('categories', categories)
+        console.log('分类数据已迁移，添加 bookId')
+      }
+    } catch (error) {
+      console.error('迁移分类数据失败:', error)
+    }
+
+    // 迁移旧账户数据
+    try {
+      const accounts = wx.getStorageSync('accounts') || []
+      let needsUpdate = false
+
+      accounts.forEach(acc => {
+        if (!acc.bookId) {
+          acc.bookId = 'default'
+          needsUpdate = true
+        }
+      })
+
+      if (needsUpdate) {
+        wx.setStorageSync('accounts', accounts)
+        console.log('账户数据已迁移，添加 bookId')
+      }
+    } catch (error) {
+      console.error('迁移账户数据失败:', error)
+    }
+  },
+
+  // 初始化云开发
+  initCloud() {
+    if (!wx.cloud) {
+      console.error('请使用 2.2.3 或以上的基础库以使用云能力')
+    } else {
+      wx.cloud.init({
+        env: 'cloudbase-d1g8mjg3m02a6eba2',  // 使用语音记账的云环境
+        traceUser: true
+      })
+    }
   },
 
   globalData: {
@@ -140,5 +226,51 @@ App({
 
   invalidateCache() {
     this.globalData.cache.lastUpdateTime = 0
+  },
+
+  // 检查今日到期的周期账单并提醒
+  checkDueRecurringBills() {
+    try {
+      const recurringBills = wx.getStorageSync('recurringBills') || []
+      if (!Array.isArray(recurringBills) || recurringBills.length === 0) {
+        return
+      }
+
+      // 获取今天的日期
+      const today = new Date()
+      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+
+      // 找到今天到期的账单（且开启了提醒）
+      const dueToday = recurringBills.filter(bill => {
+        return bill.enabled &&
+               bill.reminderEnabled &&
+               bill.nextDue === todayStr
+      })
+
+      if (dueToday.length > 0) {
+        // 格式化到期账单列表
+        const names = dueToday.map(b => b.name).join('、')
+        const amounts = dueToday.reduce((sum, b) => {
+          const sign = b.type === 'expense' ? '-' : '+'
+          return sum + `${sign}¥${b.amount} `
+        }, '').trim()
+
+        wx.showModal({
+          title: '📅 周期账单提醒',
+          content: `以下账单今日到期：\n${names}\n金额：${amounts}\n\n点击确定去记账`,
+          confirmText: '去记账',
+          cancelText: '稍后',
+          success: (res) => {
+            if (res.confirm) {
+              wx.switchTab({
+                url: '/pages/index/index'
+              })
+            }
+          }
+        })
+      }
+    } catch (error) {
+      console.error('检查到期账单失败', error)
+    }
   }
 })

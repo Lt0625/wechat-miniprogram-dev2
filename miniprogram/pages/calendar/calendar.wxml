@@ -1,35 +1,75 @@
 <view class="container" data-theme="{{theme}}">
-  <view class="calendar-header">
-    <view class="month-nav">
-      <view class="nav-btn" bindtap="prevMonth">←</view>
-      <view class="current-month">{{currentYear}}年{{currentMonth}}月</view>
-      <view class="nav-btn" bindtap="nextMonth">→</view>
+  <!-- 年度收支汇总卡片 - 可折叠，左右滑动切换年份 -->
+  <view class="month-summary-card {{summaryCollapsed ? 'collapsed' : ''}}" bindtap="toggleSummary" bindtouchstart="onCardTouchStart" bindtouchend="onCardTouchEnd">
+    <view class="summary-header">
+      <view class="nav-btn-sm" catchtap="prevYear">‹ 上一年</view>
+      <view class="summary-title">
+        {{currentYear}}年
+        <text class="collapse-icon">{{summaryCollapsed ? '▼' : '▲'}}</text>
+      </view>
+      <view class="nav-btn-sm" catchtap="nextYear">下一年 ›</view>
+    </view>
+    <!-- 可折叠内容 -->
+    <view class="summary-content" wx:if="{{!summaryCollapsed}}">
+      <view class="summary-item">
+        <view class="summary-label">支出</view>
+        <view class="summary-value expense">-¥{{monthSummary.expense || 0}}</view>
+      </view>
+      <view class="summary-divider"></view>
+      <view class="summary-item">
+        <view class="summary-label">收入</view>
+        <view class="summary-value income">+¥{{monthSummary.income || 0}}</view>
+      </view>
+      <view class="summary-divider"></view>
+      <view class="summary-item">
+        <view class="summary-label">结余</view>
+        <view class="summary-value {{monthSummary.balance >= 0 ? 'income' : 'expense'}}">
+          {{monthSummary.balance >= 0 ? '+' : ''}}¥{{monthSummary.balance || 0}}
+        </view>
+      </view>
     </view>
   </view>
 
-  <view class="calendar-week">
-    <view class="week-day">日</view>
-    <view class="week-day">一</view>
-    <view class="week-day">二</view>
-    <view class="week-day">三</view>
-    <view class="week-day">四</view>
-    <view class="week-day">五</view>
-    <view class="week-day">六</view>
+  <!-- 月份快速切换 -->
+  <view class="year-nav">
+    <view class="year-btn" bindtap="prevMonth">{{prevMonthName}}</view>
+    <view class="year-display">{{currentMonth}}月</view>
+    <view class="year-btn" bindtap="nextMonth">{{nextMonthName}}</view>
   </view>
 
-  <view class="calendar-days">
+  <!-- 日历区域，左右滑动切换月份 -->
+  <view class="calendar-wrapper" bindtouchstart="onCalendarTouchStart" bindtouchend="onCalendarTouchEnd">
+    <view class="calendar-week">
+      <view class="week-day">日</view>
+      <view class="week-day">一</view>
+      <view class="week-day">二</view>
+      <view class="week-day">三</view>
+      <view class="week-day">四</view>
+      <view class="week-day">五</view>
+      <view class="week-day">六</view>
+    </view>
+
+    <view class="calendar-days">
     <view 
-      class="day {{item.isCurrentMonth ? 'current' : 'other'}} {{selectedDate === item.fullDate ? 'selected' : ''}} {{item.hasBills ? 'has-bills' : ''}} {{item.isFuture ? 'future' : ''}}" 
+      class="day {{item.isCurrentMonth ? 'current' : 'other'}} {{selectedDate === item.fullDate ? 'selected' : ''}} {{item.hasBills ? 'has-bills' : ''}} {{item.isFuture ? 'future' : ''}} {{item.isToday ? 'today' : ''}} {{item.holiday ? 'has-holiday' : ''}} {{item.holidayClass === 'major' ? 'major-holiday' : ''}}"
       wx:for="{{calendarDays}}" 
       wx:key="index"
       bindtap="selectDate"
       data-date="{{item.fullDate}}"
     >
+      <!-- 节日标签 -->
+      <view class="holiday-tag" wx:if="{{item.holiday}}">
+        <text class="holiday-icon">{{item.holidayIcon}}</text>
+        <text class="holiday-name">{{item.holiday}}</text>
+      </view>
+      <!-- 日期数字 -->
       <view class="day-number">{{item.day}}</view>
+      <!-- 金额 -->
       <view class="day-amount" wx:if="{{item.amount > 0}}">
         ¥{{item.amount || 0}}
       </view>
     </view>
+  </view>
   </view>
 
   <view class="date-detail {{showDetail && selectedDate ? 'expand' : ''}}" wx:if="{{showDetail && selectedDate}}">
@@ -63,13 +103,101 @@
     <view class="empty-detail" wx:if="{{dateDetail.length === 0}}">
       <text>该日暂无账单记录</text>
     </view>
+  </view>
 
-    <view class="detail-actions">
-      <button class="add-bill-btn" bindtap="addBillForDate">添加账单</button>
+  <view class="add-btn" bindtap="toggleQuickAdd">
+    <view class="add-icon-wrap">
+      <view class="combined-icon">
+        <view class="mic-icon">
+          <view class="mic-head"></view>
+          <view class="mic-stand"></view>
+          <view class="mic-line"></view>
+        </view>
+        <view class="plus-badge"></view>
+      </view>
     </view>
   </view>
 
-  <view class="add-btn" bindtap="goToAddBill">
-    <text>+</text>
+  <!-- 快捷记账弹窗 -->
+  <view class="quick-add-mask {{showQuickAdd ? 'show' : ''}}" bindtap="toggleQuickAdd"></view>
+  <view class="quick-add-popup {{showQuickAdd ? 'show' : ''}}">
+    <view class="popup-header">
+      <text class="popup-title">{{isEditBill ? '编辑账单' : '快捷记账'}}</text>
+      <view class="popup-header-right">
+        <text class="popup-delete" wx:if="{{isEditBill}}" bindtap="deleteBillFromPopup">删除</text>
+        <text class="popup-close" bindtap="toggleQuickAdd">✕</text>
+      </view>
+    </view>
+    
+    <view class="popup-body">
+      <!-- 类型切换 -->
+      <view class="type-toggle">
+        <view class="type-btn {{quickType === 'expense' ? 'active expense' : ''}}" bindtap="setQuickType" data-type="expense">支出</view>
+        <view class="type-btn {{quickType === 'income' ? 'active income' : ''}}" bindtap="setQuickType" data-type="income">收入</view>
+      </view>
+      
+      <!-- 金额输入 -->
+      <view class="amount-input-wrap">
+        <text class="amount-prefix">¥</text>
+        <input 
+          class="amount-input" 
+          type="digit" 
+          placeholder="0.00"
+          value="{{quickAmount}}"
+          bindinput="onQuickAmountInput"
+        />
+        <!-- 语音按钮 -->
+        <view 
+          class="voice-btn {{quickVoiceStatus === 'recording' ? 'recording' : ''}}"
+          bindtap="toggleVoiceRecord"
+        >
+          <view class="mic-icon-wrapper">
+            <view class="mic-head"></view>
+            <view class="mic-handle"></view>
+            <view class="mic-base"></view>
+            <view class="mic-dot"></view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 分类选择 -->
+      <view class="category-grid">
+        <view 
+          class="category-item {{quickCategory === item.name ? 'active' : ''}}"
+          wx:for="{{quickCategories}}"
+          wx:key="name"
+          bindtap="selectQuickCategory"
+          data-category="{{item.name}}"
+        >
+          <text class="category-icon">{{item.icon || '📊'}}</text>
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </view>
+      
+      <!-- 快捷金额 -->
+      <view class="quick-amounts">
+        <view 
+          class="quick-amount-btn"
+          wx:for="{{quickAmounts}}"
+          wx:key="index"
+          bindtap="setQuickAmount"
+          data-amount="{{item}}"
+        >{{item}}</view>
+      </view>
+      
+      <!-- 备注输入 -->
+      <view class="notes-input-wrap">
+        <input 
+          class="notes-input" 
+          type="text" 
+          placeholder="添加备注..." 
+          value="{{quickNotes}}"
+          bindinput="onQuickNotesInput"
+        />
+      </view>
+      
+      <!-- 提交按钮 -->
+      <button class="quick-submit-btn" bindtap="submitQuickBill">立即保存</button>
+    </view>
   </view>
 </view>

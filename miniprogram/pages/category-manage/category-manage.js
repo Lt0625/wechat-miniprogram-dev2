@@ -34,7 +34,7 @@ Page({
 
   onShow() {
     // 更新主题
-    const theme = themeManager.getCurrentTheme()
+    const theme = themeManager.getThemeObject()
     if (theme) {
       wx.setNavigationBarColor({
         frontColor: '#ffffff',

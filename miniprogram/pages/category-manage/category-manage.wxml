@@ -1,61 +1,92 @@
 <view class="container" data-theme="{{theme}}">
-  <view class="section">
-    <view class="section-title">支出分类</view>
-    <scroll-view scroll-y class="category-list" wx:if="{{expenseCategories.length > 0}}">
+  <!-- 支出分类 -->
+  <view class="category-section">
+    <view class="section-header">
+      <text class="section-title">支出分类</text>
+      <text class="section-count">{{expenseCategories.length}} 个</text>
+    </view>
+    
+    <view class="category-grid">
+      <!-- 分类卡片 -->
       <view 
-        class="category-item" 
+        class="category-card" 
         wx:for="{{expenseCategories}}" 
         wx:key="name"
+        bindtap="editCategory" 
+        data-type="expense" 
+        data-name="{{item.name}}" 
+        data-icon="{{item.icon}}"
       >
-        <view class="category-info">
-          <text class="icon">{{item.icon || '📦'}}</text>
-          <text class="name">{{item.name || '未命名'}}</text>
+        <view class="category-actions">
+          <text class="action-dot">✎</text>
         </view>
-        <view class="actions">
-          <button class="edit-btn" bindtap="editCategory" data-type="expense" data-name="{{item.name}}" data-icon="{{item.icon}}">编辑</button>
-          <button class="delete-btn" bindtap="deleteCategory" data-type="expense" data-name="{{item.name}}">删除</button>
-        </view>
+        <view class="category-icon">{{item.icon || '📦'}}</view>
+        <text class="category-name">{{item.name || '未命名'}}</text>
       </view>
-    </scroll-view>
-    <view class="empty-state" wx:else>
-      <text>暂无支出分类</text>
-    </view>
-    <view class="add-category-btn" bindtap="showAddModal" data-type="expense">
-      <text>+ 添加支出分类</text>
+      
+      <!-- 添加按钮 -->
+      <view class="add-card {{showModal ? 'hide' : ''}}" bindtap="showAddModal" data-type="expense">
+        <view class="add-icon">+</view>
+        <text class="add-text">添加</text>
+      </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{expenseCategories.length === 0}}">
+        <text class="empty-icon">📂</text>
+        <text>暂无支出分类</text>
+      </view>
     </view>
   </view>
 
-  <view class="section">
-    <view class="section-title">收入分类</view>
-    <scroll-view scroll-y class="category-list" wx:if="{{incomeCategories.length > 0}}">
+  <!-- 收入分类 -->
+  <view class="category-section">
+    <view class="section-header">
+      <text class="section-title">收入分类</text>
+      <text class="section-count">{{incomeCategories.length}} 个</text>
+    </view>
+    
+    <view class="category-grid">
+      <!-- 分类卡片 -->
       <view 
-        class="category-item" 
+        class="category-card" 
         wx:for="{{incomeCategories}}" 
         wx:key="name"
+        bindtap="editCategory" 
+        data-type="income" 
+        data-name="{{item.name}}" 
+        data-icon="{{item.icon}}"
       >
-        <view class="category-info">
-          <text class="icon">{{item.icon || '📦'}}</text>
-          <text class="name">{{item.name || '未命名'}}</text>
+        <view class="category-actions">
+          <text class="action-dot">✎</text>
         </view>
-        <view class="actions">
-          <button class="edit-btn" bindtap="editCategory" data-type="income" data-name="{{item.name}}" data-icon="{{item.icon}}">编辑</button>
-          <button class="delete-btn" bindtap="deleteCategory" data-type="income" data-name="{{item.name}}">删除</button>
-        </view>
+        <view class="category-icon">{{item.icon || '💰'}}</view>
+        <text class="category-name">{{item.name || '未命名'}}</text>
       </view>
-    </scroll-view>
-    <view class="empty-state" wx:else>
-      <text>暂无收入分类</text>
-    </view>
-    <view class="add-category-btn" bindtap="showAddModal" data-type="income">
-      <text>+ 添加收入分类</text>
+      
+      <!-- 添加按钮 -->
+      <view class="add-card {{showModal ? 'hide' : ''}}" bindtap="showAddModal" data-type="income">
+        <view class="add-icon">+</view>
+        <text class="add-text">添加</text>
+      </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{incomeCategories.length === 0}}">
+        <text class="empty-icon">💼</text>
+        <text>暂无收入分类</text>
+      </view>
     </view>
   </view>
 
-  <view class="modal-mask" wx:if="{{showModal}}" catchtap="hideModal">
+  <!-- 模态框 -->
+  <view class="modal-mask {{showModal ? 'show' : ''}}" bindtap="hideModal">
     <view class="modal-content" catchtap="preventClose">
-      <view class="modal-title">{{isEdit ? '编辑' : '添加'}}{{currentType === 'expense' ? '支出' : '收入'}}分类</view>
+      <view class="modal-header">
+        <text class="modal-title">{{isEdit ? '编辑' : '添加'}}{{currentType === 'expense' ? '支出' : '收入'}}分类</text>
+        <view class="modal-close" bindtap="hideModal">✕</view>
+      </view>
       
       <view class="form-group">
+        <text class="form-label">分类名称</text>
         <input 
           class="form-input" 
           placeholder="请输入分类名称" 
@@ -65,15 +96,18 @@
         />
       </view>
 
-      <view class="icon-selector">
-        <view 
-          class="icon-option {{selectedIcon === item.icon ? 'active' : ''}}"
-          wx:for="{{availableIcons}}"
-          wx:key="icon"
-          bindtap="selectIcon"
-          data-icon="{{item.icon}}"
-        >
-          {{item.icon}}
+      <view class="form-group">
+        <text class="form-label">选择图标</text>
+        <view class="icon-selector">
+          <view 
+            class="icon-option {{selectedIcon === item.icon ? 'active' : ''}}"
+            wx:for="{{availableIcons}}"
+            wx:key="icon"
+            bindtap="selectIcon"
+            data-icon="{{item.icon}}"
+          >
+            {{item.icon}}
+          </view>
         </view>
       </view>
 

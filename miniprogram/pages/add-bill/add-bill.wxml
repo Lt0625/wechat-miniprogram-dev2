@@ -5,15 +5,14 @@
   </view>
   
   <view class="amount-input">
-    <input type="digit" placeholder="0.00" value="{{amount}}" bindinput="onAmountInput" />
-    <view class="voice-btn-wrap">
-      <view class="voice-btn {{voiceStatus === 'recording' ? 'recording' : ''}}" 
-            bindtouchstart="onVoiceStart" 
-            bindtouchend="onVoiceEnd"
-            bindtouchcancel="onVoiceCancel">
-        <view class="voice-icon">🎤</view>
-        <view class="voice-text">{{voiceStatus === 'recording' ? '松开识别' : (voiceStatus === 'processing' ? '识别中...' : '按住说话')}}</view>
-      </view>
+    <text class="amount-prefix">¥</text>
+    <input type="digit" placeholder="0.00" value="{{amount}}" bindinput="onAmountInput" class="amount-field" />
+    <!-- 语音按钮 - 放在金额输入框右侧 -->
+    <view class="voice-btn-small {{voiceStatus === 'recording' ? 'recording' : ''}}" 
+          bindtouchstart="onVoiceStart" 
+          bindtouchend="onVoiceEnd"
+          bindtouchcancel="onVoiceCancel">
+      <view class="mic-icon">🎤</view>
     </view>
   </view>
 
@@ -55,9 +54,11 @@
     <view class="label">账户</view>
     <view class="account-scroll">
       <view class="account-item {{account === item.name ? 'active' : ''}}" wx:for="{{accounts}}" wx:key="name" bindtap="selectAccount" data-name="{{item.name}}">
+        <view class="account-icon">{{item.icon || '💳'}}</view>
         <view class="account-name">{{item.name}}</view>
       </view>
       <view class="account-item {{account === '其他' ? 'active' : ''}} account-other" bindtap="selectOtherAccount">
+        <view class="account-icon">➕</view>
         <view class="account-name">其他</view>
       </view>
     </view>

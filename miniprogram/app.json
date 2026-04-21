@@ -7,11 +7,13 @@
     "pages/statistics/statistics",
     "pages/mine/mine",
     "pages/category-manage/category-manage",
-    "pages/account-edit/account-edit"
+    "pages/account-edit/account-edit",
+    "pages/recurring/recurring",
+    "pages/book-manage/book-manage"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarTitleText": "微信记账",
+    "navigationBarTitleText": "桔记",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
@@ -44,6 +46,10 @@
   },
   "style": "v2",
   "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {
+    "global-loading": "/components/global-loading/global-loading",
+    "skeleton": "/components/skeleton/skeleton"
+  },
   "sitemapLocation": "sitemap.json",
   "permission": {
     "scope.record": {

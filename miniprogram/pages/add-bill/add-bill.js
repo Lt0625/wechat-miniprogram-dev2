@@ -1,5 +1,7 @@
 const themeManager = require('../../utils/theme-manager')
 const config = require('../../utils/config')
+const billHelper = require('../../utils/bill-helper')
+const bookManager = require('../../utils/book-manager')
 
 Page({
   data: {
@@ -26,7 +28,11 @@ Page({
       parsed: false
     },
     cloudEnvInited: false,
-    theme: themeManager.currentTheme
+    theme: themeManager.currentTheme,
+    // 账本相关
+    currentBook: { id: 'default', name: '日常账本', icon: '📒' },
+    // 编辑时的原始账单数据（用于计算余额变化）
+    originalBill: null
   },
 
   onLoad(options) {
@@ -40,7 +46,24 @@ Page({
       theme: themeManager.currentTheme
     })
 
-    if (options && options.id) {
+    // 处理账单复制模式
+    if (options && options.isCopy === 'true') {
+      // 从首页复制的账单，预填数据
+      const prefilledData = {
+        type: options.type || 'expense',
+        amount: options.amount || '',
+        category: options.category ? decodeURIComponent(options.category) : '',
+        account: options.account ? decodeURIComponent(options.account) : '',
+        notes: options.notes ? decodeURIComponent(options.notes) : ''
+      }
+      
+      this.setData({
+        ...prefilledData,
+        isEdit: false  // 复制模式不是编辑
+      })
+      
+      wx.setNavigationBarTitle({ title: '复制账单' })
+    } else if (options && options.id) {
       this.setData({ 
         isEdit: true, 
         editId: parseInt(options.id) 
@@ -60,7 +83,7 @@ Page({
 
   onShow() {
     // 更新主题
-    const theme = themeManager.getCurrentTheme()
+    const theme = themeManager.getThemeObject()
     if (theme) {
       wx.setNavigationBarColor({
         frontColor: '#ffffff',
@@ -364,7 +387,15 @@ Page({
         return
       }
 
-      const filtered = categories.filter(cat => cat.type === this.data.type || !cat.type)
+      let filtered = categories.filter(cat => cat.type === this.data.type || !cat.type)
+      
+      // 确保"其他"分类始终在最后一位
+      filtered.sort((a, b) => {
+        if (a.name === '其他') return 1
+        if (b.name === '其他') return -1
+        return 0
+      })
+      
       this.setData({ 
         categories,
         filteredCategories: filtered.length > 0 ? filtered : categories
@@ -408,7 +439,8 @@ Page({
           category: bill.category || '',
           account: bill.account || '',
           date: bill.date || this.data.date,
-          notes: bill.notes || ''
+          notes: bill.notes || '',
+          originalBill: bill  // 保存原始账单数据
         })
         
         this.loadCategories()
@@ -677,27 +709,72 @@ Page({
       return
     }
 
-    if (!account || account.trim() === '') {
-      wx.showToast({ title: '请选择账户', icon: 'none' })
-      return
-    }
-
     if (!date) {
       wx.showToast({ title: '日期无效', icon: 'none' })
       return
     }
+
+    // 如果用户没有选择账户，默认设为"其他"
+    const finalAccount = (!account || account.trim() === '') ? '其他' : account.trim()
+
+    // 获取当前时间用于排序
+    const now = new Date()
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
 
     const bill = {
       id: editId || Date.now(),
       type: type || 'expense',
       amount: (typeof amountValidation.value === 'number' && !isNaN(amountValidation.value)) ? amountValidation.value : 0,
       category: (category && typeof category === 'string') ? category.trim() : '未分类',
-      account: (account && typeof account === 'string') ? account.trim() : '未知账户',
+      account: finalAccount,
       date: (date && typeof date === 'string') ? date : new Date().toISOString().split('T')[0],
+      time: timeStr,
       notes: (notes && typeof notes === 'string') ? notes.trim() : '',
       updateTime: new Date().toISOString()
     }
 
+    // 检测重复账单（只检测当前账本同一天的重复）
+    const allBills = wx.getStorageSync('bills') || []
+    const currentBookId = bookManager.getCurrentBookId()
+    // 只检测当前账本的账单
+    const billsForCheck = allBills.filter(b => b.bookId === currentBookId)
+    // 编辑模式下排除自身
+    const billsToCheck = isEdit && editId 
+      ? billsForCheck.filter(b => b.id !== editId) 
+      : billsForCheck
+    const duplicateResult = billHelper.detectDuplicateBills(billsToCheck, bill, 2, isEdit ? editId : null)
+
+    // 如果检测到重复，弹出确认框
+    if (duplicateResult.isDuplicate) {
+      const similarBill = duplicateResult.similarBills[0]
+      const dateStr = similarBill.date || ''
+      const timeStr2 = similarBill.time || ''
+      const amountStr = similarBill.amount != null ? similarBill.amount : 0
+      const amountSign = similarBill.type === 'income' ? '+' : '-'
+      
+      wx.showModal({
+        title: '⚠️ 检测到相似账单',
+        content: `今天 ${dateStr.slice(5)} ${timeStr2} 有一条相似账单：\n${amountSign}¥${amountStr}（${similarBill.category}）\n\n是否仍要保存这条账单？`,
+        confirmText: '仍要保存',
+        cancelText: '取消',
+        confirmColor: '#e74c3c',
+        success: (res) => {
+          if (res.confirm) {
+            this._doSaveBill(bill, finalAccount, type, amountValidation.value, isEdit, editId)
+          }
+        }
+      })
+      return
+    }
+
+    // 没有重复，直接保存
+    this._doSaveBill(bill, finalAccount, type, amountValidation.value, isEdit, editId)
+  },
+
+  /**
+   * 实际执行保存账单（内部方法）
+   */
+  _doSaveBill(bill, finalAccount, type, amount, isEdit, editId) {
     try {
       let bills = []
       
@@ -712,8 +789,17 @@ Page({
         bills = []
       }
 
+      // 确保所有账单都有 bookId
+      bills.forEach(b => {
+        if (!b.bookId) b.bookId = 'default'
+      })
+
+      // 获取当前账本ID
+      const currentBookId = bookManager.getCurrentBookId()
+
       if (isEdit && editId) {
-        const index = bills.findIndex(b => b.id === editId)
+        // 编辑时需要找到当前账本的账单
+        const index = bills.findIndex(b => b.id === editId && b.bookId === currentBookId)
         if (index !== -1) {
           var newBill = {}
           for (var key in bill) {
@@ -721,6 +807,7 @@ Page({
               newBill[key] = bill[key]
             }
           }
+          newBill.bookId = currentBookId
           newBill.createTime = bills[index].createTime
           bills[index] = newBill
         } else {
@@ -729,11 +816,15 @@ Page({
           return
         }
       } else {
+        bill.bookId = currentBookId
         bill.createTime = new Date().toISOString()
         bills.push(bill)
       }
 
       wx.setStorageSync('bills', bills)
+
+      // 自动更新账户余额
+      this._updateAccountBalanceAfterBillChange(finalAccount, type, amount, isEdit ? 'edit' : 'add', this.data.originalBill)
 
       try {
         const app = getApp()
@@ -769,6 +860,11 @@ Page({
       return
     }
 
+    // 获取要删除的账单信息（用于更新余额）
+    const bills = wx.getStorageSync('bills') || []
+    const currentBookId = bookManager.getCurrentBookId()
+    const billToDelete = bills.find(b => b.id === this.data.editId && b.bookId === currentBookId)
+
     wx.showModal({
       title: '确认删除',
       content: '确定要删除这条账单吗？此操作不可恢复。',
@@ -790,9 +886,21 @@ Page({
               bills = []
             }
 
-            const filteredBills = bills.filter(b => b.id !== this.data.editId)
+            // 只删除当前账本的账单
+            const filteredBills = bills.filter(b => !(b.id === this.data.editId && b.bookId === currentBookId))
             
             wx.setStorageSync('bills', filteredBills)
+
+            // 删除后自动更新账户余额
+            if (billToDelete) {
+              this._updateAccountBalanceAfterBillChange(
+                billToDelete.account,
+                billToDelete.type,
+                billToDelete.amount,
+                'delete',
+                null
+              )
+            }
 
             try {
               const app = getApp()
@@ -820,5 +928,53 @@ Page({
         }
       }
     })
+  },
+
+  /**
+   * 账单变更后自动更新账户余额
+   * @param {string} accountName - 账户名称
+   * @param {string} billType - 账单类型 expense/income
+   * @param {number} amount - 金额
+   * @param {string} action - 操作类型 add/edit/delete
+   * @param {Object} oldBill - 编辑前的旧账单（仅编辑时需要）
+   */
+  _updateAccountBalanceAfterBillChange(accountName, billType, amount, action, oldBill) {
+    try {
+      const bills = wx.getStorageSync('bills') || []
+      const accounts = wx.getStorageSync('accounts') || []
+      
+      // 计算指定账户的余额
+      const newBalance = billHelper.calculateSingleAccountBalance(bills, accountName)
+      
+      // 更新账户余额
+      const index = accounts.findIndex(acc => acc && acc.name === accountName)
+      if (index !== -1) {
+        accounts[index] = {
+          ...accounts[index],
+          balance: newBalance
+        }
+        wx.setStorageSync('accounts', accounts)
+      }
+      
+      // 如果是编辑模式，且账户发生了变化，也需要更新原账户的余额
+      if (action === 'edit' && oldBill && oldBill.account && oldBill.account !== accountName) {
+        const oldAccountBalance = billHelper.calculateSingleAccountBalance(bills, oldBill.account)
+        const oldIndex = accounts.findIndex(acc => acc && acc.name === oldBill.account)
+        if (oldIndex !== -1) {
+          // 重新读取账户列表（因为上面的更新可能改变了它）
+          const currentAccounts = wx.getStorageSync('accounts') || []
+          const idx = currentAccounts.findIndex(acc => acc && acc.name === oldBill.account)
+          if (idx !== -1) {
+            currentAccounts[idx] = {
+              ...currentAccounts[idx],
+              balance: oldAccountBalance
+            }
+            wx.setStorageSync('accounts', currentAccounts)
+          }
+        }
+      }
+    } catch (error) {
+      console.error('更新账户余额失败:', error)
+    }
   }
 })

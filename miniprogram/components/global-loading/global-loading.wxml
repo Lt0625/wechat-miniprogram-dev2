@@ -1,0 +1,21 @@
+<!--
+  全局 Loading 组件
+  居中弹窗，带动画效果
+-->
+<view class="loading-container {{show ? 'show' : ''}} {{mask ? 'has-mask' : ''}}">
+  <!-- 遮罩层 -->
+  <view wx:if="{{mask}}" class="mask"></view>
+  
+  <!-- 加载内容 -->
+  <view class="loading-content">
+    <!-- 动画图标 -->
+    <view class="loading-icon">
+      <view class="spinner"></view>
+      <view class="spinner delay-1"></view>
+      <view class="spinner delay-2"></view>
+    </view>
+    
+    <!-- 提示文字 -->
+    <text class="loading-title">{{title}}</text>
+  </view>
+</view>

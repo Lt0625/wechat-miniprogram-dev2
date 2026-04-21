@@ -1,5 +1,7 @@
 const themeManager = require('../../utils/theme-manager')
 const config = require('../../utils/config')
+const billHelper = require('../../utils/bill-helper')
+const bookManager = require('../../utils/book-manager')
 
 Page({
   data: {
@@ -12,18 +14,27 @@ Page({
     sortType: 'name',
     sortLabel: '按名称',
     sortedAccounts: [],
-    theme: themeManager.currentTheme
+    theme: themeManager.currentTheme,
+    // 新增：余额自动计算相关
+    balanceMode: 'auto',  // auto: 自动计算, manual: 手动
+    showSyncTip: false,   // 是否显示同步提示
+    lastSyncTime: '',       // 上次同步时间
+    // 账本相关
+    currentBook: { id: 'default', name: '日常账本', icon: '📒' }
   },
 
   onLoad() {
     console.log('资产页 onLoad 触发')
+    bookManager.initBooks()
+    this.loadCurrentBook()
     this.loadAccounts()
   },
 
   onShow() {
     console.log('资产页 onShow 触发')
+    this.loadCurrentBook()
     // 更新主题
-    const theme = themeManager.getCurrentTheme()
+    const theme = themeManager.getThemeObject()
     if (theme) {
       wx.setNavigationBarColor({
         frontColor: '#ffffff',
@@ -31,6 +42,22 @@ Page({
       })
     }
     this.setData({ theme: themeManager.currentTheme })
+    this.loadCurrentBook()
+    this.loadAccounts()
+  },
+
+  // 加载当前账本信息
+  loadCurrentBook() {
+    const currentBook = bookManager.getCurrentBook()
+    if (currentBook) {
+      this.setData({ currentBook })
+    }
+  },
+
+  // 账本切换后的回调
+  onBookChanged() {
+    console.log('资产页：账本已切换，刷新数据')
+    this.loadCurrentBook()
     this.loadAccounts()
   },
 
@@ -64,8 +91,21 @@ Page({
         accounts = defaultAccounts
       }
 
+      // 根据账单自动计算所有账户余额（只计算当前账本的账单）
+      const allBills = wx.getStorageSync('bills') || []
+      const currentBookId = bookManager.getCurrentBookId()
+      const bills = allBills.filter(b => b.bookId === currentBookId)
+      const result = billHelper.calculateAccountBalances(bills, accounts)
+      accounts = result.accounts
+
       this.calculateTotals(accounts)
       this.sortAccounts(accounts)
+
+      // 更新余额计算模式显示
+      this.setData({
+        balanceMode: 'auto',
+        showSyncTip: false
+      })
 
     } catch (error) {
       console.error('加载账户失败:', error)
@@ -76,6 +116,52 @@ Page({
         netAssets: 0,
         sortedAccounts: [],
         theme: themeManager.currentTheme
+      })
+    }
+  },
+
+  /**
+   * 一键同步：根据账单重新计算所有账户余额
+   */
+  syncAllBalances() {
+    wx.showLoading({ title: '同步中...' })
+    
+    try {
+      const bills = wx.getStorageSync('bills') || []
+      const accounts = wx.getStorageSync('accounts') || []
+      
+      // 重新计算所有账户余额
+      const result = billHelper.calculateAccountBalances(bills, accounts)
+      
+      // 保存更新后的账户数据
+      billHelper.updateAllAccountBalances(result.accounts)
+      
+      // 更新时间戳
+      const now = new Date()
+      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+      
+      wx.hideLoading()
+      
+      wx.showToast({
+        title: '同步成功',
+        icon: 'success',
+        duration: 2000
+      })
+      
+      // 重新加载账户数据
+      this.setData({
+        lastSyncTime: timeStr,
+        showSyncTip: false
+      })
+      
+      this.loadAccounts()
+      
+    } catch (error) {
+      wx.hideLoading()
+      console.error('同步账户余额失败:', error)
+      wx.showToast({
+        title: '同步失败',
+        icon: 'none'
       })
     }
   },
@@ -185,6 +271,7 @@ Page({
     var icon = dataset.icon || '💰'
     var balance = dataset.balance != null ? String(dataset.balance) : '0'
 
+    // 对名称进行编码，防止中文乱码
     var params = 'name=' + encodeURIComponent(name) + '&icon=' + encodeURIComponent(icon) + '&balance=' + encodeURIComponent(balance)
 
     wx.navigateTo({

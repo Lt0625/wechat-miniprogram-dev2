@@ -44,6 +44,7 @@
   padding: 16rpx 0;
   border-radius: 16rpx;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .tab-item.active {
@@ -65,6 +66,25 @@
 .tab-amount {
   font-size: 32rpx;
   font-weight: bold;
+}
+
+/* 环比数据标签 */
+.tab-change {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  margin-top: 6rpx;
+  display: inline-block;
+}
+
+.tab-change.up {
+  color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.tab-change.down {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
 }
 
 .tab-amount.expense {
@@ -353,5 +373,5 @@ canvas {
 }
 
 .summary-value.income {
-  color: #4ECDC4;
+  color: #2E7D32;
 }

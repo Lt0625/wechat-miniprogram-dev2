@@ -1,4 +1,20 @@
 const themeManager = require('../../utils/theme-manager')
+const billHelper = require('../../utils/bill-helper')
+
+// 安全解码函数，防止乱码
+function safeDecode(str) {
+  if (!str || typeof str !== 'string') return ''
+  try {
+    // 如果字符串包含 % 并且不是合法的 URI 编码形式，则返回原字符串
+    if (str.includes('%') && !/^%[0-9A-F]{2}/i.test(str)) {
+      return str
+    }
+    return decodeURIComponent(str)
+  } catch (e) {
+    // 解码失败时返回原字符串
+    return str
+  }
+}
 
 Page({
   data: {
@@ -23,21 +39,52 @@ Page({
   },
 
   onLoad(options) {
+    // 更新主题
+    const theme = themeManager.getThemeObject()
+    if (theme) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: theme.primary
+      })
+    }
+
     if (options && options.name) {
-      const name = decodeURIComponent(options.name)
+      // 使用安全解码，防止乱码
+      const name = safeDecode(options.name)
+      
+      // 编辑模式：从账单自动计算余额
+      const bills = wx.getStorageSync('bills') || []
+      const calculatedBalance = billHelper.calculateSingleAccountBalance(bills, name)
+      
       this.setData({
         isEdit: true,
         accountName: name,
         originalName: name,
         selectedIcon: options.icon || '💰',
-        initialBalance: options.balance || '0',
-        theme: themeManager.currentTheme
+        initialBalance: calculatedBalance.toFixed(2),  // 使用计算的余额
+        theme: themeManager.currentTheme,
+        calculatedBalance: calculatedBalance.toFixed(2)  // 保存计算值用于重置
       })
       wx.setNavigationBarTitle({ title: '编辑账户' })
     } else {
-      this.setData({ theme: themeManager.currentTheme })
+      this.setData({ 
+        theme: themeManager.currentTheme,
+        initialBalance: '0'
+      })
       wx.setNavigationBarTitle({ title: '添加账户' })
     }
+  },
+
+  onShow() {
+    // 响应主题切换
+    const theme = themeManager.getThemeObject()
+    if (theme) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: theme.primary
+      })
+    }
+    this.setData({ theme: themeManager.getCurrentTheme() })
   },
 
   onAccountNameInput(e) {
@@ -61,6 +108,43 @@ Page({
     const icon = e.currentTarget.dataset.icon
     if (icon) {
       this.setData({ selectedIcon: icon })
+    }
+  },
+
+  /**
+   * 重置余额为根据账单计算的值
+   */
+  resetBalanceToCalculated() {
+    const { originalName } = this.data
+    
+    wx.showLoading({ title: '计算中...' })
+    
+    try {
+      const bills = wx.getStorageSync('bills') || []
+      const calculatedBalance = billHelper.calculateSingleAccountBalance(bills, originalName)
+      
+      this.setData({
+        initialBalance: calculatedBalance.toFixed(2)
+      })
+      
+      wx.hideLoading()
+      
+      wx.showToast({
+        title: '已重置',
+        icon: 'success',
+        duration: 1500
+      })
+      
+      // 同时更新存储中的余额
+      billHelper.updateAccountBalance(originalName, calculatedBalance)
+      
+    } catch (error) {
+      wx.hideLoading()
+      console.error('重置余额失败:', error)
+      wx.showToast({
+        title: '重置失败',
+        icon: 'none'
+      })
     }
   },
 

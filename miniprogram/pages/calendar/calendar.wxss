@@ -1,45 +1,108 @@
 .container {
   padding: 20rpx;
   min-height: 100vh;
-  background-color: var(--theme-bg);
-}
-
-.calendar-header {
   background-color: #fff;
-  border-radius: 20rpx;
-  padding: 30rpx;
-  margin-bottom: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
-.month-nav {
+/* 月度收支汇总卡片 */
+.month-summary-card {
+  background: linear-gradient(135deg, #FF6B6B 0%, #ff4757 100%);
+  border-radius: 20rpx;
+  padding: 24rpx 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 8rpx 30rpx rgba(255, 107, 107, 0.3);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.month-summary-card.collapsed {
+  padding: 20rpx 30rpx;
+}
+
+.summary-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.nav-btn {
-  width: 80rpx;
-  height: 80rpx;
-  background-color: var(--theme-bg);
-  border-radius: 50%;
+.summary-title {
+  font-size: 30rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 32rpx;
-  color: var(--theme-secondary);
+  gap: 12rpx;
+}
+
+.collapse-icon {
+  font-size: 24rpx;
+  opacity: 0.7;
+}
+
+.summary-title {
+  font-size: 30rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+.summary-nav {
+  display: flex;
+  gap: 16rpx;
+}
+
+.nav-btn-sm {
+  padding: 10rpx 20rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  color: white;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-btn-sm:active {
+  transform: scale(0.95);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.summary-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20rpx;
   transition: all 0.3s ease;
 }
 
-.nav-btn:active {
-  transform: scale(0.9);
-  background-color: var(--theme-border);
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
 }
 
-.current-month {
-  font-size: 36rpx;
+.summary-divider {
+  width: 2rpx;
+  height: 50rpx;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.summary-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.summary-value {
+  font-size: 32rpx;
   font-weight: bold;
-  color: #333;
+  color: white;
+}
+
+.summary-value.expense {
+  color: #ffe0e0;
+}
+
+.summary-value.income {
+  color: white;
 }
 
 .calendar-week {
@@ -48,6 +111,42 @@
   border-radius: 20rpx 20rpx 0 0;
   padding: 20rpx 10rpx;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 年度切换 */
+.year-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 20rpx 30rpx;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.year-btn {
+  font-size: 26rpx;
+  color: var(--theme-secondary);
+  padding: 12rpx 24rpx;
+  background: var(--theme-bg);
+  border-radius: 20rpx;
+  transition: all 0.2s ease;
+}
+
+.year-btn:active {
+  opacity: 0.7;
+  transform: scale(0.95);
+}
+
+.year-display {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+  padding: 12rpx 24rpx;
+  background: var(--theme-primary);
+  color: white;
+  border-radius: 20rpx;
 }
 
 .week-day {
@@ -73,7 +172,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100rpx;
+  height: 110rpx;
   margin: 5rpx 0;
   border-radius: 16rpx;
   transition: all 0.3s ease;
@@ -89,10 +188,12 @@
 
 .day.selected {
   background: var(--theme-gradient);
+  box-shadow: 0 4rpx 12rpx rgba(255, 179, 71, 0.4);
 }
 
 .day.selected .day-number {
   color: #fff;
+  font-weight: bold;
 }
 
 .day.has-bills::after {
@@ -108,6 +209,21 @@
   background-color: #fff;
 }
 
+/* 今天的日期特殊标记 */
+.day.today {
+  position: relative;
+}
+
+.day.today::before {
+  content: '';
+  position: absolute;
+  top: 8rpx;
+  width: 8rpx;
+  height: 8rpx;
+  background-color: var(--theme-danger);
+  border-radius: 50%;
+}
+
 .day.future {
   opacity: 0.3;
   pointer-events: none;
@@ -119,6 +235,62 @@
 
 .day.future .day-amount {
   color: #ddd;
+}
+
+/* 节日标签 */
+.day.has-holiday {
+  position: relative;
+}
+
+.holiday-tag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 2rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+}
+
+.holiday-icon {
+  font-size: 16rpx;
+  line-height: 1;
+}
+
+.holiday-name {
+  font-size: 16rpx;
+  color: #FF6B6B;
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 主要节日样式 */
+.day.major-holiday .holiday-name {
+  color: #FF6B6B;
+  font-weight: bold;
+}
+
+.day.major-holiday .holiday-icon {
+  font-size: 18rpx;
+}
+
+/* 选中状态的节日 */
+.day.selected .holiday-name {
+  color: #fff;
+}
+
+.day.selected .holiday-icon {
+  opacity: 0.9;
+}
+
+/* 其他月份的节日 */
+.day.other.has-holiday {
+  opacity: 0.6;
 }
 
 .day-number {
@@ -239,7 +411,7 @@
 }
 
 .card-amount.income {
-  color: #4ECDC4;
+  color: #2E7D32;
 }
 
 .card-sub {
@@ -277,26 +449,6 @@
   font-size: 28rpx;
 }
 
-.detail-actions {
-  padding: 30rpx;
-}
-
-.add-bill-btn {
-  width: 100%;
-  background: var(--theme-gradient);
-  color: #fff;
-  font-size: 30rpx;
-  font-weight: 600;
-  border-radius: 50rpx;
-  padding: 24rpx;
-  border: none;
-  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.2);
-}
-
-.add-bill-btn::after {
-  border: none;
-}
-
 .add-btn {
   position: fixed;
   bottom: 80rpx;
@@ -304,15 +456,473 @@
   width: 110rpx;
   height: 110rpx;
   border-radius: 50%;
-  background: var(--theme-gradient);
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.85), rgba(255, 179, 71, 0.85));
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
 }
 
-.add-btn text {
-  font-size: 60rpx;
-  color: white;
-  line-height: 1;
+.add-icon-wrap {
+  position: relative;
+  width: 80rpx;
+  height: 80rpx;
+}
+
+.combined-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+/* 麦克风图标 - 简洁线条风格 */
+.mic-icon {
+  position: absolute;
+  top: 6rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36rpx;
+  height: 46rpx;
+}
+
+.mic-head {
+  width: 26rpx;
+  height: 32rpx;
+  border: 3rpx solid white;
+  border-radius: 13rpx;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.mic-stand {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18rpx;
+  height: 10rpx;
+  border: 3rpx solid white;
+  border-top: none;
+  border-radius: 0 0 9rpx 9rpx;
+  box-sizing: border-box;
+}
+
+.mic-line {
+  position: absolute;
+  bottom: 10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3rpx;
+  height: 8rpx;
+  background: white;
+}
+
+/* 加号图标 - 右下角加号 */
+.plus-badge {
+  position: absolute;
+  bottom: 4rpx;
+  right: 4rpx;
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.plus-badge::before,
+.plus-badge::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 2rpx;
+}
+
+.plus-badge::before {
+  width: 22rpx;
+  height: 3rpx;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.plus-badge::after {
+  width: 3rpx;
+  height: 22rpx;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ==================== 快捷记账弹窗 ==================== */
+
+.quick-add-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.quick-add-mask.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.quick-add-popup {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  z-index: 1001;
+}
+
+.quick-add-popup.show {
+  transform: translateY(0);
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 40rpx 20rpx;
+  border-bottom: 1rpx solid var(--theme-border);
+}
+
+.popup-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.popup-header-right {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.popup-delete {
+  font-size: 28rpx;
+  color: #FF6B6B;
+  padding: 10rpx;
+}
+
+.popup-close {
+  font-size: 40rpx;
+  color: #999;
+  padding: 10rpx;
+}
+
+.popup-body {
+  padding: 30rpx 40rpx 40rpx;
+}
+
+/* 类型切换 */
+.type-toggle {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.type-btn {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 500;
+  background: var(--theme-bg);
+  border-radius: 40rpx;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.type-btn.active.expense {
+  background: #FF6B6B;
+  color: #fff;
+}
+
+.type-btn.active.income {
+  background: #2E7D32;
+  color: #fff;
+}
+
+/* 金额输入 */
+.amount-input-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--theme-bg);
+  border-radius: 20rpx;
+  padding: 0 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.amount-prefix {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+  margin-right: 10rpx;
+}
+
+.amount-input {
+  flex: 1;
+  height: 100rpx;
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 语音按钮 */
+.voice-btn {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 4rpx 15rpx rgba(102, 126, 234, 0.4);
+}
+
+.voice-btn:active {
+  transform: scale(0.92);
+}
+
+.voice-btn.recording {
+  background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+  box-shadow: 0 4rpx 20rpx rgba(255, 65, 108, 0.5);
+  animation: recording-pulse 1.5s ease-in-out infinite;
+}
+
+/* 麦克风图标容器 */
+.mic-icon-wrapper {
+  position: relative;
+  width: 44rpx;
+  height: 60rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 麦克风头 */
+.mic-head {
+  width: 32rpx;
+  height: 40rpx;
+  background: white;
+  border-radius: 16rpx 16rpx 8rpx 8rpx;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 -2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.mic-head::before {
+  content: '';
+  position: absolute;
+  top: 8rpx;
+  left: 6rpx;
+  right: 6rpx;
+  bottom: 6rpx;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3rpx,
+    rgba(180, 180, 180, 0.3) 3rpx,
+    rgba(180, 180, 180, 0.3) 4rpx
+  );
+  border-radius: 10rpx;
+}
+
+/* 麦克风手柄 */
+.mic-handle {
+  width: 6rpx;
+  height: 12rpx;
+  background: white;
+  margin-top: 2rpx;
+  border-radius: 0 0 2rpx 2rpx;
+}
+
+/* 麦克风底座 */
+.mic-base {
+  position: absolute;
+  bottom: 8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 16rpx;
+  border: 3rpx solid white;
+  border-top: none;
+  border-radius: 0 0 20rpx 20rpx;
+  box-sizing: border-box;
+}
+
+/* 录音指示点 */
+.mic-dot {
+  position: absolute;
+  top: -4rpx;
+  right: -8rpx;
+  width: 14rpx;
+  height: 14rpx;
+  background: #4ade80;
+  border-radius: 50%;
+  border: 2rpx solid white;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.voice-btn.recording .mic-dot {
+  opacity: 1;
+  background: #ff3b30;
+  animation: dot-pulse 1s ease-in-out infinite;
+}
+
+.voice-btn.recording .mic-head::before {
+  display: none;
+}
+
+.voice-btn.recording .mic-head,
+.voice-btn.recording .mic-handle,
+.voice-btn.recording .mic-base {
+  background: white;
+  border-color: white;
+}
+
+@keyframes recording-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4rpx 20rpx rgba(255, 65, 108, 0.5);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 4rpx 30rpx rgba(255, 65, 108, 0.7);
+  }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* 分类网格 */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+  max-height: 280rpx;
+  overflow-y: auto;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 0;
+  background: var(--theme-bg);
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.category-item.active {
+  background: var(--theme-primary);
+}
+
+.category-icon {
+  font-size: 44rpx;
+  margin-bottom: 8rpx;
+}
+
+.category-name {
+  font-size: 22rpx;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+}
+
+.category-item.active .category-name {
+  color: #fff;
+}
+
+/* 快捷金额 */
+.quick-amounts {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.quick-amount-btn {
+  flex: 1;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #666;
+  background: var(--theme-bg);
+  border-radius: 36rpx;
+}
+
+.quick-amount-btn:active {
+  opacity: 0.7;
+}
+
+/* 备注输入框 */
+.notes-input-wrap {
+  margin-bottom: 24rpx;
+  padding: 0 30rpx;
+}
+
+.notes-input {
+  width: 100%;
+  height: 80rpx;
+  background: var(--theme-bg);
+  border-radius: 40rpx;
+  padding: 0 32rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.notes-input::placeholder {
+  color: #999;
+}
+
+/* 提交按钮 */
+.quick-submit-btn {
+  width: 100%;
+  height: 96rpx;
+  background: var(--theme-gradient);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+}
+
+.quick-submit-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
 }

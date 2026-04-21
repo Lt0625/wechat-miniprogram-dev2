@@ -26,7 +26,31 @@
       </view>
     </view>
 
-    <view class="form-item">
+    <!-- 编辑模式：余额可手动调整 -->
+    <view class="balance-auto-section" wx:if="{{isEdit}}">
+      <view class="balance-info">
+        <view class="balance-label">
+          <text class="balance-icon">💰</text>
+          <text>当前余额</text>
+        </view>
+        <view class="balance-value {{initialBalance >= 0 ? 'positive' : 'negative'}}">
+          ¥{{initialBalance >= 0 ? initialBalance : -initialBalance}}
+        </view>
+      </view>
+      <view class="balance-edit-row">
+        <input 
+          class="balance-input" 
+          type="digit" 
+          placeholder="手动调整余额"
+          value="{{initialBalance}}"
+          bindinput="onBalanceInput"
+        />
+        <text class="reset-btn" bindtap="resetBalanceToCalculated">↻ 恢复计算值</text>
+      </view>
+    </view>
+
+    <!-- 新增模式：可设置初始余额 -->
+    <view class="form-item" wx:if="{{!isEdit}}">
       <view class="label">初始余额</view>
       <input 
         class="form-input" 

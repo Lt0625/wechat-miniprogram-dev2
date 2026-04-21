@@ -42,6 +42,94 @@
   border: 2rpx solid var(--theme-primary);
 }
 
+/* 余额自动计算区域 */
+.balance-auto-section {
+  margin-bottom: 40rpx;
+  background: var(--theme-bg);
+  border: 1rpx solid var(--theme-border);
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.balance-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.balance-label {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.balance-icon {
+  font-size: 32rpx;
+}
+
+.balance-value {
+  font-size: 40rpx;
+  font-weight: bold;
+}
+
+.balance-value.positive {
+  color: var(--theme-secondary);
+}
+
+.balance-value.negative {
+  color: #e74c3c;
+}
+
+.balance-tip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid var(--theme-border);
+}
+
+.balance-edit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid var(--theme-border);
+  gap: 16rpx;
+}
+
+.balance-input {
+  flex: 1;
+  height: 72rpx;
+  padding: 0 20rpx;
+  background-color: #fff;
+  border: 2rpx solid var(--theme-border);
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: var(--theme-text-muted);
+}
+
+.reset-btn {
+  font-size: 24rpx;
+  color: var(--theme-primary);
+  font-weight: 600;
+  padding: 8rpx 16rpx;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 16rpx;
+}
+
+.reset-btn:active {
+  opacity: 0.7;
+}
+
 .icon-grid {
   display: flex;
   flex-wrap: wrap;

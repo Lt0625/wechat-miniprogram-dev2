@@ -1,0 +1,205 @@
+/* 骨架屏组件样式 */
+
+/* 骨架屏容器 */
+.skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: #f8f8f8;
+  overflow: hidden;
+}
+
+/* 动画效果 */
+.skeleton.active .skeleton-avatar,
+.skeleton.active .skeleton-title,
+.skeleton.active .skeleton-desc,
+.skeleton.active .skeleton-line,
+.skeleton.active .skeleton-item-icon,
+.skeleton.active .skeleton-item-title,
+.skeleton.active .skeleton-item-desc,
+.skeleton.active .skeleton-item-amount,
+.skeleton.active .skeleton-label,
+.skeleton.active .skeleton-input,
+.skeleton.active .skeleton-textarea,
+.skeleton.active .skeleton-card-header,
+.skeleton.active .skeleton-banner {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 通用骨架元素 */
+.skeleton-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: #e0e0e0;
+  flex-shrink: 0;
+}
+
+.skeleton-title {
+  height: 32rpx;
+  width: 60%;
+  border-radius: 8rpx;
+  background: #e0e0e0;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-desc {
+  height: 24rpx;
+  width: 40%;
+  border-radius: 6rpx;
+  background: #e0e0e0;
+}
+
+.skeleton-line {
+  height: 24rpx;
+  width: 100%;
+  border-radius: 6rpx;
+  background: #e0e0e0;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-line.w-60 { width: 60%; }
+.skeleton-line.w-70 { width: 70%; }
+.skeleton-line.w-80 { width: 80%; }
+.skeleton-line.w-90 { width: 90%; }
+.skeleton-line.w-50 { width: 50%; }
+
+/* Header 骨架屏 */
+.skeleton-header {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  background: #fff;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-header-content {
+  margin-left: 24rpx;
+  flex: 1;
+}
+
+/* List 骨架屏 */
+.skeleton-list {
+  background: #fff;
+}
+
+.skeleton-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.skeleton-item-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #e0e0e0;
+  margin-right: 20rpx;
+}
+
+.skeleton-item-content {
+  flex: 1;
+}
+
+.skeleton-item-title {
+  height: 28rpx;
+  width: 50%;
+  border-radius: 6rpx;
+  background: #e0e0e0;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-item-desc {
+  height: 22rpx;
+  width: 35%;
+  border-radius: 6rpx;
+  background: #e0e0e0;
+}
+
+.skeleton-item-amount {
+  width: 100rpx;
+  height: 32rpx;
+  border-radius: 6rpx;
+  background: #e0e0e0;
+}
+
+/* Card 骨架屏 */
+.skeleton-card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin: 32rpx;
+  overflow: hidden;
+}
+
+.skeleton-card-header {
+  height: 200rpx;
+  background: #e0e0e0;
+}
+
+.skeleton-card-body {
+  padding: 32rpx;
+}
+
+/* Detail 骨架屏 */
+.skeleton-detail {
+  background: #fff;
+}
+
+.skeleton-banner {
+  height: 300rpx;
+  background: #e0e0e0;
+}
+
+.skeleton-content {
+  padding: 32rpx;
+}
+
+/* Form 骨架屏 */
+.skeleton-form {
+  padding: 32rpx;
+  background: #fff;
+}
+
+.skeleton-field {
+  margin-bottom: 32rpx;
+}
+
+.skeleton-label {
+  height: 28rpx;
+  width: 100rpx;
+  border-radius: 6rpx;
+  background: #e0e0e0;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-input {
+  height: 80rpx;
+  border-radius: 12rpx;
+  background: #e0e0e0;
+}
+
+.skeleton-textarea {
+  height: 200rpx;
+  border-radius: 12rpx;
+  background: #e0e0e0;
+}

@@ -1,0 +1,461 @@
+.container {
+  padding: 30rpx;
+  min-height: 100vh;
+  background-color: var(--theme-bg);
+}
+
+/* 页面标题 - 卡片样式 */
+.page-header {
+  background: var(--theme-gradient);
+  border-radius: 24rpx;
+  padding: 36rpx 32rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
+}
+
+.page-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 8rpx;
+}
+
+/* 账本列表 - 卡片网格布局 */
+.book-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.book-item {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+  border: 4rpx solid transparent;
+}
+
+.book-item:active {
+  transform: scale(0.98);
+}
+
+.book-item.active {
+  border-color: var(--theme-primary);
+  background: var(--theme-bg);
+}
+
+.book-item.add-item {
+  justify-content: center;
+  min-height: 180rpx;
+  border: 4rpx dashed var(--theme-primary);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.book-item.add-item.disabled {
+  opacity: 0.5;
+}
+
+/* 账本图标 */
+.book-icon {
+  width: 88rpx;
+  height: 88rpx;
+  background: var(--theme-bg);
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.book-item.active .book-icon {
+  background: var(--theme-gradient);
+}
+
+/* 账本信息 */
+.book-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.book-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.book-item.active .book-name {
+  color: var(--theme-primary);
+}
+
+.book-stats {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 默认标签 */
+.book-default-tag {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  font-size: 18rpx;
+  color: #fff;
+  background: var(--theme-gradient);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+/* 选中标记 */
+.check-mark {
+  position: absolute;
+  bottom: 12rpx;
+  right: 12rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background: var(--theme-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+/* 操作按钮组 */
+.book-actions {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  display: flex;
+  gap: 12rpx;
+  z-index: 10;
+}
+
+.action-btn {
+  width: 44rpx;
+  height: 44rpx;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.edit-btn {
+  color: #4ECDC4;
+}
+
+.delete-btn {
+  color: #FF6B6B;
+}
+
+/* 添加按钮 */
+.add-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border: 4rpx dashed var(--theme-primary);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: var(--theme-primary);
+  margin-bottom: 8rpx;
+}
+
+.add-text {
+  font-size: 26rpx;
+  color: var(--theme-primary);
+  font-weight: 500;
+}
+
+/* 使用提示 */
+.tip-section {
+  margin-top: 20rpx;
+  padding: 28rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.tip-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.tip-text {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* 弹窗 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4rpx);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: #fff;
+  border-radius: 32rpx;
+  padding: 0;
+  width: 85%;
+  max-width: 500rpx;
+  max-height: 85vh;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal.show .modal-content {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.delete-modal .modal-body {
+  padding: 48rpx 36rpx;
+}
+
+.delete-tip {
+  font-size: 32rpx;
+  color: #333;
+  display: block;
+  text-align: center;
+  margin-bottom: 24rpx;
+  font-weight: 500;
+}
+
+.delete-warn {
+  font-size: 26rpx;
+  color: #e67e22;
+  display: block;
+  text-align: center;
+  line-height: 1.6;
+  background: #fff8e7;
+  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+}
+
+/* 弹窗头部 */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 36rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 44rpx;
+  color: #999;
+  padding: 8rpx;
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.modal-close:active {
+  background: #f5f5f5;
+}
+
+/* 弹窗内容 */
+.modal-body {
+  padding: 36rpx;
+  max-height: 600rpx;
+  overflow-y: auto;
+}
+
+/* 表单项 */
+.form-item {
+  margin-bottom: 36rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  height: 88rpx;
+  background: #f8f8f8;
+  border-radius: 16rpx;
+  padding: 0 28rpx;
+  font-size: 30rpx;
+  color: #333;
+  box-sizing: border-box;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  background: #fff;
+  border-color: var(--theme-primary);
+}
+
+.form-input.disabled {
+  background: #f0f0f0;
+  color: #999;
+}
+
+/* 图标选择 */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20rpx;
+}
+
+.icon-item {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #f8f8f8;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+  transition: all 0.2s ease;
+  border: 4rpx solid transparent;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.icon-item:active {
+  transform: scale(0.92);
+}
+
+.icon-item.selected {
+  background: var(--theme-bg);
+  border-color: var(--theme-primary);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+/* 弹窗底部按钮 */
+.modal-footer {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 36rpx 40rpx;
+}
+
+.btn-cancel,
+.btn-confirm,
+.btn-danger {
+  flex: 1;
+  height: 92rpx;
+  border-radius: 46rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.btn-cancel:active {
+  background: #e8e8e8;
+}
+
+.btn-confirm {
+  background: #e0e0e0 !important;
+  color: #fff !important;
+}
+
+.btn-confirm.active {
+  background: #e74c3c !important;
+  color: #fff !important;
+  box-shadow: 0 8rpx 24rpx rgba(231, 76, 60, 0.3) !important;
+}
+
+.btn-confirm.active:active {
+  transform: scale(0.98);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(231, 76, 60, 0.3);
+}
+
+.btn-danger:active {
+  transform: scale(0.98);
+}

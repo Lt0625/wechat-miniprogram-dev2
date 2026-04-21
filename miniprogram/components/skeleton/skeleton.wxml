@@ -1,0 +1,72 @@
+<!--
+  骨架屏组件
+  页面加载占位效果
+-->
+<view class="skeleton {{show ? 'active' : ''}}" wx:if="{{show}}">
+  <!-- List 类型：列表骨架屏 -->
+  <block wx:if="{{type === 'list'}}">
+    <!-- 头部骨架 -->
+    <view class="skeleton-header" wx:if="{{showHeader}}">
+      <view class="skeleton-avatar"></view>
+      <view class="skeleton-header-content">
+        <view class="skeleton-title"></view>
+        <view class="skeleton-desc"></view>
+      </view>
+    </view>
+    
+    <!-- 列表项骨架 -->
+    <view class="skeleton-list">
+      <view class="skeleton-item" wx:for="{{rows}}" wx:key="index">
+        <view class="skeleton-item-icon"></view>
+        <view class="skeleton-item-content">
+          <view class="skeleton-item-title"></view>
+          <view class="skeleton-item-desc"></view>
+        </view>
+        <view class="skeleton-item-amount"></view>
+      </view>
+    </view>
+  </block>
+
+  <!-- Card 类型：卡片骨架屏 -->
+  <block wx:if="{{type === 'card'}}">
+    <view class="skeleton-card">
+      <view class="skeleton-card-header"></view>
+      <view class="skeleton-card-body">
+        <view class="skeleton-line w-60"></view>
+        <view class="skeleton-line w-100"></view>
+        <view class="skeleton-line w-80"></view>
+      </view>
+    </view>
+  </block>
+
+  <!-- Detail 类型：详情骨架屏 -->
+  <block wx:if="{{type === 'detail'}}">
+    <view class="skeleton-detail">
+      <view class="skeleton-banner"></view>
+      <view class="skeleton-content">
+        <view class="skeleton-line w-100"></view>
+        <view class="skeleton-line w-90"></view>
+        <view class="skeleton-line w-70"></view>
+        <view class="skeleton-line w-50"></view>
+      </view>
+    </view>
+  </block>
+
+  <!-- Form 类型：表单骨架屏 -->
+  <block wx:if="{{type === 'form'}}">
+    <view class="skeleton-form">
+      <view class="skeleton-field">
+        <view class="skeleton-label"></view>
+        <view class="skeleton-input"></view>
+      </view>
+      <view class="skeleton-field">
+        <view class="skeleton-label"></view>
+        <view class="skeleton-input"></view>
+      </view>
+      <view class="skeleton-field">
+        <view class="skeleton-label"></view>
+        <view class="skeleton-textarea"></view>
+      </view>
+    </view>
+  </block>
+</view>

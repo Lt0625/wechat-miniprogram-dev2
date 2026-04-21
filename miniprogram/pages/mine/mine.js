@@ -5,6 +5,7 @@ Page({
     nickname: '',
     avatarUrl: '/images/default-avatar.jpg',
     billCount: 0,
+    recordDays: 0,
     version: '1.0.0',
     themes: [],
     currentTheme: 'warm',
@@ -19,7 +20,7 @@ Page({
 
   onShow() {
     // 更新主题
-    const theme = themeManager.getCurrentTheme()
+    const theme = themeManager.getThemeObject()
     if (theme) {
       wx.setNavigationBarColor({
         frontColor: '#ffffff',
@@ -28,6 +29,16 @@ Page({
     }
     this.loadUserInfo()
     this.setData({ theme: themeManager.currentTheme })
+  },
+
+  // 跳转到账本管理页面
+  goToBookManage() {
+    wx.navigateTo({
+      url: '/pages/book-manage/book-manage',
+      fail: () => {
+        wx.showToast({ title: '跳转失败', icon: 'none' })
+      }
+    })
   },
 
   loadThemes() {
@@ -65,6 +76,12 @@ Page({
               }
             })
             
+            // 重新加载当前页面以刷新导航栏颜色
+            const currentPage = getCurrentPages().pop()
+            if (currentPage) {
+              currentPage.onLoad(currentPage.options)
+            }
+            
             wx.showToast({
               title: '主题切换成功',
               icon: 'success'
@@ -87,6 +104,15 @@ Page({
 
       const billCount = Array.isArray(bills) ? bills.length : 0
 
+      // 计算记账天数（统计有多少个不同日期有账单记录）
+      const uniqueDates = new Set()
+      bills.forEach(bill => {
+        if (bill.date) {
+          uniqueDates.add(bill.date)
+        }
+      })
+      const recordDays = uniqueDates.size
+
       try {
         const localUserInfo = wx.getStorageSync('localUserInfo')
         if (localUserInfo && typeof localUserInfo === 'object') {
@@ -99,7 +125,7 @@ Page({
         console.error('读取本地用户信息失败:', error)
       }
 
-      this.setData({ billCount })
+      this.setData({ billCount, recordDays })
 
     } catch (error) {
       console.error('加载用户信息失败:', error)
@@ -211,6 +237,15 @@ Page({
   goToCategoryManage() {
     wx.navigateTo({
       url: '/pages/category-manage/category-manage',
+      fail: () => {
+        wx.showToast({ title: '跳转失败', icon: 'none' })
+      }
+    })
+  },
+
+  goToRecurring() {
+    wx.navigateTo({
+      url: '/pages/recurring/recurring',
       fail: () => {
         wx.showToast({ title: '跳转失败', icon: 'none' })
       }

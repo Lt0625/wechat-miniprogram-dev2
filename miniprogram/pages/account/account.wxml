@@ -1,4 +1,5 @@
 <view class="container" data-theme="{{theme}}">
+  <!-- 顶部资产卡片 -->
   <view class="account-summary">
     <view class="total-assets">
       <text class="label">总资产</text>
@@ -11,44 +12,79 @@
     </view>
   </view>
 
-  <view class="account-header">
-    <view class="account-count">共 {{accounts.length}} 个账户</view>
-    <view class="sort-btn" bindtap="toggleSortMenu">
-      <text>{{sortLabel}}</text>
-      <text class="arrow">▼</text>
+  <!-- 余额计算模式提示 -->
+  <view class="balance-tip">
+    <view class="tip-left">
+      <text class="tip-icon">⚡</text>
+      <text class="tip-text">余额由账单自动计算</text>
+    </view>
+    <view class="sync-btn" bindtap="syncAllBalances">
+      <text class="sync-icon">↻</text>
+      <text>同步</text>
     </view>
   </view>
 
-  <view class="sort-menu {{showSortMenu ? 'show' : ''}}" wx:if="{{showSortMenu}}">
-    <view class="sort-option {{sortType === 'name' ? 'active' : ''}}" bindtap="setSortType" data-type="name">按名称</view>
-    <view class="sort-option {{sortType === 'balance-desc' ? 'active' : ''}}" bindtap="setSortType" data-type="balance-desc">余额降序</view>
-    <view class="sort-option {{sortType === 'balance-asc' ? 'active' : ''}}" bindtap="setSortType" data-type="balance-asc">余额升序</view>
-  </view>
-
-  <view class="account-list">
-    <view 
-      class="account-item" 
-      wx:for="{{sortedAccounts}}" 
-      wx:key="name"
-      bindtap="editAccount"
-      data-name="{{item.name}}"
-      data-icon="{{item.icon}}"
-      data-balance="{{item.balance}}"
-    >
-      <view class="account-info">
-        <view class="account-icon">{{item.icon || '💰'}}</view>
-        <view class="account-name">{{item.name || '未知账户'}}</view>
+  <!-- 账户列表 - 胶囊卡片网格 -->
+  <view class="account-section">
+    <view class="section-header">
+      <view class="account-count">共 {{accounts.length}} 个账户</view>
+      <view class="sort-btn" bindtap="toggleSortMenu">
+        <text>{{sortLabel}}</text>
+        <text class="arrow">▼</text>
       </view>
-      <view class="account-right">
-        <view class="account-balance {{item.balance >= 0 ? 'positive' : 'negative'}}">
-          ¥{{item.balance || 0}}
+    </view>
+
+    <view class="sort-menu {{showSortMenu ? 'show' : ''}}" wx:if="{{showSortMenu}}">
+      <view class="sort-option {{sortType === 'name' ? 'active' : ''}}" bindtap="setSortType" data-type="name">按名称</view>
+      <view class="sort-option {{sortType === 'balance-desc' ? 'active' : ''}}" bindtap="setSortType" data-type="balance-desc">余额降序</view>
+      <view class="sort-option {{sortType === 'balance-asc' ? 'active' : ''}}" bindtap="setSortType" data-type="balance-asc">余额升序</view>
+    </view>
+
+    <!-- 账户网格布局 -->
+    <view class="account-grid">
+      <view 
+        class="account-card {{item.balance >= 0 ? 'positive' : 'negative'}}"
+        wx:for="{{sortedAccounts}}" 
+        wx:key="name"
+        bindtap="editAccount"
+        data-name="{{item.name}}"
+        data-icon="{{item.icon}}"
+        data-balance="{{item.balance}}"
+      >
+        <!-- 卡片顶部装饰 -->
+        <view class="card-decoration"></view>
+        
+        <!-- 卡片内容 -->
+        <view class="card-content">
+          <!-- 左侧：图标 -->
+          <view class="card-left">
+            <view class="account-icon">{{item.icon || '💰'}}</view>
+          </view>
+          
+          <!-- 中间：名称 -->
+          <view class="card-center">
+            <view class="account-name">{{item.name || '未知账户'}}</view>
+          </view>
+          
+          <!-- 右侧：余额 + 箭头 -->
+          <view class="card-right">
+            <view class="account-balance {{item.balance >= 0 ? 'positive' : 'negative'}}">
+              <text class="balance-symbol">¥</text>
+              <text class="balance-value">{{item.balance >= 0 ? '' : '-'}}{{item.balance >= 0 ? item.balance : -item.balance}}</text>
+            </view>
+            <text class="card-arrow">›</text>
+          </view>
         </view>
-        <view class="account-arrow">></view>
       </view>
     </view>
   </view>
 
+  <!-- 添加账户按钮 -->
   <view class="add-account-btn" bindtap="goToAddAccount">
-    <text>+ 添加账户</text>
+    <text class="btn-icon">+</text>
+    <text class="btn-text">添加账户</text>
   </view>
+
+  <!-- 底部安全区 -->
+  <view class="safe-bottom"></view>
 </view>

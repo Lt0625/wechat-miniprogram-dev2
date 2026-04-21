@@ -1,0 +1,130 @@
+<view class="container" data-theme="{{theme}}">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">我的账本</text>
+    <text class="page-subtitle">最多支持5个账本</text>
+  </view>
+
+  <!-- 账本列表 -->
+  <view class="book-list">
+    <view 
+      class="book-item {{item.isDefault ? 'default' : ''}} {{item.id === currentBookId ? 'active' : ''}}"
+      wx:for="{{books}}"
+      wx:key="id"
+      bindtap="onBookTap"
+      bindlongpress="onLongPressBook"
+      data-book="{{item}}"
+    >
+      <!-- 默认标签 -->
+      <text class="book-default-tag" wx:if="{{item.isDefault}}">默认</text>
+      
+      <!-- 操作按钮组 -->
+      <view class="book-actions" wx:if="{{!item.isDefault}}">
+        <text class="action-btn edit-btn" catchtap="onEditBook" data-book="{{item}}">✏️</text>
+        <text class="action-btn delete-btn" catchtap="onShowDelete" data-book="{{item}}">🗑️</text>
+      </view>
+      
+      <!-- 账本图标 -->
+      <view class="book-icon">{{item.icon}}</view>
+      
+      <!-- 账本信息 -->
+      <view class="book-info">
+        <text class="book-name">{{item.name}}</text>
+        <text class="book-stats" wx:if="{{item.stats}}">{{item.stats.billCount}}笔账单</text>
+      </view>
+      
+      <!-- 选中标记 -->
+      <text class="check-mark" wx:if="{{item.id === currentBookId}}">✓</text>
+    </view>
+
+    <!-- 添加账本按钮 -->
+    <view 
+      class="book-item add-item {{books.length >= 5 ? 'disabled' : ''}}"
+      bindtap="onAddBook"
+      wx:if="{{books.length < 5}}"
+    >
+      <view class="add-icon">+</view>
+      <text class="add-text">添加账本</text>
+    </view>
+  </view>
+
+  <!-- 使用提示 -->
+  <view class="tip-section">
+    <text class="tip-title">💡 使用说明</text>
+    <text class="tip-text">• 点击账本可切换当前记账账本</text>
+    <text class="tip-text">• 每个账本的账单、分类、账户相互独立</text>
+    <text class="tip-text">• 删除账本时，账单将合并到日常账本</text>
+    <text class="tip-text">• 日常账本为默认账本，不可删除</text>
+  </view>
+</view>
+
+<!-- 添加/编辑账本弹窗 -->
+<view class="modal {{showModal ? 'show' : ''}}" wx:if="{{showModal}}">
+  <view class="modal-mask" bindtap="onCloseModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">{{isEditing ? '编辑账本' : '添加账本'}}</text>
+      <text class="modal-close" bindtap="onCloseModal">×</text>
+    </view>
+    
+    <view class="modal-body">
+      <!-- 账本名称 -->
+      <view class="form-item">
+        <text class="form-label">账本名称</text>
+        <input 
+          class="form-input {{isEditing && editingBook.isDefault ? 'disabled' : ''}}"
+          value="{{bookName}}"
+          placeholder="请输入账本名称"
+          bindinput="onNameInput"
+          disabled="{{isEditing && editingBook.isDefault}}"
+        />
+      </view>
+
+      <!-- 选择图标 -->
+      <view class="form-item">
+        <text class="form-label">选择图标</text>
+        <view class="icon-grid">
+          <view 
+            class="icon-item {{selectedIcon === icon ? 'selected' : ''}}"
+            wx:for="{{presetIcons}}"
+            wx:key="index"
+            wx:for-item="icon"
+            bindtap="onIconSelect"
+            data-icon="{{icon}}"
+          >
+            {{icon}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="modal-footer">
+      <view class="btn-cancel" bindtap="onCloseModal">取消</view>
+      <view class="btn-confirm {{bookName.length > 0 ? 'active' : ''}}" bindtap="onConfirmModal">确定</view>
+    </view>
+  </view>
+</view>
+
+<!-- 删除确认弹窗 -->
+<view class="modal {{showDeleteModal ? 'show' : ''}}" wx:if="{{showDeleteModal}}">
+  <view class="modal-mask" bindtap="onCloseDeleteModal"></view>
+  <view class="modal-content delete-modal">
+    <view class="modal-header">
+      <text class="modal-title">删除账本</text>
+    </view>
+    
+    <view class="modal-body">
+      <text class="delete-tip">
+        确定要删除「{{deletingBook.name}}」吗？
+      </text>
+      <text class="delete-warn">
+        ⚠️ 该账本下有 {{deletingBook.stats ? deletingBook.stats.billCount : 0}} 笔账单，删除后将自动合并到「日常账本」。
+      </text>
+    </view>
+
+    <view class="modal-footer">
+      <button class="btn-cancel" bindtap="onCloseDeleteModal">取消</button>
+      <button class="btn-danger" bindtap="onConfirmDelete">删除</button>
+    </view>
+  </view>
+</view>

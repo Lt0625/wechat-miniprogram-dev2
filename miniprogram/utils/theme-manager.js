@@ -27,6 +27,12 @@ class ThemeManager {
   }
 
   getCurrentTheme() {
+    // 返回 theme key 字符串，如 'blue'、'warm' 等
+    return this.currentTheme
+  }
+
+  // 获取主题配置对象（包含 name, primary 等属性）
+  getThemeObject() {
     return themeConfig.themes[this.currentTheme]
   }
 

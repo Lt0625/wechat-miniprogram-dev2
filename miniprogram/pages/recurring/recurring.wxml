@@ -1,0 +1,301 @@
+<view class="container" data-theme="{{theme}}">
+  <!-- 周期账单列表 -->
+  <view class="recurring-list">
+    <block wx:if="{{recurringList.length > 0}}">
+      <view 
+        class="recurring-card {{item.enabled ? '' : 'disabled'}}"
+        wx:for="{{recurringList}}"
+        wx:key="recurringId"
+      >
+        <!-- 卡片主区域 -->
+        <view class="card-main" bindtap="toggleExpand" data-id="{{item.recurringId}}">
+          <!-- 左侧 -->
+          <view class="card-left">
+            <view class="card-icon-wrap">
+              <view class="card-icon">{{item.icon || '📋'}}</view>
+            </view>
+            <view class="card-info">
+              <view class="card-name">{{item.name}}</view>
+              <view class="card-meta">
+                <text class="frequency-tag">{{getFrequencyText(item.frequency, item)}}</text>
+                <text class="card-amount {{item.type}}">{{item.type === 'expense' ? '-' : '+'}}¥{{item.amount}}</text>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 右侧 -->
+          <view class="card-right">
+            <view class="next-due">
+              <text class="due-label">下次</text>
+              <text class="due-date">{{item.nextDue}}</text>
+            </view>
+            <view class="expand-icon {{expandedId === item.recurringId ? 'expanded' : ''}}">▼</view>
+          </view>
+        </view>
+
+        <!-- 展开详情 -->
+        <view class="card-detail {{expandedId === item.recurringId ? 'show' : ''}}">
+          <view class="detail-content">
+            <!-- 详情网格 - 2列对称 -->
+            <view class="detail-grid">
+              <view class="detail-row">
+                <text class="detail-label">分类</text>
+                <text class="detail-value">{{item.category}}</text>
+              </view>
+              <view class="detail-row">
+                <text class="detail-label">账户</text>
+                <text class="detail-value">{{item.account}}</text>
+              </view>
+              <view class="detail-row" wx:if="{{item.notes}}">
+                <text class="detail-label">备注</text>
+                <text class="detail-value">{{item.notes}}</text>
+              </view>
+              <view class="detail-row" wx:if="{{item.reminderEnabled}}">
+                <text class="detail-label">提醒</text>
+                <text class="detail-value">{{item.reminderTime}}</text>
+              </view>
+            </view>
+
+            <!-- 操作按钮 -->
+            <view class="detail-actions">
+              <!-- 开关 -->
+              <view class="toggle-wrap">
+                <view class="toggle-switch {{item.enabled ? 'active' : ''}}" bindtap="toggleEnabled" data-id="{{item.recurringId}}">
+                  <view class="switch-dot"></view>
+                </view>
+                <text class="switch-label">{{item.enabled ? '已开启' : '已关闭'}}</text>
+              </view>
+              
+              <!-- 操作按钮组 -->
+              <view class="action-btns">
+                <view class="action-btn add" bindtap="addBill" data-id="{{item.recurringId}}">添加</view>
+                <view class="action-btn edit" bindtap="editRecurring" data-id="{{item.recurringId}}">编辑</view>
+                <view class="action-btn delete" bindtap="deleteRecurring" data-id="{{item.recurringId}}">删除</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:else>
+      <view class="empty-icon">📅</view>
+      <text class="empty-title">暂无周期账单</text>
+      <text class="empty-desc">点击下方按钮添加定期重复的账单</text>
+    </view>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn {{showModal ? 'hide' : ''}}" bindtap="showAddModal">
+    <text class="add-icon">+</text>
+    <text class="add-text">添加周期账单</text>
+  </view>
+
+  <!-- 添加/编辑弹窗 -->
+  <view class="modal-mask {{showModal ? 'show' : ''}}" bindtap="hideModal"></view>
+  <view class="modal-content {{showModal ? 'show' : ''}}">
+    <view class="modal-header">
+      <text class="modal-title">{{isEdit ? '编辑周期账单' : '添加周期账单'}}</text>
+      <text class="modal-close" bindtap="hideModal">✕</text>
+    </view>
+
+    <view class="modal-body">
+      <!-- 名称 -->
+      <view class="form-item">
+        <text class="form-label">名称</text>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="如：早餐、房租"
+          value="{{formData.name}}"
+          bindinput="onNameInput"
+        />
+      </view>
+
+      <!-- 类型 - 左右对称切换 -->
+      <view class="form-item">
+        <text class="form-label">类型</text>
+        <view class="type-toggle">
+          <view 
+            class="type-btn {{formData.type === 'expense' ? 'active expense' : ''}}"
+            bindtap="setFormType" 
+            data-type="expense"
+          >支出</view>
+          <view 
+            class="type-btn {{formData.type === 'income' ? 'active income' : ''}}"
+            bindtap="setFormType" 
+            data-type="income"
+          >收入</view>
+        </view>
+      </view>
+
+      <!-- 金额 -->
+      <view class="form-item">
+        <text class="form-label">金额</text>
+        <view class="amount-input-wrap">
+          <text class="amount-prefix">¥</text>
+          <input 
+            class="form-input amount-input" 
+            type="digit" 
+            placeholder="0.00"
+            value="{{formData.amount}}"
+            bindinput="onAmountInput"
+          />
+        </view>
+      </view>
+
+      <!-- 周期 - 4列对称网格 -->
+      <view class="form-item">
+        <text class="form-label">周期</text>
+        <view class="frequency-grid">
+          <view 
+            class="freq-btn {{formData.frequency === 'daily' ? 'active' : ''}}"
+            bindtap="setFrequency" 
+            data-freq="daily"
+          >每天</view>
+          <view 
+            class="freq-btn {{formData.frequency === 'weekly' ? 'active' : ''}}"
+            bindtap="setFrequency" 
+            data-freq="weekly"
+          >每周</view>
+          <view 
+            class="freq-btn {{formData.frequency === 'monthly' ? 'active' : ''}}"
+            bindtap="setFrequency" 
+            data-freq="monthly"
+          >每月</view>
+          <view 
+            class="freq-btn {{formData.frequency === 'yearly' ? 'active' : ''}}"
+            bindtap="setFrequency" 
+            data-freq="yearly"
+          >每年</view>
+        </view>
+      </view>
+
+      <!-- 周期参数 -->
+      <view class="form-item" wx:if="{{formData.frequency === 'weekly'}}">
+        <text class="form-label">选择星期</text>
+        <view class="weekday-selector">
+          <view 
+            class="weekday-btn {{formData.weeklyDay === index ? 'active' : ''}}"
+            wx:for="{{weekdays}}"
+            wx:key="index"
+            bindtap="setWeeklyDay" 
+            data-day="{{index}}"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <view class="form-item" wx:if="{{formData.frequency === 'monthly'}}">
+        <text class="form-label">选择日期</text>
+        <view class="date-pickers">
+          <picker mode="selector" range="{{days}}" bindchange="setMonthlyDay">
+            <view class="picker-value">{{formData.monthlyDay}}日</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="form-item" wx:if="{{formData.frequency === 'yearly'}}">
+        <text class="form-label">选择日期</text>
+        <view class="date-pickers">
+          <picker mode="selector" range="{{months}}" bindchange="setYearlyMonth">
+            <view class="picker-value">{{formData.yearlyMonth || '月'}}月</view>
+          </picker>
+          <picker mode="selector" range="{{yearDays}}" bindchange="setYearlyDay">
+            <view class="picker-value">{{formData.yearlyDay || '日'}}日</view>
+          </picker>
+        </view>
+      </view>
+
+      <!-- 分类 -->
+      <view class="form-item">
+        <text class="form-label">分类</text>
+        <view class="category-selector" bindtap="showCategoryPicker">
+          <text class="selected-category">{{formData.category || '请选择'}}</text>
+          <text class="arrow">▼</text>
+        </view>
+      </view>
+
+      <!-- 账户 -->
+      <view class="form-item">
+        <text class="form-label">账户</text>
+        <view class="category-selector" bindtap="showAccountPicker">
+          <text class="selected-category">{{formData.account || '请选择'}}</text>
+          <text class="arrow">▼</text>
+        </view>
+      </view>
+
+      <!-- 备注 -->
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="可选"
+          value="{{formData.notes}}"
+          bindinput="onNotesInput"
+        />
+      </view>
+
+      <!-- 提醒 -->
+      <view class="form-item reminder-item">
+        <view class="form-label-row">
+          <text class="form-label">开启提醒</text>
+          <view class="toggle-switch {{formData.reminderEnabled ? 'active' : ''}}" bindtap="toggleReminder">
+            <view class="switch-dot"></view>
+          </view>
+        </view>
+        <view class="reminder-time" wx:if="{{formData.reminderEnabled}}">
+          <picker mode="time" value="{{formData.reminderTime}}" bindchange="setReminderTime">
+            <view class="picker-value">{{formData.reminderTime || '09:00'}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <!-- 提交按钮 -->
+      <button class="submit-btn" bindtap="saveRecurring">{{isEdit ? '保存' : '添加'}}</button>
+    </view>
+  </view>
+
+  <!-- 分类选择器弹窗 -->
+  <view class="picker-modal {{showCategoryModal ? 'show' : ''}}">
+    <view class="picker-header">
+      <text class="picker-title">选择分类</text>
+      <text class="picker-close" bindtap="hideCategoryModal">✕</text>
+    </view>
+    <scroll-view class="picker-list" scroll-y>
+      <view 
+        class="picker-item {{formData.category === item.name ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="name"
+        bindtap="selectCategory" 
+        data-name="{{item.name}}"
+      >
+        <text class="picker-icon">{{item.icon}}</text>
+        <text class="picker-name">{{item.name}}</text>
+        <text class="picker-check" wx:if="{{formData.category === item.name}}">✓</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 账户选择器弹窗 -->
+  <view class="picker-modal {{showAccountModal ? 'show' : ''}}">
+    <view class="picker-header">
+      <text class="picker-title">选择账户</text>
+      <text class="picker-close" bindtap="hideAccountModal">✕</text>
+    </view>
+    <scroll-view class="picker-list" scroll-y>
+      <view 
+        class="picker-item {{formData.account === item.name ? 'active' : ''}}"
+        wx:for="{{accounts}}"
+        wx:key="name"
+        bindtap="selectAccount" 
+        data-name="{{item.name}}"
+      >
+        <text class="picker-icon">{{item.icon}}</text>
+        <text class="picker-name">{{item.name}}</text>
+        <text class="picker-check" wx:if="{{formData.account === item.name}}">✓</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>

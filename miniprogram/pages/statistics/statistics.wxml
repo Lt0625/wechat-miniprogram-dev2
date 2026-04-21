@@ -14,6 +14,9 @@
     >
       <text>支出</text>
       <view class="tab-amount expense">¥{{summary.expense || 0}}</view>
+      <view class="tab-change {{compareData.expenseChange >= 0 ? 'up' : 'down'}}" wx:if="{{compareData}}">
+        {{compareData.expenseChange >= 0 ? '↑' : '↓'}}{{compareData.expenseChangePercent || 0}}%
+      </view>
     </view>
     <view
       class="tab-item {{currentTab === 'income' ? 'active' : ''}}"
@@ -22,6 +25,9 @@
     >
       <text>收入</text>
       <view class="tab-amount income">¥{{summary.income || 0}}</view>
+      <view class="tab-change {{compareData.incomeChange >= 0 ? 'up' : 'down'}}" wx:if="{{compareData}}">
+        {{compareData.incomeChange >= 0 ? '↑' : '↓'}}{{compareData.incomeChangePercent || 0}}%
+      </view>
     </view>
     <view
       class="tab-item {{currentTab === 'balance' ? 'active' : ''}}"

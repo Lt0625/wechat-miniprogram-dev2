@@ -1,5 +1,6 @@
 const themeManager = require('../../utils/theme-manager')
 const config = require('../../utils/config')
+const bookManager = require('../../utils/book-manager')
 
 Page({
   data: {
@@ -13,7 +14,11 @@ Page({
     categoryData: [],
     topBills: [],
     pieChartData: [],
-    theme: themeManager.currentTheme
+    theme: themeManager.currentTheme,
+    // 环比数据
+    compareData: null,
+    // 账本相关
+    currentBook: { id: 'default', name: '日常账本', icon: '📒' }
   },
 
   colors: {
@@ -39,20 +44,38 @@ Page({
 
   onLoad() {
     console.log('统计页 onLoad 触发')
+    bookManager.initBooks()
+    this.loadCurrentBook()
     this.loadData()
   },
 
   onShow() {
     console.log('统计页 onShow 触发')
-    // 更新主题
-    const theme = themeManager.getCurrentTheme()
-    if (theme) {
-      wx.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: theme.primary
-      })
-    }
+      // 更新主题
+      const theme = themeManager.getThemeObject()
+      if (theme) {
+        wx.setNavigationBarColor({
+          frontColor: '#ffffff',
+          backgroundColor: theme.primary
+        })
+      }
+    this.loadCurrentBook()
     this.setData({ theme: themeManager.currentTheme })
+    this.loadData()
+  },
+
+  // 加载当前账本信息
+  loadCurrentBook() {
+    const currentBook = bookManager.getCurrentBook()
+    if (currentBook) {
+      this.setData({ currentBook })
+    }
+  },
+
+  // 账本切换后的回调
+  onBookChanged() {
+    console.log('统计页：账本已切换，刷新数据')
+    this.loadCurrentBook()
     this.loadData()
   },
 
@@ -87,6 +110,10 @@ Page({
       }
 
       let bills = app.getBillsFromCache(true)
+
+      // 只加载当前账本的账单
+      const currentBookId = bookManager.getCurrentBookId()
+      bills = bills.filter(b => b.bookId === currentBookId)
 
       if (!Array.isArray(bills)) {
         bills = []
@@ -128,6 +155,9 @@ Page({
         },
         theme: themeManager.currentTheme
       })
+
+      // 计算环比数据
+      this.calculateCompareData(bills, filteredBills)
 
       this.calculateCategoryData(filteredBills)
       this.getTopBills(filteredBills)
@@ -193,6 +223,106 @@ Page({
     } catch (error) {
       console.error('筛选账单失败:', error)
       return bills
+    }
+  },
+
+  /**
+   * 计算环比数据（与上一周期对比）
+   */
+  calculateCompareData(allBills, currentBills) {
+    try {
+      if (!Array.isArray(allBills) || allBills.length === 0) {
+        this.setData({ compareData: null })
+        return
+      }
+
+      const now = new Date()
+      let prevStartDate, prevEndDate
+
+      // 计算上一周期的时间范围
+      switch (this.data.period) {
+        case 'week':
+          // 上周：6天前到昨天
+          prevEndDate = new Date(now)
+          prevEndDate.setDate(now.getDate() - 1)
+          prevStartDate = new Date(prevEndDate)
+          prevStartDate.setDate(prevEndDate.getDate() - 6)
+          break
+        case 'month':
+          // 上月
+          prevEndDate = new Date(now.getFullYear(), now.getMonth(), 0) // 上月最后一天
+          prevStartDate = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+          break
+        case 'quarter':
+          // 上季
+          const currentQuarter = Math.floor(now.getMonth() / 3)
+          const prevQuarter = currentQuarter === 0 ? 3 : currentQuarter - 1
+          const prevYear = currentQuarter === 0 ? now.getFullYear() - 1 : now.getFullYear()
+          prevEndDate = new Date(prevYear, prevQuarter * 3, 0)
+          prevStartDate = new Date(prevYear, (prevQuarter - 1) * 3, 1)
+          break
+        case 'year':
+          // 去年
+          prevEndDate = new Date(now.getFullYear() - 1, 11, 31)
+          prevStartDate = new Date(now.getFullYear() - 1, 0, 1)
+          break
+        default:
+          this.setData({ compareData: null })
+          return
+      }
+
+      const prevStartStr = prevStartDate.getFullYear() + '-' + 
+        ('0' + (prevStartDate.getMonth() + 1)).slice(-2) + '-' + 
+        ('0' + prevStartDate.getDate()).slice(-2)
+      const prevEndStr = prevEndDate.getFullYear() + '-' + 
+        ('0' + (prevEndDate.getMonth() + 1)).slice(-2) + '-' + 
+        ('0' + prevEndDate.getDate()).slice(-2)
+
+      // 筛选上一周期的账单
+      const prevBills = allBills.filter(bill => {
+        if (!bill.date || typeof bill.date !== 'string') return false
+        const billDateStr = bill.date.trim()
+        return billDateStr >= prevStartStr && billDateStr <= prevEndStr
+      })
+
+      // 计算当前周期和上一周期的收支
+      let currExpense = 0, currIncome = 0
+      let prevExpense = 0, prevIncome = 0
+
+      currentBills.forEach(bill => {
+        if (bill.amount && typeof bill.amount === 'number' && !isNaN(bill.amount)) {
+          if (bill.type === 'expense') currExpense += bill.amount
+          else currIncome += bill.amount
+        }
+      })
+
+      prevBills.forEach(bill => {
+        if (bill.amount && typeof bill.amount === 'number' && !isNaN(bill.amount)) {
+          if (bill.type === 'expense') prevExpense += bill.amount
+          else prevIncome += bill.amount
+        }
+      })
+
+      // 计算环比变化
+      const expenseChange = currExpense - prevExpense
+      const incomeChange = currIncome - prevIncome
+      const expenseChangePercent = prevExpense > 0 ? 
+        Math.abs((expenseChange / prevExpense * 100).toFixed(1)) : 0
+      const incomeChangePercent = prevIncome > 0 ? 
+        Math.abs((incomeChange / prevIncome * 100).toFixed(1)) : 0
+
+      this.setData({
+        compareData: {
+          expenseChange: parseFloat(expenseChange.toFixed(2)),
+          incomeChange: parseFloat(incomeChange.toFixed(2)),
+          expenseChangePercent: parseFloat(expenseChangePercent),
+          incomeChangePercent: parseFloat(incomeChangePercent)
+        }
+      })
+
+    } catch (error) {
+      console.error('计算环比数据失败:', error)
+      this.setData({ compareData: null })
     }
   },
 
