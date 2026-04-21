@@ -1,7 +1,7 @@
 .container {
   padding: 20rpx;
   min-height: 100vh;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
 }
 
 .calendar-header {
@@ -9,7 +9,7 @@
   border-radius: 20rpx;
   padding: 30rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .month-nav {
@@ -21,19 +21,19 @@
 .nav-btn {
   width: 80rpx;
   height: 80rpx;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 32rpx;
-  color: #FF9800;
+  color: var(--theme-secondary);
   transition: all 0.3s ease;
 }
 
 .nav-btn:active {
   transform: scale(0.9);
-  background-color: #FFE4B5;
+  background-color: var(--theme-border);
 }
 
 .current-month {
@@ -47,7 +47,7 @@
   background-color: #fff;
   border-radius: 20rpx 20rpx 0 0;
   padding: 20rpx 10rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .week-day {
@@ -62,7 +62,7 @@
   background-color: #fff;
   border-radius: 0 0 20rpx 20rpx;
   padding: 20rpx 10rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
   display: flex;
   flex-wrap: wrap;
 }
@@ -80,7 +80,7 @@
 }
 
 .day.current {
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
 }
 
 .day.other {
@@ -88,7 +88,7 @@
 }
 
 .day.selected {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
 }
 
 .day.selected .day-number {
@@ -99,7 +99,7 @@
   content: '';
   width: 8rpx;
   height: 8rpx;
-  background-color: #FF9800;
+  background-color: var(--theme-secondary);
   border-radius: 50%;
   margin-top: 4rpx;
 }
@@ -129,7 +129,7 @@
 
 .day-amount {
   font-size: 20rpx;
-  color: #FF9800;
+  color: var(--theme-secondary);
   margin-top: 4rpx;
 }
 
@@ -192,7 +192,7 @@
 .card-icon {
   width: 80rpx;
   height: 80rpx;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   border-radius: 16rpx;
   display: flex;
   align-items: center;
@@ -283,14 +283,14 @@
 
 .add-bill-btn {
   width: 100%;
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   color: #fff;
   font-size: 30rpx;
   font-weight: 600;
   border-radius: 50rpx;
   padding: 24rpx;
   border: none;
-  box-shadow: 0 8rpx 30rpx rgba(255, 179, 71, 0.4);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.2);
 }
 
 .add-bill-btn::after {
@@ -304,11 +304,11 @@
   width: 110rpx;
   height: 110rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 8rpx 30rpx rgba(255, 179, 71, 0.5);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.2);
 }
 
 .add-btn text {

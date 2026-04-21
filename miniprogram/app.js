@@ -1,6 +1,11 @@
+const themeManager = require('./utils/theme-manager')
+const config = require('./utils/config')
+const themeConfig = require('./themes/theme-config')
+
 App({
   onLaunch() {
     console.log('小程序启动')
+    this.initTheme()
     this.initCache()
   },
 
@@ -13,7 +18,14 @@ App({
       budgetSetting: null,
       lastUpdateTime: 0
     },
-    CACHE_DURATION: 5000
+    CACHE_DURATION: 60000,  // 缓存有效期 1 分钟（原 5 秒太短）
+    currentTheme: 'warm'
+  },
+
+  initTheme() {
+    const themeKey = themeManager.getStoredTheme() || themeConfig.defaultTheme
+    themeManager.applyTheme(themeKey)
+    this.globalData.currentTheme = themeKey
   },
 
   initCache() {
@@ -83,34 +95,15 @@ App({
     try {
       let categories = wx.getStorageSync('categories') || []
       
-      const iconMap = {
-        '餐饮': '🍔',
-        '交通': '🚗',
-        '购物': '🛍️',
-        '娱乐': '🎮',
-        '医疗': '💊',
-        '教育': '📚',
-        '住房': '🏠',
-        '其他': '📦',
-        '工资': '💰',
-        '奖金': '🎁',
-        '投资': '📈'
-      }
-      
       if (!Array.isArray(categories) || categories.length === 0) {
-        categories = [
-          { name: '餐饮', type: 'expense', icon: '🍔' },
-          { name: '交通', type: 'expense', icon: '🚗' },
-          { name: '购物', type: 'expense', icon: '🛍️' },
-          { name: '娱乐', type: 'expense', icon: '🎮' },
-          { name: '医疗', type: 'expense', icon: '💊' },
-          { name: '教育', type: 'expense', icon: '📚' },
-          { name: '住房', type: 'expense', icon: '🏠' },
-          { name: '其他', type: 'expense', icon: '📦' },
-          { name: '工资', type: 'income', icon: '💰' },
-          { name: '奖金', type: 'income', icon: '🎁' },
-          { name: '投资', type: 'income', icon: '📈' }
-        ]
+        // 使用 config.js 中的默认分类（带图标）
+        categories = config.defaultCategories.map(function(cat) {
+          return {
+            name: cat.name,
+            type: cat.type,
+            icon: config.iconMap[cat.name] || '📦'
+          }
+        })
         
         try {
           wx.setStorageSync('categories', categories)
@@ -118,6 +111,7 @@ App({
           console.error('保存默认分类失败:', error)
         }
       } else {
+        // 补充缺失的 icon 字段
         categories = categories.map(function(cat) {
           var newCat = {}
           for (var key in cat) {
@@ -125,7 +119,7 @@ App({
               newCat[key] = cat[key]
             }
           }
-          newCat.icon = cat.icon || iconMap[cat.name] || '📦'
+          newCat.icon = cat.icon || config.iconMap[cat.name] || '📦'
           return newCat
         })
       }

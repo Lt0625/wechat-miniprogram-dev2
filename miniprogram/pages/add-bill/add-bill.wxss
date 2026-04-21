@@ -1,7 +1,7 @@
 .container {
   padding: 20rpx;
   min-height: 100vh;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
 }
 
 .type-switch {
@@ -10,7 +10,7 @@
   background-color: #fff;
   border-radius: 25rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .type-btn {
@@ -23,7 +23,7 @@
 }
 
 .type-btn.active {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   color: white;
   font-weight: bold;
 }
@@ -31,9 +31,9 @@
 .amount-input {
   background-color: #fff;
   border-radius: 20rpx;
-  padding: 30rpx 20rpx;
+  padding: 30rpx 20rpx 20rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .amount-input input {
@@ -47,6 +47,68 @@
   color: #333;
   font-weight: bold;
   box-sizing: border-box;
+}
+
+/* 语音按钮区域 */
+.voice-btn-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid var(--theme-border);
+}
+
+.voice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 240rpx;
+  padding: 18rpx 0;
+  background: var(--theme-gradient);
+  border-radius: 50rpx;
+  box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.voice-btn.recording {
+  background: linear-gradient(135deg, #FF6B6B 0%, #ff4757 100%);
+  box-shadow: 0 6rpx 20rpx rgba(255, 71, 87, 0.45);
+  transform: scale(1.05);
+}
+
+.voice-icon {
+  font-size: 36rpx;
+  line-height: 1;
+}
+
+.voice-text {
+  font-size: 22rpx;
+  color: #fff;
+  margin-top: 6rpx;
+  font-weight: 500;
+}
+
+/* 语音识别结果 */
+.voice-result {
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 20rpx;
+  border-left: 6rpx solid #4ECDC4;
+}
+
+.voice-result-text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.voice-result-tip {
+  font-size: 24rpx;
+  color: #4ECDC4;
+  margin-top: 8rpx;
 }
 
 .quick-amount {
@@ -64,13 +126,13 @@
   text-align: center;
   font-size: 28rpx;
   color: #333;
-  box-shadow: 0 4rpx 15rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
 }
 
 .quick-btn:active {
   transform: scale(0.95);
-  background-color: #FFE4B5;
+  background-color: var(--theme-border);
 }
 
 .template-section {
@@ -78,7 +140,7 @@
   border-radius: 20rpx;
   padding: 24rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .template-title {
@@ -95,15 +157,15 @@
   display: inline-block;
   padding: 14rpx 28rpx;
   margin-right: 15rpx;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   border-radius: 25rpx;
   font-size: 26rpx;
   color: #666;
 }
 
 .template-item.add-template {
-  background-color: #FFE4B5;
-  color: #FF9800;
+  background-color: var(--theme-border);
+  color: var(--theme-secondary);
   font-weight: 600;
 }
 
@@ -112,7 +174,7 @@
   border-radius: 20rpx;
   padding: 24rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .label {
@@ -139,8 +201,8 @@
 }
 
 .category-item.active {
-  border-color: #FF9800;
-  background-color: #FFF8E7;
+  border-color: var(--theme-secondary);
+  background-color: var(--theme-bg);
 }
 
 .category-icon {
@@ -163,14 +225,14 @@
 
 .account-item {
   padding: 16rpx 32rpx;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   border-radius: 25rpx;
   white-space: nowrap;
   transition: all 0.3s ease;
 }
 
 .account-item.active {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   color: white;
   font-weight: 600;
 }
@@ -215,13 +277,13 @@
 }
 
 .save-btn {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   color: white;
   font-size: 34rpx;
   font-weight: bold;
   border-radius: 50rpx;
   padding: 28rpx;
-  box-shadow: 0 8rpx 30rpx rgba(255, 179, 71, 0.4);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.2);
   border: none;
 }
 
@@ -236,12 +298,12 @@
 }
 
 .account-other {
-  border: 2rpx dashed #FF9800;
+  border: 2rpx dashed var(--theme-secondary);
   background-color: #fff;
 }
 
 .account-other.active {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   border-style: solid;
   color: white;
 }
@@ -249,9 +311,9 @@
 .custom-account-input {
   margin-top: 20rpx;
   padding: 20rpx;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   border-radius: 16rpx;
-  border: 2rpx solid #FFE4B5;
+  border: 2rpx solid var(--theme-border);
 }
 
 .custom-account-input input {

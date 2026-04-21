@@ -1,3 +1,6 @@
+const themeManager = require('../../utils/theme-manager')
+const config = require('../../utils/config')
+
 Page({
   data: {
     accounts: [],
@@ -8,7 +11,8 @@ Page({
     showSortMenu: false,
     sortType: 'name',
     sortLabel: '按名称',
-    sortedAccounts: []
+    sortedAccounts: [],
+    theme: themeManager.currentTheme
   },
 
   onLoad() {
@@ -18,6 +22,15 @@ Page({
 
   onShow() {
     console.log('资产页 onShow 触发')
+    // 更新主题
+    const theme = themeManager.getCurrentTheme()
+    if (theme) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: theme.primary
+      })
+    }
+    this.setData({ theme: themeManager.currentTheme })
     this.loadAccounts()
   },
 
@@ -37,11 +50,10 @@ Page({
       }
 
       if (accounts.length === 0) {
-        var defaultAccounts = [
-          { name: '现金', icon: '💵', balance: 0 },
-          { name: '银行卡', icon: '💳', balance: 0 },
-          { name: '微信', icon: '📱', balance: 0 }
-        ]
+        // 使用 config.js 中的默认账户（统一来源）
+        var defaultAccounts = config.defaultAccounts.map(function(acc) {
+          return { name: acc.name, icon: acc.icon, balance: 0 }
+        })
 
         try {
           wx.setStorageSync('accounts', defaultAccounts)
@@ -62,7 +74,8 @@ Page({
         totalAssets: 0,
         totalLiability: 0,
         netAssets: 0,
-        sortedAccounts: []
+        sortedAccounts: [],
+        theme: themeManager.currentTheme
       })
     }
   },
@@ -96,7 +109,8 @@ Page({
       accounts: validAccounts,
       totalAssets: parseFloat(totalAssets.toFixed(2)),
       totalLiability: parseFloat(totalLiability.toFixed(2)),
-      netAssets: parseFloat(netAssets.toFixed(2))
+      netAssets: parseFloat(netAssets.toFixed(2)),
+      theme: themeManager.currentTheme
     })
   },
 
@@ -159,7 +173,7 @@ Page({
   goToAddAccount() {
     wx.navigateTo({
       url: '/pages/account-edit/account-edit',
-      function() {
+      fail: () => {
         wx.showToast({ title: '跳转失败', icon: 'none' })
       }
     })
@@ -175,7 +189,7 @@ Page({
 
     wx.navigateTo({
       url: '/pages/account-edit/account-edit?' + params,
-      function() {
+      fail: () => {
         wx.showToast({ title: '跳转失败', icon: 'none' })
       }
     })

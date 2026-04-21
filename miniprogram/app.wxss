@@ -1,12 +1,87 @@
-/* 全局样式 - 暖黄色主题 */
+/* 全局样式 */
 page {
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Sans-serif;
   font-size: 28rpx;
   line-height: 1.6;
-  background-color: #FFF8E7;
+  transition: background-color 0.3s ease;
 }
 
-/* 暖黄色主题色变量 */
+/* 暖阳黄主题（默认） */
+[data-theme="warm"] {
+  --theme-primary: #FFB347;
+  --theme-secondary: #FF9800;
+  --theme-bg: #FFF8E7;
+  --theme-bg-light: #FFFDF5;
+  --theme-text: #333333;
+  --theme-text-light: #666666;
+  --theme-text-muted: #999999;
+  --theme-border: #FFE4B5;
+  --theme-success: #4CAF50;
+  --theme-danger: #e74c3c;
+  --theme-gradient: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+}
+
+/* 清新蓝主题 */
+[data-theme="blue"] {
+  --theme-primary: #4ECDC4;
+  --theme-secondary: #26C6DA;
+  --theme-bg: #E0F7FA;
+  --theme-bg-light: #F0FDFF;
+  --theme-text: #333333;
+  --theme-text-light: #666666;
+  --theme-text-muted: #999999;
+  --theme-border: #B2EBF2;
+  --theme-success: #4CAF50;
+  --theme-danger: #e74c3c;
+  --theme-gradient: linear-gradient(135deg, #4ECDC4 0%, #26C6DA 100%);
+}
+
+/* 樱花粉主题 */
+[data-theme="pink"] {
+  --theme-primary: #FF6B9D;
+  --theme-secondary: #FF4081;
+  --theme-bg: #FFF0F5;
+  --theme-bg-light: #FFF8FA;
+  --theme-text: #333333;
+  --theme-text-light: #666666;
+  --theme-text-muted: #999999;
+  --theme-border: #F8BBD0;
+  --theme-success: #4CAF50;
+  --theme-danger: #e74c3c;
+  --theme-gradient: linear-gradient(135deg, #FF6B9D 0%, #FF4081 100%);
+}
+
+/* 薄荷绿主题 */
+[data-theme="green"] {
+  --theme-primary: #66BB6A;
+  --theme-secondary: #43A047;
+  --theme-bg: #F1F8E9;
+  --theme-bg-light: #F9FBE7;
+  --theme-text: #333333;
+  --theme-text-light: #666666;
+  --theme-text-muted: #999999;
+  --theme-border: #C8E6C9;
+  --theme-success: #4CAF50;
+  --theme-danger: #e74c3c;
+  --theme-gradient: linear-gradient(135deg, #66BB6A 0%, #43A047 100%);
+}
+
+/* 星空紫主题 */
+[data-theme="purple"] {
+  --theme-primary: #9C27B0;
+  --theme-secondary: #7B1FA2;
+  --theme-bg: #F3E5F5;
+  --theme-bg-light: #FAF5FA;
+  --theme-text: #333333;
+  --theme-text-light: #666666;
+  --theme-text-muted: #999999;
+  --theme-border: #E1BEE7;
+  --theme-success: #4CAF50;
+  --theme-danger: #e74c3c;
+  --theme-gradient: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+}
+
+/* 默认主题变量（向后兼容） */
 :root {
   --theme-primary: #FFB347;
   --theme-secondary: #FF9800;
@@ -18,22 +93,23 @@ page {
   --theme-border: #FFE4B5;
   --theme-success: #4CAF50;
   --theme-danger: #e74c3c;
+  --theme-gradient: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
 }
 
 /* 通用卡片样式 */
 .card {
   background-color: #fff;
   border-radius: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.15);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 /* 通用按钮样式 */
 .btn-primary {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   color: #fff;
   border: none;
   border-radius: 48rpx;
-  box-shadow: 0 8rpx 24rpx rgba(255, 179, 71, 0.4);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:active {
@@ -43,7 +119,7 @@ page {
 
 /* 通用输入框样式 */
 .input {
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   border-radius: 16rpx;
   padding: 20rpx 24rpx;
   font-size: 30rpx;
@@ -51,8 +127,8 @@ page {
 
 /* 通用标签样式 */
 .tag {
-  background-color: #FFF8E7;
-  color: #FF9800;
+  background-color: var(--theme-bg);
+  color: var(--theme-secondary);
   padding: 8rpx 16rpx;
   border-radius: 20rpx;
   font-size: 24rpx;

@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container" data-theme="{{theme}}">
   <view class="user-info" bindtap="editUserInfo">
     <view class="avatar">
       <image src="{{avatarUrl}}" mode="aspectFill" wx:if="{{avatarUrl}}" binderror="onAvatarError"></image>
@@ -9,6 +9,25 @@
       <text class="stats">已记账 {{billCount}} 笔</text>
     </view>
     <text class="edit-icon">✏️</text>
+  </view>
+
+  <view class="theme-section">
+    <view class="section-title">🎨 主题皮肤</view>
+    <view class="theme-grid">
+      <view
+        class="theme-item {{currentTheme === item.key ? 'active' : ''}}"
+        wx:for="{{themes}}"
+        wx:key="key"
+        bindtap="selectTheme"
+        data-theme="{{item.key}}"
+      >
+        <view class="theme-preview" style="background: {{item.gradient}};">
+          <text class="theme-icon">{{item.icon}}</text>
+        </view>
+        <text class="theme-name">{{item.name}}</text>
+        <text class="theme-check" wx:if="{{currentTheme === item.key}}">✓</text>
+      </view>
+    </view>
   </view>
 
   <view class="menu-list">

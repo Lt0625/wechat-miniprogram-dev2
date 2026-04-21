@@ -1,3 +1,6 @@
+const themeManager = require('../../utils/theme-manager')
+const config = require('../../utils/config')
+
 Page({
   data: {
     currentYear: new Date().getFullYear(),
@@ -8,17 +11,28 @@ Page({
     dateDetail: [],
     dateExpense: 0,
     dateIncome: 0,
-    detailAnimation: null
+    detailAnimation: null,
+    theme: themeManager.currentTheme
   },
 
   onLoad() {
     this.generateCalendar()
     this.selectToday()
+    this.setData({ theme: themeManager.currentTheme })
   },
 
   onShow() {
     console.log('日历页 onShow 触发（刷新数据）')
+    // 更新主题
+    const theme = themeManager.getCurrentTheme()
+    if (theme) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: theme.primary
+      })
+    }
     this.generateCalendar()
+    this.setData({ theme: themeManager.currentTheme })
     if (!this.data.selectedDate) {
       this.selectToday()
     } else {
@@ -341,20 +355,7 @@ Page({
         return newBill
       })
 
-      var iconMap = {
-        '餐饮': '🍔',
-        '交通': '🚗',
-        '购物': '🛍️',
-        '娱乐': '🎮',
-        '医疗': '💊',
-        '教育': '📚',
-        '住房': '🏠',
-        '其他': '📦',
-        '工资': '💰',
-        '奖金': '🎁',
-        '投资': '📈'
-      }
-
+      // 使用 config.js 的 iconMap（统一来源）
       const dateBills = bills.filter(bill => bill.date === date).sort((a, b) => {
         const timeA = a.updateTime || a.createTime || ''
         const timeB = b.updateTime || b.createTime || ''
@@ -366,7 +367,7 @@ Page({
             newBill[key] = bill[key]
           }
         }
-        newBill.icon = iconMap[bill.category] || '📊'
+        newBill.icon = config.iconMap[bill.category] || '📊'
         return newBill
       })
 

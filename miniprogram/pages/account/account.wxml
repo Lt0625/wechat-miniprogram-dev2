@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container" data-theme="{{theme}}">
   <view class="account-summary">
     <view class="total-assets">
       <text class="label">总资产</text>

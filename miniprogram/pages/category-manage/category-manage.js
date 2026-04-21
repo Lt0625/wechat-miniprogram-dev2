@@ -1,3 +1,6 @@
+const themeManager = require('../../utils/theme-manager')
+const config = require('../../utils/config')
+
 Page({
   data: {
     expenseCategories: [],
@@ -20,15 +23,26 @@ Page({
       { icon: '💰' },
       { icon: '🎁' },
       { icon: '📈' }
-    ]
+    ],
+    theme: themeManager.currentTheme
   },
 
   onLoad() {
     this.loadCategories()
+    this.setData({ theme: themeManager.currentTheme })
   },
 
   onShow() {
+    // 更新主题
+    const theme = themeManager.getCurrentTheme()
+    if (theme) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: theme.primary
+      })
+    }
     this.loadCategories()
+    this.setData({ theme: themeManager.currentTheme })
   },
 
   loadCategories() {
@@ -47,19 +61,14 @@ Page({
       }
 
       if (categories.length === 0) {
-        const defaultCategories = [
-          { name: '餐饮', type: 'expense', icon: '🍔' },
-          { name: '交通', type: 'expense', icon: '🚗' },
-          { name: '购物', type: 'expense', icon: '🛍️' },
-          { name: '娱乐', type: 'expense', icon: '🎮' },
-          { name: '医疗', type: 'expense', icon: '💊' },
-          { name: '教育', type: 'expense', icon: '📚' },
-          { name: '住房', type: 'expense', icon: '🏠' },
-          { name: '其他', type: 'expense', icon: '📦' },
-          { name: '工资', type: 'income', icon: '💰' },
-          { name: '奖金', type: 'income', icon: '🎁' },
-          { name: '投资', type: 'income', icon: '📈' }
-        ]
+        // 使用 config.js 中的默认分类（统一来源）
+        const defaultCategories = config.defaultCategories.map(function(cat) {
+          return {
+            name: cat.name,
+            type: cat.type,
+            icon: config.iconMap[cat.name] || '📦'
+          }
+        })
         
         try {
           wx.setStorageSync('categories', defaultCategories)
@@ -69,23 +78,11 @@ Page({
 
         this.setData({
           expenseCategories: defaultCategories.filter(c => c.type === 'expense'),
-          incomeCategories: defaultCategories.filter(c => c.type === 'income')
+          incomeCategories: defaultCategories.filter(c => c.type === 'income'),
+          theme: themeManager.currentTheme
         })
       } else {
-        const iconMap = {
-          '餐饮': '🍔',
-          '交通': '🚗',
-          '购物': '🛍️',
-          '娱乐': '🎮',
-          '医疗': '💊',
-          '教育': '📚',
-          '住房': '🏠',
-          '其他': '📦',
-          '工资': '💰',
-          '奖金': '🎁',
-          '投资': '📈'
-        }
-        
+        // 补充缺失的 icon
         var validCategories = categories.map(function(cat) {
           var newCat = {}
           for (var key in cat) {
@@ -93,7 +90,7 @@ Page({
               newCat[key] = cat[key]
             }
           }
-          newCat.icon = cat.icon || iconMap[cat.name] || '📦'
+          newCat.icon = cat.icon || config.iconMap[cat.name] || '📦'
           return newCat
         }).filter(function(cat) {
           return cat && typeof cat === 'object' && cat.name && cat.type
@@ -101,7 +98,8 @@ Page({
         
         this.setData({
           expenseCategories: validCategories.filter(c => c.type === 'expense'),
-          incomeCategories: validCategories.filter(c => c.type === 'income')
+          incomeCategories: validCategories.filter(c => c.type === 'income'),
+          theme: themeManager.currentTheme
         })
       }
 
@@ -109,7 +107,8 @@ Page({
       console.error('加载分类失败:', error)
       this.setData({
         expenseCategories: [],
-        incomeCategories: []
+        incomeCategories: [],
+        theme: themeManager.currentTheme
       })
     }
   },
@@ -209,6 +208,11 @@ Page({
         if (name !== editOriginalName && allCategories.some(cat => cat.name === name)) {
           wx.showToast({ title: '分类名称已存在', icon: 'none' })
           return
+        }
+
+        // 分类改名时，同步更新所有历史账单中的分类名称
+        if (name !== editOriginalName) {
+          this.syncCategoryInBills(editOriginalName, name)
         }
 
         allCategories = allCategories.map(function(cat) {
@@ -321,6 +325,46 @@ Page({
     } catch (error) {
       console.error('执行删除失败:', error)
       wx.showToast({ title: '删除失败', icon: 'none' })
+    }
+  },
+
+  // 同步历史账单中的分类名称
+  syncCategoryInBills(oldName, newName) {
+    try {
+      let bills = []
+      
+      try {
+        bills = wx.getStorageSync('bills') || []
+      } catch (error) {
+        console.error('读取账单失败:', error)
+        return
+      }
+
+      if (!Array.isArray(bills)) return
+
+      let updated = false
+      bills = bills.map(function(bill) {
+        if (bill.category === oldName) {
+          updated = true
+          return Object.assign({}, bill, { category: newName })
+        }
+        return bill
+      })
+
+      if (updated) {
+        try {
+          wx.setStorageSync('bills', bills)
+          // 通知 App 刷新缓存
+          const app = getApp()
+          if (app && app.invalidateCache) {
+            app.invalidateCache()
+          }
+        } catch (error) {
+          console.error('同步账单分类失败:', error)
+        }
+      }
+    } catch (error) {
+      console.error('同步分类操作失败:', error)
     }
   }
 })

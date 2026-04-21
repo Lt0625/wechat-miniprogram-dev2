@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container" data-theme="{{theme}}">
   <view class="type-switch">
     <view class="type-btn {{type === 'expense' ? 'active' : ''}}" bindtap="switchType" data-type="expense">支出</view>
     <view class="type-btn {{type === 'income' ? 'active' : ''}}" bindtap="switchType" data-type="income">收入</view>
@@ -6,6 +6,23 @@
   
   <view class="amount-input">
     <input type="digit" placeholder="0.00" value="{{amount}}" bindinput="onAmountInput" />
+    <view class="voice-btn-wrap">
+      <view class="voice-btn {{voiceStatus === 'recording' ? 'recording' : ''}}" 
+            bindtouchstart="onVoiceStart" 
+            bindtouchend="onVoiceEnd"
+            bindtouchcancel="onVoiceCancel">
+        <view class="voice-icon">🎤</view>
+        <view class="voice-text">{{voiceStatus === 'recording' ? '松开识别' : (voiceStatus === 'processing' ? '识别中...' : '按住说话')}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 语音识别结果预览 -->
+  <view class="voice-result" wx:if="{{voiceResult.text}}">
+    <view class="voice-result-text">识别：{{voiceResult.text}}</view>
+    <view class="voice-result-tip" wx:if="{{voiceResult.parsed}}">
+      已自动填入 ✅ 请检查下方信息是否准确
+    </view>
   </view>
   
   <view class="quick-amount">

@@ -1,17 +1,78 @@
+const themeManager = require('../../utils/theme-manager')
+
 Page({
   data: {
     nickname: '',
     avatarUrl: '/images/default-avatar.jpg',
     billCount: 0,
-    version: '1.0.0'
+    version: '1.0.0',
+    themes: [],
+    currentTheme: 'warm',
+    theme: themeManager.currentTheme
   },
 
   onLoad() {
     this.loadUserInfo()
+    this.loadThemes()
+    this.setData({ theme: themeManager.currentTheme })
   },
 
   onShow() {
+    // 更新主题
+    const theme = themeManager.getCurrentTheme()
+    if (theme) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: theme.primary
+      })
+    }
     this.loadUserInfo()
+    this.setData({ theme: themeManager.currentTheme })
+  },
+
+  loadThemes() {
+    const themes = themeManager.getAllThemes()
+    const currentTheme = themeManager.currentTheme
+    
+    this.setData({
+      themes,
+      currentTheme,
+      theme: currentTheme
+    })
+  },
+
+  selectTheme(e) {
+    const themeKey = e.currentTarget.dataset.theme
+    
+    wx.showModal({
+      title: '切换主题',
+      content: `确定要切换到${themeManager.getAllThemes().find(t => t.key === themeKey).name}主题吗？`,
+      success: (res) => {
+        if (res.confirm) {
+          const success = themeManager.setTheme(themeKey)
+          
+          if (success) {
+            this.setData({
+              currentTheme: themeKey,
+              theme: themeKey
+            })
+            
+            // 通知所有 tabBar 页面更新主题
+            const pages = getCurrentPages()
+            pages.forEach(page => {
+              if (page && page.setData) {
+                page.setData({ theme: themeKey })
+              }
+            })
+            
+            wx.showToast({
+              title: '主题切换成功',
+              icon: 'success'
+            })
+          }
+        }
+      }
+    })
   },
 
   loadUserInfo() {

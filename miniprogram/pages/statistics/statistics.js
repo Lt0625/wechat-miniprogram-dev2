@@ -1,3 +1,6 @@
+const themeManager = require('../../utils/theme-manager')
+const config = require('../../utils/config')
+
 Page({
   data: {
     period: 'month',
@@ -9,7 +12,8 @@ Page({
     },
     categoryData: [],
     topBills: [],
-    pieChartData: []
+    pieChartData: [],
+    theme: themeManager.currentTheme
   },
 
   colors: {
@@ -40,6 +44,15 @@ Page({
 
   onShow() {
     console.log('统计页 onShow 触发')
+    // 更新主题
+    const theme = themeManager.getCurrentTheme()
+    if (theme) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: theme.primary
+      })
+    }
+    this.setData({ theme: themeManager.currentTheme })
     this.loadData()
   },
 
@@ -67,7 +80,8 @@ Page({
         this.setData({
           summary: { expense: '0.00', income: '0.00', balance: '0.00' },
           categoryData: [],
-          topBills: []
+          topBills: [],
+          theme: themeManager.currentTheme
         })
         return
       }
@@ -111,7 +125,8 @@ Page({
           expense: parseFloat(expense.toFixed(2)),
           income: parseFloat(income.toFixed(2)),
           balance: parseFloat(balance.toFixed(2))
-        }
+        },
+        theme: themeManager.currentTheme
       })
 
       this.calculateCategoryData(filteredBills)
@@ -129,7 +144,8 @@ Page({
         summary: { expense: '0.00', income: '0.00', balance: '0.00' },
         categoryData: [],
         topBills: [],
-        pieChartData: []
+        pieChartData: [],
+        theme: themeManager.currentTheme
       })
     }
   },
@@ -319,21 +335,7 @@ Page({
 
   getCategoryIcon(name) {
     if (!name || typeof name !== 'string') return '📊'
-
-    var iconMap = {
-      '餐饮': '🍔',
-      '交通': '🚗',
-      '购物': '🛍️',
-      '娱乐': '🎮',
-      '医疗': '💊',
-      '教育': '📚',
-      '住房': '🏠',
-      '其他': '📦',
-      '工资': '💰',
-      '奖金': '🎁',
-      '投资': '📈'
-    }
-    return iconMap[name] || '📊'
+    return config.iconMap[name] || '📊'  // 使用 config.js 的 iconMap（统一来源）
   },
 
   getTopBills(bills) {
@@ -556,7 +558,7 @@ Page({
         var labelY = centerY + Math.sin(midAngle) * labelRadius
 
         ctx.fillStyle = '#666'
-        ctx.font = '20rpx sans-serif'
+        ctx.font = '10px sans-serif'  // Canvas 不支持 rpx，改用 px
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.fillText(item.name + ' ' + item.percent + '%', labelX, labelY)
@@ -565,7 +567,7 @@ Page({
       })
 
       ctx.fillStyle = '#333'
-      ctx.font = 'bold 28rpx sans-serif'
+      ctx.font = 'bold 12px sans-serif'  // Canvas 不支持 rpx，改用 px
       ctx.textAlign = 'center'
       ctx.fillText('分类占比', centerX, height - 20)
 

@@ -1,3 +1,6 @@
+const themeManager = require('../../utils/theme-manager')
+const config = require('../../utils/config')
+
 Page({
   data: {
     isEdit: false,
@@ -15,7 +18,15 @@ Page({
     templates: [],
     showCustomAccountInput: false,
     customAccountName: '',
-    customAccountFocus: false
+    customAccountFocus: false,
+    // 语音记账相关状态
+    voiceStatus: 'idle',  // idle | recording | processing
+    voiceResult: {
+      text: '',
+      parsed: false
+    },
+    cloudEnvInited: false,
+    theme: themeManager.currentTheme
   },
 
   onLoad(options) {
@@ -25,7 +36,8 @@ Page({
     const day = String(today.getDate()).padStart(2, '0')
     
     this.setData({
-      date: `${year}-${month}-${day}`
+      date: `${year}-${month}-${day}`,
+      theme: themeManager.currentTheme
     })
 
     if (options && options.id) {
@@ -39,9 +51,223 @@ Page({
     this.loadCategories()
     this.loadAccounts()
     this.loadTemplates()
+    this.initCloud()
 
     if (options && options.date) {
       this.setData({ date: options.date })
+    }
+  },
+
+  onShow() {
+    // 更新主题
+    const theme = themeManager.getCurrentTheme()
+    if (theme) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: theme.primary
+      })
+    }
+    this.setData({ theme: themeManager.currentTheme })
+  },
+
+  // ============================================================
+  // 云开发初始化
+  // ============================================================
+  initCloud() {
+    try {
+      if (wx.cloud) {
+        wx.cloud.init({
+          env: config.cloudEnv,  // 从 config.js 读取
+          traceUser: false
+        })
+        this.setData({ cloudEnvInited: true })
+        console.log('云开发初始化成功')
+      } else {
+        console.warn('当前微信版本不支持云开发')
+      }
+    } catch (e) {
+      console.error('云开发初始化失败:', e)
+    }
+  },
+
+  // ============================================================
+  // 语音记账相关方法
+  // ============================================================
+
+  /**
+   * 按住麦克风按钮 - 开始录音
+   */
+  onVoiceStart() {
+    if (this.data.voiceStatus === 'processing') return
+
+    // 请求麦克风权限
+    wx.authorize({
+      scope: 'scope.record',
+      success: () => {
+        this._startRecording()
+      },
+      fail: () => {
+        // 权限被拒绝，引导用户开启
+        wx.showModal({
+          title: '需要麦克风权限',
+          content: '语音记账需要访问麦克风，请在设置中开启权限',
+          confirmText: '去设置',
+          success: (res) => {
+            if (res.confirm) {
+              wx.openSetting()
+            }
+          }
+        })
+      }
+    })
+  },
+
+  _startRecording() {
+    if (!this.recorderManager) {
+      this.recorderManager = wx.getRecorderManager()
+
+      this.recorderManager.onStop((res) => {
+        console.log('录音结束, tempFilePath:', res.tempFilePath)
+        if (res.tempFilePath) {
+          this._processVoice(res.tempFilePath)
+        }
+      })
+
+      this.recorderManager.onError((err) => {
+        console.error('录音错误:', err)
+        this.setData({ voiceStatus: 'idle' })
+        wx.showToast({ title: '录音失败，请重试', icon: 'none' })
+      })
+    }
+
+    this.recorderManager.start({
+      duration: 30000,   // 最长30秒
+      sampleRate: 16000, // 16k采样率
+      numberOfChannels: 1,
+      encodeBitRate: 48000,
+      format: 'wav'      // 使用 wav 格式，ASR最稳定
+    })
+
+    this.setData({ voiceStatus: 'recording' })
+    wx.vibrateShort({ type: 'light' }) // 触觉反馈
+  },
+
+  /**
+   * 松开麦克风按钮 - 停止录音
+   */
+  onVoiceEnd() {
+    if (this.data.voiceStatus !== 'recording') return
+    if (this.recorderManager) {
+      this.recorderManager.stop()
+      this.setData({ voiceStatus: 'processing' })
+    }
+  },
+
+  /**
+   * 取消录音（手指滑出按钮区域）
+   */
+  onVoiceCancel() {
+    if (this.data.voiceStatus === 'recording' && this.recorderManager) {
+      this.recorderManager.stop()
+      this.setData({ voiceStatus: 'idle' })
+    }
+  },
+
+  /**
+   * 处理录音：上传到云存储 → 调用云函数识别
+   */
+  async _processVoice(tempFilePath) {
+    if (!this.data.cloudEnvInited) {
+      // 云开发未初始化，提示用户配置
+      wx.showModal({
+        title: '提示',
+        content: '语音记账需要配置云开发环境ID，请联系开发者',
+        showCancel: false
+      })
+      this.setData({ voiceStatus: 'idle' })
+      return
+    }
+
+    wx.showLoading({ title: '识别中...' })
+
+    try {
+      // Step 1: 上传音频到云存储
+      const cloudPath = `voice-bills/${Date.now()}.wav`
+      const uploadResult = await new Promise((resolve, reject) => {
+        wx.cloud.uploadFile({
+          cloudPath,
+          filePath: tempFilePath,
+          success: resolve,
+          fail: reject
+        })
+      })
+
+      const fileID = uploadResult.fileID
+      console.log('音频上传成功:', fileID)
+
+      // Step 2: 调用云函数识别并解析
+      const result = await wx.cloud.callFunction({
+        name: 'voiceBill',
+        data: { fileID }
+      })
+
+      const { result: fnResult } = result
+      console.log('云函数返回:', fnResult)
+
+      wx.hideLoading()
+
+      if (fnResult && fnResult.success && fnResult.bill) {
+        this._applyVoiceResult(fnResult.recognizedText, fnResult.bill)
+      } else {
+        // 识别失败
+        const errMsg = (fnResult && fnResult.message) || '未能识别语音，请手动输入'
+        wx.showToast({ title: errMsg, icon: 'none', duration: 2000 })
+        this.setData({ voiceStatus: 'idle' })
+      }
+
+      // Step 3: 异步删除云存储中的临时音频（不阻塞主流程）
+      wx.cloud.deleteFile({ fileList: [fileID] }).catch(() => {})
+
+    } catch (err) {
+      wx.hideLoading()
+      console.error('语音处理失败:', err)
+      wx.showToast({ title: '识别失败，请重试', icon: 'none' })
+      this.setData({ voiceStatus: 'idle' })
+    }
+  },
+
+  /**
+   * 将语音识别结果填入表单
+   */
+  _applyVoiceResult(text, bill) {
+    const updates = {
+      voiceStatus: 'idle',
+      voiceResult: {
+        text: text || '',
+        parsed: bill.success
+      }
+    }
+
+    if (bill.success) {
+      if (bill.type) updates.type = bill.type
+      if (bill.amount != null) updates.amount = String(bill.amount)
+      if (bill.notes) updates.notes = bill.notes
+      
+      this.setData(updates)
+
+      // 更新分类列表后再设置分类（需要先过滤到对应类型）
+      this.filterCategoriesByType(this.data.categories)
+      
+      if (bill.category) {
+        this.setData({ category: bill.category })
+      }
+
+      wx.vibrateShort({ type: 'medium' })
+      wx.showToast({ title: '识别成功 ✅', icon: 'none' })
+    } else {
+      // 识别到文字但解析不到金额
+      this.setData(updates)
+      wx.showToast({ title: '请补充金额信息', icon: 'none' })
     }
   },
 
@@ -57,19 +283,14 @@ Page({
       }
       
       if (categories.length === 0) {
-        categories = [
-          { name: '餐饮', type: 'expense', icon: '🍔' },
-          { name: '交通', type: 'expense', icon: '🚗' },
-          { name: '购物', type: 'expense', icon: '🛍️' },
-          { name: '娱乐', type: 'expense', icon: '🎮' },
-          { name: '医疗', type: 'expense', icon: '💊' },
-          { name: '教育', type: 'expense', icon: '📚' },
-          { name: '住房', type: 'expense', icon: '🏠' },
-          { name: '其他', type: 'expense', icon: '📦' },
-          { name: '工资', type: 'income', icon: '💰' },
-          { name: '奖金', type: 'income', icon: '🎁' },
-          { name: '投资', type: 'income', icon: '📈' }
-        ]
+        // 使用 config.js 中的默认分类（统一来源）
+        categories = config.defaultCategories.map(function(cat) {
+          return {
+            name: cat.name,
+            type: cat.type,
+            icon: config.iconMap[cat.name] || '📦'
+          }
+        })
         
         try {
           wx.setStorageSync('categories', categories)
@@ -77,20 +298,7 @@ Page({
           console.error('保存默认分类失败:', error)
         }
       } else {
-        const iconMap = {
-          '餐饮': '🍔',
-          '交通': '🚗',
-          '购物': '🛍️',
-          '娱乐': '🎮',
-          '医疗': '💊',
-          '教育': '📚',
-          '住房': '🏠',
-          '其他': '📦',
-          '工资': '💰',
-          '奖金': '🎁',
-          '投资': '📈'
-        }
-        
+        // 补充缺失的 icon
         categories = categories.map(function(cat) {
           var newCat = {}
           for (var key in cat) {
@@ -98,7 +306,7 @@ Page({
               newCat[key] = cat[key]
             }
           }
-          newCat.icon = cat.icon || iconMap[cat.name] || '📦'
+          newCat.icon = cat.icon || config.iconMap[cat.name] || '📦'
           return newCat
         })
       }
@@ -129,12 +337,8 @@ Page({
       }
 
       if (accounts.length === 0) {
-        const defaultAccounts = [
-          { name: '现金', icon: '💵' },
-          { name: '支付宝', icon: '💳' },
-          { name: '微信', icon: '📱' },
-          { name: '银行卡', icon: '🏦' }
-        ]
+        // 使用 config.js 中的默认账户（统一来源）
+        const defaultAccounts = config.defaultAccounts
         
         try {
           wx.setStorageSync('accounts', defaultAccounts)
@@ -520,9 +724,9 @@ Page({
           newBill.createTime = bills[index].createTime
           bills[index] = newBill
         } else {
-          wx.showToast({ title: '未找到原账单，将创建新记录', icon: 'none' })
-          bill.createTime = new Date().toISOString()
-          bills.push(bill)
+          // 原账单已被删除，阻止保存，提示用户
+          wx.showToast({ title: '该账单已被删除，无法更新', icon: 'none' })
+          return
         }
       } else {
         bill.createTime = new Date().toISOString()

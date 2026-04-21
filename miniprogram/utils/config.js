@@ -1,4 +1,17 @@
 module.exports = {
+  // ========== 统一配置区 ==========
+  // 云开发环境ID（语音记账用）
+  cloudEnv: 'cloudbase-d1g8mjg3m02a6eba2',
+
+  // 默认账户列表（统一管理）
+  defaultAccounts: [
+    { name: '现金', icon: '💵' },
+    { name: '支付宝', icon: '💳' },
+    { name: '微信', icon: '📱' },
+    { name: '银行卡', icon: '🏦' }
+  ],
+
+  // ========== 分类图标映射（统一管理） ==========
   iconMap: {
     '餐饮': '🍔',
     '交通': '🚗',
@@ -13,6 +26,7 @@ module.exports = {
     '投资': '📈'
   },
 
+  // ========== 统计图颜色配置 ==========
   colors: {
     expense: {
       main: '#FF6B6B',
@@ -34,6 +48,7 @@ module.exports = {
     }
   },
 
+  // ========== 主题配色（兜底值） ==========
   theme: {
     primary: '#FFB347',
     secondary: '#FF9800',
@@ -43,6 +58,7 @@ module.exports = {
     textTertiary: '#999999'
   },
 
+  // ========== 默认分类 ==========
   defaultCategories: [
     { name: '餐饮', type: 'expense' },
     { name: '交通', type: 'expense' },
@@ -59,6 +75,7 @@ module.exports = {
 
   weekdays: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
 
+  // ========== 工具方法 ==========
   getCategoryIcon(categoryName) {
     return this.iconMap[categoryName] || '📊'
   }

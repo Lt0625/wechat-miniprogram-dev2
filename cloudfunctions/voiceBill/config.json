@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "openapi": []
+  },
+  "environment": {
+    "variables": {
+      "TENCENT_SECRET_ID": "AKIDZ1Sq6MZfaKrBJH5i9PVP8pLfp2CMYYMv",
+      "TENCENT_SECRET_KEY": "WqwqY3LXVGm5A3jBQWSAeuxpY4MQHuNd"
+    }
+  }
+}

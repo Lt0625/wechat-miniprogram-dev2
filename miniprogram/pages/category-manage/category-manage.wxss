@@ -1,7 +1,7 @@
 .container {
   padding: 20rpx;
   min-height: 100vh;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
 }
 
 .section {
@@ -9,7 +9,7 @@
   border-radius: 20rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .section-title {
@@ -66,8 +66,8 @@
 }
 
 .edit-btn {
-  background-color: #FFF8E7;
-  color: #FF9800;
+  background-color: var(--theme-bg);
+  color: var(--theme-secondary);
 }
 
 .delete-btn {
@@ -83,14 +83,14 @@
 }
 
 .add-category-btn {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   color: #fff;
   font-size: 30rpx;
   font-weight: 600;
   text-align: center;
   padding: 24rpx;
   border-radius: 50rpx;
-  box-shadow: 0 8rpx 30rpx rgba(255, 179, 71, 0.4);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.2);
 }
 
 .modal-mask {
@@ -128,7 +128,7 @@
 .form-input {
   width: 100%;
   padding: 24rpx;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   border-radius: 16rpx;
   font-size: 30rpx;
   box-sizing: border-box;
@@ -147,7 +147,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   border-radius: 16rpx;
   font-size: 48rpx;
   border: 4rpx solid transparent;
@@ -155,8 +155,8 @@
 }
 
 .icon-option.active {
-  background-color: #FFE4B5;
-  border-color: #FF9800;
+  background-color: var(--theme-border);
+  border-color: var(--theme-secondary);
 }
 
 .modal-actions {
@@ -180,7 +180,7 @@
 }
 
 .confirm-btn {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   color: #fff;
-  box-shadow: 0 8rpx 30rpx rgba(255, 179, 71, 0.4);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.2);
 }

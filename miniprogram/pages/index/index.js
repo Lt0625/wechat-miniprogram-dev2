@@ -1,3 +1,6 @@
+const themeManager = require('../../utils/theme-manager')
+const config = require('../../utils/config')
+
 Page({
   data: {
     currentPeriod: 'month',
@@ -21,7 +24,8 @@ Page({
     filterType: '',
     filterCategory: '',
     categories: [],
-    loaded: false
+    loaded: false,
+    theme: themeManager.currentTheme
   },
 
   onLoad() {
@@ -31,6 +35,15 @@ Page({
 
   onShow() {
     console.log('首页 onShow 触发（强制刷新）')
+    // 更新主题
+    const theme = themeManager.getCurrentTheme()
+    if (theme) {
+      wx.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: theme.primary
+      })
+    }
+    this.setData({ theme: themeManager.currentTheme })
     this.initPage(true)
   },
 
@@ -38,11 +51,17 @@ Page({
     try {
       this.loadCategories()
       this.loadBills(forceRefresh)
-      this.setData({ loaded: true })
+      this.setData({ 
+        loaded: true,
+        theme: themeManager.currentTheme
+      })
       console.log('首页初始化完成')
     } catch (error) {
       console.error('首页初始化失败:', error)
-      this.setData({ loaded: true })
+      this.setData({ 
+        loaded: true,
+        theme: themeManager.currentTheme
+      })
     }
   },
 
@@ -173,24 +192,11 @@ Page({
       return
     }
 
-    const iconMap = {
-      '餐饮': '🍔',
-      '交通': '🚗',
-      '购物': '🛍️',
-      '娱乐': '🎮',
-      '医疗': '💊',
-      '教育': '📚',
-      '住房': '🏠',
-      '其他': '📦',
-      '工资': '💰',
-      '奖金': '🎁',
-      '投资': '📈'
-    }
-
+    // 使用 config.js 的 iconMap（统一来源）
     bills.forEach(bill => {
       if (!bill.date) return
       
-      bill.icon = iconMap[bill.category] || '📊'
+      bill.icon = config.iconMap[bill.category] || '📊'
       
       if (!grouped[bill.date]) {
         grouped[bill.date] = []

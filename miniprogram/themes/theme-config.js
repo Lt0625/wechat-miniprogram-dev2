@@ -1,0 +1,80 @@
+module.exports = {
+  themes: {
+    warm: {
+      name: '暖阳黄',
+      icon: '🌅',
+      primary: '#FFB347',
+      secondary: '#FF9800',
+      bg: '#FFF8E7',
+      bgLight: '#FFFDF5',
+      text: '#333333',
+      textLight: '#666666',
+      textMuted: '#999999',
+      border: '#FFE4B5',
+      success: '#4CAF50',
+      danger: '#e74c3c',
+      gradient: 'linear-gradient(135deg, #FFB347 0%, #FF9800 100%)'
+    },
+    blue: {
+      name: '清新蓝',
+      icon: '🌊',
+      primary: '#4ECDC4',
+      secondary: '#26C6DA',
+      bg: '#E0F7FA',
+      bgLight: '#F0FDFF',
+      text: '#333333',
+      textLight: '#666666',
+      textMuted: '#999999',
+      border: '#B2EBF2',
+      success: '#4CAF50',
+      danger: '#e74c3c',
+      gradient: 'linear-gradient(135deg, #4ECDC4 0%, #26C6DA 100%)'
+    },
+    pink: {
+      name: '樱花粉',
+      icon: '🌸',
+      primary: '#FF6B9D',
+      secondary: '#FF4081',
+      bg: '#FFF0F5',
+      bgLight: '#FFF8FA',
+      text: '#333333',
+      textLight: '#666666',
+      textMuted: '#999999',
+      border: '#F8BBD0',
+      success: '#4CAF50',
+      danger: '#e74c3c',
+      gradient: 'linear-gradient(135deg, #FF6B9D 0%, #FF4081 100%)'
+    },
+    green: {
+      name: '薄荷绿',
+      icon: '🌿',
+      primary: '#66BB6A',
+      secondary: '#43A047',
+      bg: '#F1F8E9',
+      bgLight: '#F9FBE7',
+      text: '#333333',
+      textLight: '#666666',
+      textMuted: '#999999',
+      border: '#C8E6C9',
+      success: '#4CAF50',
+      danger: '#e74c3c',
+      gradient: 'linear-gradient(135deg, #66BB6A 0%, #43A047 100%)'
+    },
+    purple: {
+      name: '星空紫',
+      icon: '🌙',
+      primary: '#9C27B0',
+      secondary: '#7B1FA2',
+      bg: '#F3E5F5',
+      bgLight: '#FAF5FA',
+      text: '#333333',
+      textLight: '#666666',
+      textMuted: '#999999',
+      border: '#E1BEE7',
+      success: '#4CAF50',
+      danger: '#e74c3c',
+      gradient: 'linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%)'
+    }
+  },
+  defaultTheme: 'warm'
+}

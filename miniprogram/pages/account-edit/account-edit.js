@@ -1,3 +1,5 @@
+const themeManager = require('../../utils/theme-manager')
+
 Page({
   data: {
     isEdit: false,
@@ -16,7 +18,8 @@ Page({
       { icon: '📊' },
       { icon: '🔒' }
     ],
-    originalName: ''
+    originalName: '',
+    theme: themeManager.currentTheme
   },
 
   onLoad(options) {
@@ -27,10 +30,12 @@ Page({
         accountName: name,
         originalName: name,
         selectedIcon: options.icon || '💰',
-        initialBalance: options.balance || '0'
+        initialBalance: options.balance || '0',
+        theme: themeManager.currentTheme
       })
       wx.setNavigationBarTitle({ title: '编辑账户' })
     } else {
+      this.setData({ theme: themeManager.currentTheme })
       wx.setNavigationBarTitle({ title: '添加账户' })
     }
   },

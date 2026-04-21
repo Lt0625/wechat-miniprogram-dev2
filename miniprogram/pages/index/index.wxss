@@ -1,16 +1,16 @@
 .container {
   padding: 20rpx;
   min-height: 100vh;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
 }
 
 .header {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   border-radius: 20rpx;
   padding: 30rpx;
   color: white;
   margin-bottom: 20rpx;
-  box-shadow: 0 8rpx 30rpx rgba(255, 179, 71, 0.3);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
 }
 
 .budget-card {
@@ -18,7 +18,7 @@
   border-radius: 20rpx;
   padding: 28rpx 30rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .budget-header {
@@ -40,7 +40,7 @@
 }
 
 .progress-bar-wrapper {
-  background-color: #FFE4B5;
+  background-color: var(--theme-border);
   height: 12rpx;
   border-radius: 6rpx;
   overflow: hidden;
@@ -95,12 +95,12 @@
   padding: 24rpx;
   margin-bottom: 20rpx;
   text-align: center;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .no-budget-tip text {
   font-size: 28rpx;
-  color: #FF9800;
+  color: var(--theme-secondary);
 }
 
 .date-tabs {
@@ -119,7 +119,7 @@
 
 .tab.active {
   background-color: white;
-  color: #FF9800;
+  color: var(--theme-secondary);
   font-weight: bold;
   box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.1);
 }
@@ -169,7 +169,7 @@
   background-color: #fff;
   border-radius: 25rpx;
   padding: 20rpx 25rpx;
-  box-shadow: 0 4rpx 15rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.08);
 }
 
 .search-box input {
@@ -178,13 +178,13 @@
 }
 
 .filter-btn {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   border-radius: 25rpx;
   padding: 20rpx 30rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 15rpx rgba(255, 179, 71, 0.3);
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.15);
 }
 
 .filter-btn text {
@@ -199,7 +199,7 @@
   padding: 30rpx;
   margin-bottom: 20rpx;
   display: none;
-  box-shadow: 0 4rpx 20rpx rgba(255, 179, 71, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .filter-panel.show {
@@ -234,14 +234,14 @@
 .filter-option {
   padding: 12rpx 28rpx;
   border-radius: 25rpx;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   font-size: 26rpx;
   color: #666;
   transition: all 0.3s ease;
 }
 
 .filter-option.active {
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   color: white;
   font-weight: 600;
 }
@@ -259,7 +259,7 @@
 
 .reset-btn {
   flex: 1;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   color: #666;
   font-size: 28rpx;
   border-radius: 25rpx;
@@ -268,7 +268,7 @@
 
 .apply-btn {
   flex: 1;
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   color: white;
   font-size: 28rpx;
   border-radius: 25rpx;
@@ -277,7 +277,7 @@
 }
 
 .bill-list {
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   padding: 20rpx;
   margin-bottom: 100rpx;
 }
@@ -347,7 +347,7 @@
 .card-icon {
   width: 80rpx;
   height: 80rpx;
-  background-color: #FFF8E7;
+  background-color: var(--theme-bg);
   border-radius: 16rpx;
   display: flex;
   align-items: center;
@@ -439,11 +439,11 @@
   width: 110rpx;
   height: 110rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FFB347 0%, #FF9800 100%);
+  background: var(--theme-gradient);
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 8rpx 30rpx rgba(255, 179, 71, 0.5);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.2);
 }
 
 .add-btn text {
