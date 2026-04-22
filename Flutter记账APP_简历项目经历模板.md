@@ -4,20 +4,35 @@
 
 ---
 
-## 一、项目概述
+## 一、项目亮点速览 ⭐
 
-### 1.1 项目基本信息
+| 亮点 | 说明 | 面试价值 |
+|------|------|---------|
+| 📌 **跨平台开发** | 一套代码同时支持 Android + iOS | 证明 Flutter 跨平台能力 |
+| 📌 **本地存储** | Hive NoSQL 纯 Dart 实现，无需 SQLite 配置 | 数据库实战经验 |
+| 📌 **真机测试** | 连接小米手机测试，非模拟器 | 实战经验，不只是"跑通 Demo" |
+| 📌 **开发工具** | Android Studio + VS Code 双IDE | 完整开发流程 |
+| 📌 **数据导入导出** | JSON 备份/恢复，完整数据迁移 | 工程化思维 |
+| ⭐ **自动化测试** | 使用 `flutter_driver` CLI 进行端到端测试 | 测试意识 |
+| ⭐ **状态管理** | Provider 轻量级状态管理 | 架构设计能力 |
+
+---
+
+## 二、项目概述
+
+### 2.1 项目基本信息
 
 | 项目信息 | 内容 |
 |---------|------|
-| 📱 项目名称 | 便捷记账（Flutter 轻量记账 APP） |
-| 🛠 技术栈 | Flutter + Dart + Hive + Provider |
-| 📦 平台 | Android 8.0+ / iOS 12.0+ |
-| 🔗 GitHub | https://github.com/Lt0625/flutter-ltjz |
-| 📂 本地路径 | `C:/LTjz.app` |
-| 📅 开发周期 | 2026年4月 |
+| 📱 **项目名称** | 便捷记账（Flutter 轻量记账 APP） |
+| 🛠 **技术栈** | Flutter + Dart + Hive + Provider + fl_chart |
+| 📦 **平台** | Android 8.0+ / iOS 12.0+（一套代码，双平台运行） |
+| 🔗 **GitHub** | https://github.com/Lt0625/flutter-ltjz |
+| 📂 **本地路径** | `C:/LTjz.app` |
+| 🖥 **开发工具** | Android Studio（主）、VS Code（辅助） |
+| 📅 **开发周期** | 2026年4月 |
 
-### 1.2 项目定位
+### 2.2 项目定位
 
 📌 **一款轻量、简洁、易用的个人记账工具**
 
@@ -25,14 +40,14 @@
 - **目标用户**：个人用户日常记账需求
 - **开发边界**：MVP 版本，纯本地存储，无后端依赖，聚焦核心功能
 
-### 1.3 核心功能矩阵
+### 2.3 核心功能矩阵
 
-| 功能模块 | 页面 | 完成度 | 技术亮点 |
-|---------|------|--------|---------|
+| 功能模块 | 页面文件 | 完成度 | 技术亮点 |
+|---------|---------|--------|---------|
 | 📊 首页（账本页） | home_page.dart | ✅ 100% | 账单列表、收支汇总、预算管理 |
 | 📅 日历页 | calendar_page.dart | ✅ 100% | 月历视图、日期筛选、快速记账 |
 | 💳 资产账户页 | account_page.dart | ✅ 100% | 多账户管理、净资产计算 |
-| 📈 统计分析页 | statistics_page.dart | ✅ 100% | 折线图 + 饼图、周期筛选 |
+| 📈 统计分析页 | statistics_page.dart | ✅ 100% | fl_chart 折线图 + 饼图、周期筛选 |
 | ⚙️ 设置页 | settings_page.dart | ✅ 100% | 主题切换、数据管理 |
 | ➕ 添加账单页 | add_bill_page.dart | ✅ 100% | 表单验证、编辑模式 |
 | 🏦 账户管理页 | add_account_page.dart | ✅ 100% | CRUD、账户类型分类 |
@@ -41,9 +56,9 @@
 
 ---
 
-## 二、技术栈详解
+## 三、技术栈详解
 
-### 2.1 核心依赖
+### 3.1 核心依赖
 
 ```yaml
 dependencies:
@@ -77,35 +92,95 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_driver:                   # 📌 自动化测试 CLI
+    sdk: flutter
   build_runner: ^2.4.6             # Hive 适配器生成
   hive_generator: ^2.0.1           # Hive TypeAdapter 生成
 ```
 
-### 2.2 技术选型理由
+### 3.2 技术选型理由
 
 | 技术 | 选型理由 | 替代方案 |
 |------|---------|---------|
 | **Flutter** | 跨平台（Android/iOS 一套代码）、性能接近原生、开发效率高 | React Native、uni-app |
-| **Hive** | 轻量级 NoSQL、无需配置、性能出色、移动端友好 | SQLite、shared_preferences |
+| **Hive** | 纯 Dart 实现、无需原生桥接、轻量级 NoSQL、移动端友好 | SQLite、shared_preferences |
 | **Provider** | Flutter 官方推荐、轻量、学习成本低、够用 | Riverpod、Bloc、GetX |
 | **fl_chart** | Flutter 生态最完善的图表库、折线图 + 饼图支持好 | syncfusion_flutter_charts |
 
-### 2.3 Flutter vs 微信小程序对比
+### 3.3 Flutter vs 微信小程序对比
 
 | 维度 | Flutter | 微信小程序 |
 |------|---------|-----------|
-| 📦 包体积 | ~25MB（release） | ~2MB |
-| ⚡ 性能 | 接近原生 | 依赖 WebView/原生组件 |
-| 🎨 UI 自由度 | 完全自定义 | 受限于组件库 |
-| 📱 平台覆盖 | Android/iOS/Web/桌面 | 仅微信生态 |
-| 🔧 开发工具 | Android Studio / VS Code | 微信开发者工具 |
-| 📊 生态 | pub.dev 百万包 | npm / 小程序生态 |
+| 📦 **包体积** | ~25MB（release） | ~2MB |
+| ⚡ **性能** | 接近原生 | 依赖 WebView/原生组件 |
+| 🎨 **UI 自由度** | 完全自定义 | 受限于组件库 |
+| 📱 **平台覆盖** | Android/iOS/Web/桌面 | 仅微信生态 |
+| 🖥 **开发工具** | Android Studio / VS Code | 微信开发者工具 |
+| 📊 **生态** | pub.dev 百万包 | npm / 小程序生态 |
 
 ---
 
-## 三、代码架构
+## 四、开发环境与工具链
 
-### 3.1 项目目录结构
+### 4.1 开发工具
+
+| 工具 | 用途 | 选择理由 |
+|------|------|---------|
+| 🖥 **Android Studio** | 主开发环境 | Flutter 官方推荐，模拟器 + 真机调试 |
+| 💻 **VS Code** | 辅助编辑 | 轻量、快速启动 |
+| 📱 **小米手机** | 真机测试 | 连接电脑进行实际设备测试 |
+| 🔧 **ADB** | 设备连接管理 | Android Debug Bridge |
+
+### 4.2 测试策略
+
+| 测试方式 | 工具 | 说明 |
+|---------|------|------|
+| 📱 **真机测试** | ADB + 小米手机 | **连接真实手机测试**，非模拟器 |
+| 🤖 **自动化测试** | `flutter_driver` CLI | 端到端测试脚本 |
+| ✅ **单元测试** | `flutter_test` | 模型类、工具函数测试 |
+
+**为什么选择真机测试而非模拟器？**
+
+```
+模拟器局限性：
+❌ CPU/内存占用高，电脑卡顿
+❌ 无法测试真实硬件交互（指纹、摄像头等）
+❌ GPU 渲染与真机有差异
+❌ 网络环境模拟不准确
+
+真机测试优势：
+✅ 测试真实用户体验
+✅ GPU/内存表现与用户一致
+✅ 快速迭代，即插即测
+✅ 适合长时间稳定性测试
+```
+
+### 4.3 真机测试连接步骤
+
+```bash
+# 1. 手机开启开发者模式 + USB 调试
+设置 → 关于手机 → 点击"MIUI版本"7次 → 返回 → 开发者选项 → USB 调试开启
+
+# 2. 连接电脑，授权 USB 调试
+手机弹出"是否允许 USB 调试" → 勾选"始终允许" → 确定
+
+# 3. 验证连接
+adb devices
+# 输出：List of devices attached
+#       8TFBXG5K5K4K5D4K    device  ← 手机已连接
+
+# 4. 安装并运行 APP
+flutter run -d 8TFBXG5K5K4K5D4K
+
+# 5. 自动化测试
+flutter drive --target=test_driver/app.dart
+```
+
+---
+
+## 五、代码架构
+
+### 5.1 项目目录结构
 
 ```
 lib/
@@ -120,24 +195,24 @@ lib/
 │   ├── index.dart              # 统一导出
 │   ├── main_page.dart          # 底部 Tab 导航
 │   ├── home_page.dart          # 首页（账单列表）
-│   ├── calendar_page.dart       # 日历页
+│   ├── calendar_page.dart      # 日历页
 │   ├── account_page.dart       # 资产账户页
-│   ├── statistics_page.dart     # 统计分析页
-│   ├── settings_page.dart       # 设置页
-│   ├── add_bill_page.dart       # 添加/编辑账单
-│   ├── add_account_page.dart    # 添加/编辑账户
+│   ├── statistics_page.dart    # 统计分析页
+│   ├── settings_page.dart      # 设置页
+│   ├── add_bill_page.dart      # 添加/编辑账单
+│   ├── add_account_page.dart   # 添加/编辑账户
 │   ├── category_management_page.dart  # 分类管理
 │   ├── data_management_page.dart      # 数据管理
-│   ├── profile_page.dart        # 个人中心
-│   └── splash_screen.dart       # 启动页
+│   ├── profile_page.dart       # 个人中心
+│   └── splash_screen.dart      # 启动页
 ├── storage/                    # 📌 本地存储服务
 │   ├── index.dart              # 统一导出
-│   └── storage_service.dart     # Hive CRUD 操作
+│   └── storage_service.dart    # Hive CRUD 操作
 └── utils/                      # 工具类
-    └── theme_notifier.dart      # 📌 主题状态管理（Provider）
+    └── theme_notifier.dart     # 📌 主题状态管理（Provider）
 ```
 
-### 3.2 数据模型设计
+### 5.2 数据模型设计
 
 #### 账单模型（Bill）
 
@@ -146,7 +221,7 @@ class Bill {
   final String id;           // 唯一标识（时间戳生成）
   final String type;         // 收支类型：income / expense
   final double amount;       // 金额，保留两位小数
-  final String category;     // 收支分类（关联 Category.name）
+  final String category;    // 收支分类（关联 Category.name）
   final String account;      // 资产账户（关联 Account.name）
   final String note;         // 备注，可选，默认空字符串
   final DateTime createTime; // 记录创建时间
@@ -228,7 +303,7 @@ class Category {
 }
 ```
 
-### 3.3 存储服务设计（StorageService）
+### 5.3 存储服务设计（StorageService）
 
 ```dart
 class StorageService {
@@ -290,7 +365,7 @@ class StorageService {
 }
 ```
 
-### 3.4 主题状态管理（Provider）
+### 5.4 主题状态管理（Provider）
 
 ```dart
 class ThemeNotifier extends ChangeNotifier {
@@ -333,7 +408,7 @@ class ThemeNotifier extends ChangeNotifier {
 }
 ```
 
-### 3.5 应用入口（main.dart）
+### 5.5 应用入口（main.dart）
 
 ```dart
 void main() async {
@@ -380,9 +455,9 @@ class MyApp extends StatelessWidget {
 
 ---
 
-## 四、核心功能实现
+## 六、核心功能实现
 
-### 4.1 首页（HomePage）
+### 6.1 首页（HomePage）
 
 #### 功能特点
 - 📊 **顶部数据卡片**：本周/本月总收入、总支出、净余额、日均消费
@@ -465,7 +540,7 @@ void _snapToEdge(Offset currentPosition, Size screenSize) {
 
 ---
 
-### 4.2 日历页（CalendarPage）
+### 6.2 日历页（CalendarPage）
 
 #### 功能特点
 - 📅 **月历视图**：展示当前月份，左右滑动切换月份
@@ -523,7 +598,7 @@ GridView.builder(
 
 ---
 
-### 4.3 统计分析页（StatisticsPage）
+### 6.3 统计分析页（StatisticsPage）
 
 #### 功能特点
 - 📊 **周期筛选**：日/周/月/自定义周期
@@ -615,7 +690,7 @@ PieChart(
 
 ---
 
-### 4.4 添加账单页（AddBillPage）
+### 6.4 添加账单页（AddBillPage）
 
 #### 功能特点
 - 💵 **金额输入**：数字键盘，自动保留两位小数
@@ -687,7 +762,7 @@ Future<void> _saveBill() async {
 
 ---
 
-### 4.5 资产账户页（AccountPage）
+### 6.5 资产账户页（AccountPage）
 
 #### 功能特点
 - 💰 **净资产计算**：总资产 - 总负债
@@ -723,7 +798,7 @@ Future<void> _loadData() async {
 
 ---
 
-### 4.6 主题切换功能
+### 6.6 主题切换功能
 
 #### 功能特点
 - 🌙 **浅色/深色模式**：一键切换，全局生效
@@ -765,9 +840,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
 ---
 
-## 五、数据导入导出
+## 七、数据导入导出
 
-### 5.1 JSON 导出
+### 7.1 JSON 导出
 
 ```dart
 Future<void> _exportData() async {
@@ -805,7 +880,7 @@ Future<void> _exportData() async {
 }
 ```
 
-### 5.2 JSON 导入
+### 7.2 JSON 导入
 
 ```dart
 Future<void> _importData() async {
@@ -856,9 +931,9 @@ Future<void> _importData() async {
 
 ---
 
-## 六、默认数据配置
+## 八、默认数据配置
 
-### 6.1 支出分类（8个）
+### 8.1 支出分类（8个）
 
 | ID | 名称 | 图标 | 说明 |
 |----|------|------|------|
@@ -871,7 +946,7 @@ Future<void> _importData() async {
 | 7 | 住房 | home | 房租物业 |
 | 8 | 其他 | more_horiz | 其它支出 |
 
-### 6.2 收入分类（5个）
+### 8.2 收入分类（5个）
 
 | ID | 名称 | 图标 | 说明 |
 |----|------|------|------|
@@ -881,7 +956,7 @@ Future<void> _importData() async {
 | 12 | 兼职 | work | 兼职外快 |
 | 13 | 其他 | more_horiz | 其它收入 |
 
-### 6.3 默认账户（5个）
+### 8.3 默认账户（5个）
 
 | ID | 名称 | 类型 | 初始余额 |
 |----|------|------|---------|
@@ -893,9 +968,9 @@ Future<void> _importData() async {
 
 ---
 
-## 七、UI/UX 设计规范
+## 九、UI/UX 设计规范
 
-### 7.1 色彩规范
+### 9.1 色彩规范
 
 | 颜色 | 色值 | 用途 |
 |------|------|------|
@@ -907,7 +982,7 @@ Future<void> _importData() async {
 | 🔵 深色背景 | #121212 | 深色模式背景 |
 | 🎨 深色卡片 | #1E1E1E | 深色模式卡片 |
 
-### 7.2 布局规范
+### 9.2 布局规范
 
 - **圆角半径**：8px
 - **内边距**：16px
@@ -915,7 +990,7 @@ Future<void> _importData() async {
 - **卡片式布局**：阴影 + 圆角
 - **间距均匀**：避免内容拥挤
 
-### 7.3 字体规范
+### 9.3 字体规范
 
 | 元素 | 字号 | 字重 | 颜色 |
 |------|------|------|------|
@@ -926,9 +1001,9 @@ Future<void> _importData() async {
 
 ---
 
-## 八、Flutter 踩坑经验
+## 十、Flutter 踩坑经验
 
-### 8.1 Hive 存储
+### 10.1 Hive 存储
 
 | 坑 | 解决方案 |
 |----|---------|
@@ -937,7 +1012,7 @@ Future<void> _importData() async {
 | ⚠️ Map 类型转换 | `Map<String, dynamic>.from(json)` |
 | ⚠️ 数字类型精度 | `(json['balance'] as num).toDouble()` |
 
-### 8.2 Provider 状态管理
+### 10.2 Provider 状态管理
 
 | 坑 | 解决方案 |
 |----|---------|
@@ -945,7 +1020,7 @@ Future<void> _importData() async {
 | ⚠️ 状态更新后 UI 不刷新 | 调用 `notifyListeners()` |
 | ⚠️ 首次加载主题闪烁 | 同步读取 Hive 中的主题设置 |
 
-### 8.3 fl_chart 图表
+### 10.3 fl_chart 图表
 
 | 坑 | 解决方案 |
 |----|---------|
@@ -953,40 +1028,50 @@ Future<void> _importData() async {
 | ⚠️ 折线图数据点太多卡顿 | 限制数据点数量，按日/周聚合 |
 | ⚠️ Y 轴 label 被截断 | 设置 `reservedSize: 40` |
 
-### 8.4 日期/国际化
+### 10.4 日期/国际化
 
 | 坑 | 解决方案 |
 |----|---------|
 | ⚠️ 中文日期格式化 | `intl: ^0.20.2` + `initializeDateFormatting('zh_CN')` |
 | ⚠️ 月份第一天是周几 | `DateTime(firstDayOfMonth).weekday` |
 
-### 8.5 文件操作
+### 10.5 文件操作
 
 | 坑 | 解决方案 |
 |----|---------|
 | ⚠️ file_picker 路径为空 | 检查 `result.files.single.path` |
 | ⚠️ JSON 解析失败 | try-catch 包裹 + 友好提示 |
 
+### 10.6 真机测试连接
+
+| 坑 | 解决方案 |
+|----|---------|
+| ⚠️ ADB 找不到设备 | 检查手机 USB 调试是否开启，授权电脑 |
+| ⚠️ 设备显示 unauthorized | 手机弹出授权弹窗，点击"允许" |
+| ⚠️ 多个设备连接冲突 | `flutter devices` 查看设备列表，`flutter run -d <device_id>` 指定设备 |
+
 ---
 
-## 九、简历关键词速查表
+## 十一、简历关键词速查表
 
 | 📌 关键词 | 重要程度 | 出现位置 |
 |---------|---------|---------|
 | Flutter | ⭐⭐⭐ | 标题、技术栈 |
+| 跨平台开发 | ⭐⭐⭐ | Android + iOS 双平台 |
 | Hive | ⭐⭐⭐ | 存储方案 |
+| 真机测试 | ⭐⭐⭐ | 测试方式（非模拟器） |
+| Android Studio | ⭐⭐ | 开发工具 |
 | Provider | ⭐⭐ | 状态管理 |
 | fl_chart | ⭐⭐ | 图表实现 |
 | 本地存储 | ⭐⭐ | 数据持久化 |
-| 跨平台开发 | ⭐⭐ | Android + iOS |
-| Material Design | ⭐ | UI 规范 |
-| JSON 导入导出 | ⭐ | 数据管理 |
+| flutter_driver | ⭐⭐ | 自动化测试 CLI |
+| JSON 导入导出 | ⭐⭐ | 数据管理 |
 | 主题切换 | ⭐ | 深色模式 |
 | 响应式设计 | ⭐ | 多机型适配 |
 
 ---
 
-## 十、面试问答要点
+## 十二、面试问答要点
 
 ### Q1: 为什么选择 Flutter 而不是 React Native？
 
@@ -1004,13 +1089,13 @@ Future<void> _importData() async {
 - 本项目只需 Key-Value 存储，Hive 更轻量
 - Hive 支持 Flutter，有官方适配包
 
-### Q3: 为什么选择 Provider 而不是 Bloc？
+### Q3: 为什么选择真机测试而非模拟器？
 
 **回答要点**：
-- Provider 是 Flutter 官方推荐，学习成本低
-- 本项目状态管理简单（主要是主题切换），Provider 够用
-- Bloc 适合复杂状态机场景，属于过度设计
-- Provider 配合 ChangeNotifier 足够满足需求
+- 模拟器 CPU/内存占用高，电脑卡顿
+- 真机测试更接近用户实际使用体验
+- 可以测试真实硬件交互（屏幕触控、存储等）
+- 快速迭代开发，连接手机即插即用
 
 ### Q4: 如何实现深色模式？
 
@@ -1020,31 +1105,42 @@ Future<void> _importData() async {
 - MaterialApp 的 theme/darkTheme 参数切换
 - Hive 持久化存储主题偏好
 
+### Q5: Flutter Driver 自动化测试怎么做的？
+
+**回答要点**：
+- 使用 `flutter_driver` 库编写端到端测试
+- 通过 `find.byValueKey()` 定位 UI 元素
+- 模拟用户操作（点击、输入等）
+- 验证页面状态和数据显示
+
 ---
 
-## 十一、简历加分项 ⭐
+## 十三、简历加分项 ⭐
 
 | 加分项 | 说明 | 获取方式 |
 |--------|------|----------|
 | 📌 **GitHub 项目链接** | 完整代码仓库展示 | 发布到 GitHub |
-| 📌 **演示 Demo** | APP 安装包/截图 | Android APK / iOS TestFlight |
-| 📌 **技术博客** | 开发踩坑记录 | 掘金/知乎/CSDN |
+| 📌 **演示 Demo** | APP 安装包/截图 | Android APK 打包 |
+| 📌 **真机测试截图** | 实际设备测试照片 | 小米手机截图 |
+| 📌 **跨平台截图** | Android + iOS 双端截图 | 分别打包测试 |
+| ⭐ **自动化测试脚本** | flutter_driver 测试用例 | 编写测试脚本 |
 
 ---
 
-## 十二、后续优化方向
+## 十四、后续优化方向
 
 1. **云同步功能**：Firebase / 野狗实时数据库同步
 2. **预算管理**：每月预算设置 + 超支提醒
 3. **数据导出**：支持 Excel/CSV 格式
 4. **多语言支持**：中英文切换
 5. **Widget**：iOS/Android 桌面小组件
-6. **自动化测试**：flutter_test 单元测试 + 集成测试
+6. **自动化测试**：完善 flutter_driver 测试用例
 
 ---
 
 > 📌 **简历使用建议**：
 > 1. 根据应聘岗位调整技术栈描述优先级
-> 2. 突出 Flutter 跨平台开发能力
+> 2. 突出 **Flutter 跨平台开发能力** + **真机测试经验**
 > 3. 强调本地存储（Hive）实战经验
-> 4. 量化成果：完成 5 个核心页面、100% 功能覆盖
+> 4. 量化成果：完成 9 个核心页面、100% 功能覆盖
+> 5. 如有 GitHub 链接，务必附上，展示完整代码
