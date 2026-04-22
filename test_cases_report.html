@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>桔子记账 - 测试用例报告</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header .subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .header .timestamp {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        /* 统计卡片 */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .stat-card .number {
+            font-size: 42px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-card.passed .number {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-card.failed .number {
+            background: linear-gradient(135deg, #eb3349, #f45c43);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-card .label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        /* 模块统计 */
+        .module-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        .module-summary h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        .module-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .module-item .name {
+            font-weight: 500;
+        }
+        .module-item .count {
+            background: #667eea;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        /* 用例列表 */
+        .test-cases {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .test-cases h2 {
+            padding: 20px 25px;
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+            background: #fafbfc;
+        }
+        .suite-group {
+            border-bottom: 1px solid #eee;
+        }
+        .suite-header {
+            padding: 15px 25px;
+            background: #f8f9fa;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .suite-header:hover {
+            background: #f0f2f5;
+        }
+        .suite-header .suite-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .suite-header .badge {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        .suite-header .expand-icon {
+            transition: transform 0.3s;
+        }
+        .suite-header.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+        .suite-cases {
+            display: none;
+        }
+        .suite-cases.expanded {
+            display: block;
+        }
+        .case-item {
+            padding: 12px 25px;
+            display: grid;
+            grid-template-columns: 120px 1fr 80px 100px;
+            gap: 15px;
+            align-items: center;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .case-item:last-child {
+            border-bottom: none;
+        }
+        .case-item:hover {
+            background: #fafbfc;
+        }
+        .case-id {
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 600;
+        }
+        .case-name {
+            color: #333;
+        }
+        .case-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .case-status.pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .case-status.fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .case-time {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+        }
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 13px;
+        }
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .case-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>🧾 桔子记账小程序 - 测试用例报告</h1>
+            <div class="subtitle">miniprogram-automator 自动化测试</div>
+            <div class="timestamp">📅 测试时间：2026-04-22 20:36:15 | ⏱️ 总耗时：739.1秒</div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number">74</div>
+                <div class="label">📋 总用例数</div>
+            </div>
+            <div class="stat-card passed">
+                <div class="number">74</div>
+                <div class="label">✅ 通过</div>
+            </div>
+            <div class="stat-card failed">
+                <div class="number">0</div>
+                <div class="label">❌ 失败</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">100%</div>
+                <div class="label">🎯 通过率</div>
+            </div>
+        </div>
+
+        <!-- 模块统计 -->
+        <div class="module-summary">
+            <h2>📊 模块覆盖率</h2>
+            <div class="module-grid" id="moduleGrid"></div>
+        </div>
+
+        <!-- 用例列表 -->
+        <div class="test-cases">
+            <h2>📝 测试用例详情</h2>
+            <div id="testCases"></div>
+        </div>
+
+        <!-- 底部 -->
+        <div class="footer">
+            <p>🔗 项目地址：<a href="https://github.com/Lt0625/wechat-miniprogram-dev2" target="_blank">GitHub</a></p>
+            <p>📊 自动化测试报告：<a href="test_report_v2.html" target="_blank">查看详细报告</a></p>
+        </div>
+    </div>
+
+    <script>
+        // 用例数据
+        const testResults = [
+            // 首页 (14个)
+            {"suite": "首页", "case_id": "INDEX_UI_001", "name": "首页UI渲染", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "首页", "case_id": "INDEX_NAV_002", "name": "点击日期Tab切换", "status": "PASS", "detail": "Clicked .date-tabs .tab"},
+            {"suite": "首页", "case_id": "INDEX_SEARCH_003", "name": "点击搜索框", "status": "PASS", "detail": "Clicked .search-box"},
+            {"suite": "首页", "case_id": "INDEX_BILLS_004", "name": "账单列表可见", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "首页", "case_id": "INDEX_BILL_CARD_005", "name": "点击账单卡片", "status": "PASS", "detail": "Clicked .bill-card"},
+            {"suite": "首页", "case_id": "INDEX_FLOAT_006", "name": "悬浮按钮可见", "status": "PASS", "detail": "Clicked .float-add-btn"},
+            {"suite": "首页", "case_id": "INDEX_FLOAT_POPUP_007", "name": "悬浮弹窗显示", "status": "PASS", "detail": "Quick add popup visible"},
+            {"suite": "首页", "case_id": "INDEX_QUICK_EXP_008", "name": "快捷支出按钮", "status": "PASS", "detail": "Clicked .quick-expense"},
+            {"suite": "首页", "case_id": "INDEX_QUICK_INC_009", "name": "快捷收入按钮", "status": "PASS", "detail": "Clicked .quick-income"},
+            {"suite": "首页", "case_id": "INDEX_CLOSE_POPUP_010", "name": "关闭弹窗", "status": "PASS", "detail": "Clicked .close-btn"},
+            {"suite": "首页", "case_id": "INDEX_BUDGET_011", "name": "预算卡片可见", "status": "PASS", "detail": "Budget card visible"},
+            {"suite": "首页", "case_id": "INDEX_BUDGET_DETAIL_012", "name": "点击预算查看详情", "status": "PASS", "detail": "Clicked .budget-card"},
+            {"suite": "首页", "case_id": "INDEX_TAB_STAT_013", "name": "切换到统计Tab", "status": "PASS", "detail": "Switched to statistics"},
+            {"suite": "首页", "case_id": "INDEX_TAB_ASSET_014", "name": "切换到资产Tab", "status": "PASS", "detail": "Switched to asset"},
+
+            // 日历页 (8个)
+            {"suite": "日历页", "case_id": "CAL_UI_001", "name": "日历页面UI渲染", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "日历页", "case_id": "CAL_MONTH_002", "name": "月份切换按钮", "status": "PASS", "detail": "Clicked .prev-month"},
+            {"suite": "日历页", "case_id": "CAL_TODAY_003", "name": "点击今天", "status": "PASS", "detail": "Clicked .today-btn"},
+            {"suite": "日历页", "case_id": "CAL_DATE_SELECT_004", "name": "选择日期", "status": "PASS", "detail": "Clicked .calendar-day"},
+            {"suite": "日历页", "case_id": "CAL_BILLS_005", "name": "显示当日账单", "status": "PASS", "detail": "Day bills visible"},
+            {"suite": "日历页", "case_id": "CAL_SUMMARY_006", "name": "月度收支汇总", "status": "PASS", "detail": "Monthly summary visible"},
+            {"suite": "日历页", "case_id": "CAL_YEAR_PREV_007", "name": "上一年按钮", "status": "PASS", "detail": "Clicked .prev-year"},
+            {"suite": "日历页", "case_id": "CAL_YEAR_NEXT_008", "name": "下一年按钮", "status": "PASS", "detail": "Clicked .next-year"},
+
+            // 统计页 (8个)
+            {"suite": "统计页", "case_id": "STAT_UI_001", "name": "统计页面UI渲染", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "统计页", "case_id": "STAT_TAB_EXP_002", "name": "切换支出Tab", "status": "PASS", "detail": "Switched to expense tab"},
+            {"suite": "统计页", "case_id": "STAT_TAB_INC_003", "name": "切换收入Tab", "status": "PASS", "detail": "Switched to income tab"},
+            {"suite": "统计页", "case_id": "STAT_CHART_004", "name": "饼图显示", "status": "PASS", "detail": "Chart visible"},
+            {"suite": "统计页", "case_id": "STAT_CATEGORY_005", "name": "分类列表显示", "status": "PASS", "detail": "Category list visible"},
+            {"suite": "统计页", "case_id": "STAT_DETAIL_006", "name": "分类详情弹窗", "status": "PASS", "detail": "Clicked .category-item"},
+            {"suite": "统计页", "case_id": "STAT_CLOSE_DETAIL_007", "name": "关闭详情弹窗", "status": "PASS", "detail": "Clicked .close-btn"},
+            {"suite": "统计页", "case_id": "STAT_COMPARE_008", "name": "环比数据显示", "status": "PASS", "detail": "Compare data visible"},
+
+            // 添加账单页 (12个)
+            {"suite": "添加账单页", "case_id": "ADD_UI_001", "name": "添加账单页面UI", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "添加账单页", "case_id": "ADD_AMOUNT_002", "name": "金额输入框", "status": "PASS", "detail": "Input amount"},
+            {"suite": "添加账单页", "case_id": "ADD_CATEGORY_003", "name": "分类选择器", "status": "PASS", "detail": "Category picker visible"},
+            {"suite": "添加账单页", "case_id": "ADD_CAT_EXP_004", "name": "选择支出分类", "status": "PASS", "detail": "Selected expense category"},
+            {"suite": "添加账单页", "case_id": "ADD_CAT_INC_005", "name": "选择收入分类", "status": "PASS", "detail": "Selected income category"},
+            {"suite": "添加账单页", "case_id": "ADD_ACCOUNT_006", "name": "账户选择器", "status": "PASS", "detail": "Account picker visible"},
+            {"suite": "添加账单页", "case_id": "ADD_DATE_007", "name": "日期选择器", "status": "PASS", "detail": "Date picker visible"},
+            {"suite": "添加账单页", "case_id": "ADD_NOTE_008", "name": "备注输入框", "status": "PASS", "detail": "Input note"},
+            {"suite": "添加账单页", "case_id": "ADD_TYPE_TOGGLE_009", "name": "类型切换", "status": "PASS", "detail": "Toggled expense/income"},
+            {"suite": "添加账单页", "case_id": "ADD_VOICE_010", "name": "语音按钮可见", "status": "PASS", "detail": "Voice button visible"},
+            {"suite": "添加账单页", "case_id": "ADD_KEYPAD_011", "name": "数字键盘", "status": "PASS", "detail": "Keypad visible"},
+            {"suite": "添加账单页", "case_id": "ADD_SAVE_012", "name": "保存按钮", "status": "PASS", "detail": "Save button visible"},
+
+            // 资产页 (8个)
+            {"suite": "资产页", "case_id": "ASSET_UI_001", "name": "资产页面UI渲染", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "资产页", "case_id": "ASSET_LIST_002", "name": "账户列表显示", "status": "PASS", "detail": "Account list visible"},
+            {"suite": "资产页", "case_id": "ASSET_BALANCE_003", "name": "余额显示", "status": "PASS", "detail": "Balance visible"},
+            {"suite": "资产页", "case_id": "ASSET_ADD_004", "name": "添加账户按钮", "status": "PASS", "detail": "Clicked .add-account"},
+            {"suite": "资产页", "case_id": "ASSET_EDIT_005", "name": "编辑账户", "status": "PASS", "detail": "Clicked .edit-account"},
+            {"suite": "资产页", "case_id": "ASSET_TRANSFER_006", "name": "转账按钮", "status": "PASS", "detail": "Transfer button visible"},
+            {"suite": "资产页", "case_id": "ASSET_RECORD_007", "name": "收支记录按钮", "status": "PASS", "detail": "Record button visible"},
+            {"suite": "资产页", "case_id": "ASSET_SYNC_008", "name": "同步余额按钮", "status": "PASS", "detail": "Sync button visible"},
+
+            // 账户管理页 (6个)
+            {"suite": "账户管理页", "case_id": "ACCT_UI_001", "name": "账户管理页面UI", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "账户管理页", "case_id": "ACCT_LIST_002", "name": "账户列表", "status": "PASS", "detail": "Account list visible"},
+            {"suite": "账户管理页", "case_id": "ACCT_ADD_003", "name": "新增账户", "status": "PASS", "detail": "Clicked .add-btn"},
+            {"suite": "账户管理页", "case_id": "ACCT_EDIT_004", "name": "编辑账户", "status": "PASS", "detail": "Clicked .edit-btn"},
+            {"suite": "账户管理页", "case_id": "ACCT_DELETE_005", "name": "删除账户", "status": "PASS", "detail": "Clicked .delete-btn"},
+            {"suite": "账户管理页", "case_id": "ACCT_ICON_006", "name": "图标选择器", "status": "PASS", "detail": "Icon picker visible"},
+
+            // 分类管理页 (6个)
+            {"suite": "分类管理页", "case_id": "CAT_UI_001", "name": "分类管理页面UI", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "分类管理页", "case_id": "CAT_EXP_TAB_002", "name": "支出分类Tab", "status": "PASS", "detail": "Expense tab visible"},
+            {"suite": "分类管理页", "case_id": "CAT_INC_TAB_003", "name": "收入分类Tab", "status": "PASS", "detail": "Income tab visible"},
+            {"suite": "分类管理页", "case_id": "CAT_LIST_004", "name": "分类列表", "status": "PASS", "detail": "Category list visible"},
+            {"suite": "分类管理页", "case_id": "CAT_EDIT_005", "name": "编辑分类", "status": "PASS", "detail": "Clicked .edit-btn"},
+            {"suite": "分类管理页", "case_id": "CAT_ICON_006", "name": "图标修改", "status": "PASS", "detail": "Icon selector visible"},
+
+            // 我的页面 (6个)
+            {"suite": "我的页面", "case_id": "MINE_UI_001", "name": "我的页面UI渲染", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "我的页面", "case_id": "MINE_AVATAR_002", "name": "头像区域", "status": "PASS", "detail": "Avatar area visible"},
+            {"suite": "我的页面", "case_id": "MINE_MENU_003", "name": "菜单列表", "status": "PASS", "detail": "Menu list visible"},
+            {"suite": "我的页面", "case_id": "MINE_THEME_004", "name": "主题设置入口", "status": "PASS", "detail": "Theme settings visible"},
+            {"suite": "我的页面", "case_id": "MINE_BUDGET_005", "name": "预算设置入口", "status": "PASS", "detail": "Budget settings visible"},
+            {"suite": "我的页面", "case_id": "MINE_CATEGORY_006", "name": "分类管理入口", "status": "PASS", "detail": "Category manage visible"},
+
+            // 周期账单页 (4个)
+            {"suite": "周期账单页", "case_id": "REC_UI_001", "name": "周期账单页面UI", "status": "PASS", "detail": "Screenshot saved"},
+            {"suite": "周期账单页", "case_id": "REC_LIST_002", "name": "账单列表", "status": "PASS", "detail": "Recurring list visible"},
+            {"suite": "周期账单页", "case_id": "REC_ADD_003", "name": "添加周期账单", "status": "PASS", "detail": "Clicked .add-btn"},
+            {"suite": "周期账单页", "case_id": "REC_TOGGLE_004", "name": "开关切换", "status": "PASS", "detail": "Toggle enabled/disabled"},
+
+            // 导航集成测试 (2个)
+            {"suite": "集成测试", "case_id": "INT_NAV_ALL_001", "name": "全页面导航测试", "status": "PASS", "detail": "All pages navigated"},
+            {"suite": "集成测试", "case_id": "INT_DATA_FLOW_002", "name": "数据流转测试", "status": "PASS", "detail": "Data flow verified"}
+        ];
+
+        // 渲染模块统计
+        function renderModuleSummary() {
+            const moduleCounts = {};
+            testResults.forEach(item => {
+                moduleCounts[item.suite] = (moduleCounts[item.suite] || 0) + 1;
+            });
+
+            const grid = document.getElementById('moduleGrid');
+            grid.innerHTML = Object.entries(moduleCounts).map(([name, count]) => `
+                <div class="module-item">
+                    <span class="name">${name}</span>
+                    <span class="count">${count}个</span>
+                </div>
+            `).join('');
+        }
+
+        // 渲染用例列表
+        function renderTestCases() {
+            const moduleCases = {};
+            testResults.forEach(item => {
+                if (!moduleCases[item.suite]) {
+                    moduleCases[item.suite] = [];
+                }
+                moduleCases[item.suite].push(item);
+            });
+
+            const container = document.getElementById('testCases');
+            container.innerHTML = Object.entries(moduleCases).map(([suiteName, cases]) => `
+                <div class="suite-group">
+                    <div class="suite-header expanded" onclick="toggleSuite(this)">
+                        <div class="suite-name">
+                            ${suiteName}
+                            <span class="badge">${cases.length}个用例</span>
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="suite-cases expanded">
+                        ${cases.map(item => `
+                            <div class="case-item">
+                                <span class="case-id">${item.case_id}</span>
+                                <span class="case-name">${item.name}</span>
+                                <span class="case-status ${item.status.toLowerCase()}">${item.status === 'PASS' ? '✅ 通过' : '❌ 失败'}</span>
+                                <span class="case-time">${item.detail}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 折叠/展开
+        function toggleSuite(header) {
+            header.classList.toggle('expanded');
+            header.nextElementSibling.classList.toggle('expanded');
+        }
+
+        // 初始化
+        renderModuleSummary();
+        renderTestCases();
+    </script>
+</body>
+</html>
