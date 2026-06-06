@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>桔子记账 · 项目介绍</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* NAV */
+        .nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(15,12,41,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 0 24px;
+            display: flex; align-items: center; gap: 8px;
+            height: 52px; overflow-x: auto;
+        }
+        .nav a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 13px; font-weight: 500;
+            padding: 6px 14px; border-radius: 20px;
+            white-space: nowrap; transition: all .2s;
+        }
+        .nav a:hover, .nav a.active {
+            color: #FFB347;
+            background: rgba(255,179,71,0.1);
+        }
+        .nav .back-btn {
+            margin-right: auto;
+            color: rgba(255,255,255,0.5);
+        }
+        .nav .back-btn:hover { color: #FFB347; }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 64px 20px 48px;
+        }
+        .hero h1 {
+            font-size: 40px; font-weight: 800;
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        .hero .subtitle {
+            font-size: 17px;
+            color: rgba(255,255,255,0.6);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        /* SECTION */
+        .section { margin-top: 56px; }
+        .section-title {
+            font-size: 22px; font-weight: 700;
+            margin-bottom: 24px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-title::before {
+            content: '';
+            width: 4px; height: 28px;
+            background: linear-gradient(180deg, #FFB347, #FF6B6B);
+            border-radius: 2px;
+        }
+
+        /* PROJECT CARD */
+        .project-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .project-icon {
+            font-size: 48px;
+            width: 72px; height: 72px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 18px;
+            flex-shrink: 0;
+        }
+        .project-icon.wechat { background: rgba(7,193,96,0.15); border: 1px solid rgba(7,193,96,0.3); }
+        .project-icon.flutter { background: rgba(4,116,189,0.15); border: 1px solid rgba(4,116,189,0.3); }
+        .project-header-text h3 {
+            font-size: 24px; font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .project-header-text .tagline {
+            font-size: 14px; color: rgba(255,255,255,0.5);
+        }
+
+        /* TECH STACK */
+        .tech-row {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 28px;
+        }
+        .tech-chip {
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-size: 12px; font-weight: 500;
+        }
+        .tech-chip.wechat {
+            background: rgba(7,193,96,0.12);
+            border: 1px solid rgba(7,193,96,0.25);
+            color: #5bdfaa;
+        }
+        .tech-chip.flutter {
+            background: rgba(4,116,189,0.12);
+            border: 1px solid rgba(4,116,189,0.25);
+            color: #6bb8e8;
+        }
+
+        /* FEATURE GRID */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .feature-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 18px;
+            transition: all .2s;
+        }
+        .feature-item:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.15);
+        }
+        .feature-item .fi-icon { font-size: 22px; margin-bottom: 8px; }
+        .feature-item .fi-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .feature-item .fi-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+        /* HIGHLIGHT CARDS */
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .highlight-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all .3s;
+        }
+        .highlight-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+        }
+        .highlight-card .hl-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 14px;
+        }
+        .highlight-card .hl-icon { font-size: 28px; }
+        .highlight-card .hl-title { font-size: 17px; font-weight: 700; }
+        .highlight-card .hl-badge {
+            font-size: 10px; font-weight: 600;
+            padding: 3px 10px; border-radius: 10px;
+            margin-left: auto;
+        }
+        .hl-badge.hot {
+            background: linear-gradient(135deg, #f5af19, #f12711);
+            color: white;
+        }
+        .hl-badge.new {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .hl-badge.core {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+        }
+        .highlight-card .hl-desc {
+            font-size: 13px; color: rgba(255,255,255,0.55);
+            line-height: 1.7;
+        }
+        .highlight-card .hl-detail {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+        }
+        .highlight-card .hl-detail code {
+            background: rgba(255,255,255,0.08);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #FFB347;
+        }
+
+        /* STATS BAR */
+        .stats-strip {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 32px 20px;
+            margin: 40px auto;
+            max-width: 800px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .stat-item { text-align: center; }
+        .stat-item .number {
+            font-size: 32px; font-weight: 800;
+        }
+        .stat-item .number.orange {
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .number.green {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .number.blue {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .label {
+            font-size: 12px; color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+        }
+
+        /* LINKS */
+        .link-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .link-card {
+            display: flex; align-items: center; gap: 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 22px 24px;
+            text-decoration: none; color: #fff;
+            transition: all .3s;
+        }
+        .link-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .link-card .lc-icon { font-size: 32px; flex-shrink: 0; }
+        .link-card .lc-title { font-size: 15px; font-weight: 600; }
+        .link-card .lc-desc { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+        .link-card .lc-arrow { margin-left: auto; font-size: 18px; color: rgba(255,255,255,0.25); }
+
+        /* COMPARISON TABLE */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .compare-table th {
+            text-align: left;
+            padding: 14px 20px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+        .compare-table td {
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.65);
+        }
+        .compare-table tr:last-child td { border-bottom: none; }
+        .compare-table .col-label { color: rgba(255,255,255,0.4); font-weight: 500; width: 120px; }
+        .compare-table .wechat-col { color: #5bdfaa; }
+        .compare-table .flutter-col { color: #6bb8e8; }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255,255,255,0.25);
+            font-size: 12px;
+        }
+        .footer a {
+            color: rgba(255,255,255,0.4);
+            text-decoration: none;
+        }
+        .footer a:hover { color: #FFB347; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 28px; }
+            .project-card { padding: 24px; }
+            .feature-grid { grid-template-columns: 1fr 1fr; }
+            .highlights { grid-template-columns: 1fr; }
+            .stats-strip { gap: 20px; flex-wrap: wrap; }
+            .stat-item .number { font-size: 24px; }
+            .compare-table { font-size: 12px; }
+            .compare-table th, .compare-table td { padding: 10px 14px; }
+        }
+        @media (max-width: 480px) {
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAV -->
+    <nav class="nav">
+        <a href="index.html" class="back-btn">← 返回首页</a>
+        <a href="#wechat" class="active">小程序</a>
+        <a href="#flutter">Flutter</a>
+        <a href="#compare">对比</a>
+        <a href="#highlights">亮点</a>
+        <a href="#stats">数据</a>
+        <a href="#links">链接</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h1>桔子记账 · 项目介绍</h1>
+        <div class="subtitle">两个平台、一套产品思维 —— 从微信原生到 Flutter 跨平台，覆盖完整开发与测试流程</div>
+    </div>
+
+    <div class="container">
+
+        <!-- ===== 小程序 ===== -->
+        <div class="section" id="wechat">
+            <div class="section-title">桔子记账小程序</div>
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-icon wechat">🟢</div>
+                    <div class="project-header-text">
+                        <h3>微信原生小程序 · V4.0</h3>
+                        <div class="tagline">纯本地存储 · 零后端依赖 · 5大核心页面</div>
+                    </div>
+                </div>
+
+                <div class="tech-row">
+                    <span class="tech-chip wechat">WXML / WXSS / JS</span>
+                    <span class="tech-chip wechat">Component + Behavior</span>
+                    <span class="tech-chip wechat">微信云开发</span>
+                    <span class="tech-chip wechat">CSS 变量换肤</span>
+                    <span class="tech-chip wechat">语音记账</span>
+                    <span class="tech-chip wechat">miniprogram-automator</span>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="fi-icon">🏠</div>
+                        <div class="fi-title">首页 + 快捷记账</div>
+                        <div class="fi-desc">悬浮按钮3秒完成记账，日期Tab胶囊切换，预算卡片实时监控</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">🎙️</div>
+                        <div class="fi-title">语音记账</div>
+                        <div class="fi-desc">长按录音自动识别金额、分类、备注，识别率95%+</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">📅</div>
+                        <div class="fi-title">日历视图</div>
+                        <div class="fi-desc">月历+年度切换，日期标记收支，月度汇总卡片</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">📊</div>
+                        <div class="fi-title">统计报表</div>
+                        <div class="fi-desc">分类占比、趋势图表、环比数据标签（↑↓百分比）</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">💰</div>
+                        <div class="fi-title">账户管理</div>
+                        <div class="fi-desc">余额自动计算，账单增删改自动同步，一键重置</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">🔄</div>
+                        <div class="fi-title">周期账单</div>
+                        <div class="fi-desc">支持每天/每周/每月/每年，到期自动提醒，一键生成账单</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">🎨</div>
+                        <div class="fi-title">主题换肤</div>
+                        <div class="fi-desc">CSS变量驱动，广播通知全页面，5种预设主题</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">🧪</div>
+                        <div class="fi-title">自动化测试</div>
+                        <div class="fi-desc">74用例100%通过，11模块全覆盖，38张截图存证</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Flutter ===== -->
+        <div class="section" id="flutter">
+            <div class="section-title">Flutter 记账 APP</div>
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-icon flutter">🔵</div>
+                    <div class="project-header-text">
+                        <h3>Flutter 跨平台 · Android & iOS</h3>
+                        <div class="tagline">Dart语言 · Hive本地存储 · Provider状态管理</div>
+                    </div>
+                </div>
+
+                <div class="tech-row">
+                    <span class="tech-chip flutter">Dart</span>
+                    <span class="tech-chip flutter">Flutter 3.x</span>
+                    <span class="tech-chip flutter">Provider</span>
+                    <span class="tech-chip flutter">Hive</span>
+                    <span class="tech-chip flutter">GoRouter</span>
+                    <span class="tech-chip flutter">Material 3</span>
+                    <span class="tech-chip flutter">Android + iOS</span>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="fi-icon">📱</div>
+                        <div class="fi-title">跨平台一套代码</div>
+                        <div class="fi-desc">同一套Dart代码编译到Android和iOS，无需两套开发</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">🔄</div>
+                        <div class="fi-title">Provider状态管理</div>
+                        <div class="fi-desc">ChangeNotifier + context.watch/read，响应式UI更新</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">💾</div>
+                        <div class="fi-title">Hive本地存储</div>
+                        <div class="fi-desc">轻量级NoSQL数据库，零后端，纯本地持久化</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">🧭</div>
+                        <div class="fi-title">GoRouter路由</div>
+                        <div class="fi-desc">声明式路由管理，支持深链接和路由守卫</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">🏠</div>
+                        <div class="fi-title">首页 + 记账</div>
+                        <div class="fi-desc">收支流水、分类选择、快速记账，与小程序功能对齐</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">📊</div>
+                        <div class="fi-title">统计图表</div>
+                        <div class="fi-desc">分类饼图、月度趋势，数据可视化</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">🎨</div>
+                        <div class="fi-title">Material 3 主题</div>
+                        <div class="fi-desc">动态配色方案，明暗模式切换</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="fi-icon">🧪</div>
+                        <div class="fi-title">真机调试测试</div>
+                        <div class="fi-desc">小米真机ADB调试，严禁模拟器，保证真实体验</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 对比 ===== -->
+        <div class="section" id="compare">
+            <div class="section-title">两项目对比</div>
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>维度</th>
+                        <th>🟢 微信小程序</th>
+                        <th>🔵 Flutter APP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-label">语言</td>
+                        <td class="wechat-col">JavaScript (WXML/WXSS)</td>
+                        <td class="flutter-col">Dart</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">平台</td>
+                        <td class="wechat-col">微信内运行</td>
+                        <td class="flutter-col">Android + iOS 原生</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">存储</td>
+                        <td class="wechat-col">wx.setStorageSync</td>
+                        <td class="flutter-col">Hive (NoSQL)</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">状态管理</td>
+                        <td class="wechat-col">Component + Behavior + setData</td>
+                        <td class="flutter-col">Provider (ChangeNotifier)</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">路由</td>
+                        <td class="wechat-col">wx.navigateTo / switchTab</td>
+                        <td class="flutter-col">GoRouter 声明式</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">UI方案</td>
+                        <td class="wechat-col">CSS变量换肤 + 自定义组件</td>
+                        <td class="flutter-col">Material 3 + 动态配色</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">测试</td>
+                        <td class="wechat-col">miniprogram-automator 74用例</td>
+                        <td class="flutter-col">真机ADB调试 + 手动验证</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">语音记账</td>
+                        <td class="wechat-col">wx.translateVoice + 本地解析</td>
+                        <td class="flutter-col">—</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">特色功能</td>
+                        <td class="wechat-col">周期账单、预算管控、快捷记账</td>
+                        <td class="flutter-col">跨平台编译、响应式布局</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== 技术亮点 ===== -->
+        <div class="section" id="highlights">
+            <div class="section-title">技术亮点</div>
+            <div class="highlights">
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🎙️</span>
+                        <span class="hl-title">语音记账</span>
+                        <span class="hl-badge hot">核心亮点</span>
+                    </div>
+                    <div class="hl-desc">
+                        微信本地录音 → <code>wx.translateVoice</code> 语音转文字 → 本地NLP解析金额/分类/备注。识别率从40%提升至95%+。
+                    </div>
+                    <div class="hl-detail">
+                        踩坑：微信录音format参数不可靠，实际输出OGG封装Opus，必须检测文件头 <code>OggS</code> 判断格式，而非信任扩展名。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">💰</span>
+                        <span class="hl-title">账户余额自动计算</span>
+                        <span class="hl-badge core">架构设计</span>
+                    </div>
+                    <div class="hl-desc">
+                        账单增删改时自动同步账户余额，无需手动维护。基于 <code>bill-helper.js</code> 工具函数，保证数据一致性。
+                    </div>
+                    <div class="hl-detail">
+                        核心：每笔账单关联账户，保存时重新计算 = Σ收入 - Σ支出，编辑/删除时触发重算。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🎨</span>
+                        <span class="hl-title">CSS变量主题系统</span>
+                        <span class="hl-badge new">设计模式</span>
+                    </div>
+                    <div class="hl-desc">
+                        全局CSS变量驱动换肤，<code>data-theme</code> 属性激活变量集，广播通知所有页面刷新。5种预设主题一键切换。
+                    </div>
+                    <div class="hl-detail">
+                        踩坑：页面WXML根元素缺 <code>data-theme=""</code> 导致变量不激活，需为7个页面统一补齐。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🧪</span>
+                        <span class="hl-title">全链路自动化测试</span>
+                        <span class="hl-badge hot">工程能力</span>
+                    </div>
+                    <div class="hl-desc">
+                        基于 <code>miniprogram-automator</code> 编写74个测试用例，覆盖11个模块，100%通过率，38张截图存证。
+                    </div>
+                    <div class="hl-detail">
+                        踩坑：WebSocket端口≠HTTP端口；TabBar页面必须用 <code>switchTab</code> 而非 <code>navigateTo</code>；导航路径必须加前导 <code>/</code>。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🔄</span>
+                        <span class="hl-title">Component + Behavior 复用</span>
+                        <span class="hl-badge core">架构设计</span>
+                    </div>
+                    <div class="hl-desc">
+                        抽取公共逻辑为 Behavior（如主题切换、加载状态），通过 <code>behaviors: [themeBehavior]</code> 混入组件，避免代码重复。
+                    </div>
+                    <div class="hl-detail">
+                        全局组件注册在 app.json，骨架屏/Loading弹窗/分类图标等跨页面复用。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">📱</span>
+                        <span class="hl-title">Flutter跨平台编译</span>
+                        <span class="hl-badge new">跨端能力</span>
+                    </div>
+                    <div class="hl-desc">
+                        一套Dart代码同时编译Android APK和iOS IPA，Provider管理状态，Hive本地持久化，GoRouter声明式路由。
+                    </div>
+                    <div class="hl-detail">
+                        小米真机ADB调试，禁用模拟器，确保手势/性能/键盘等真实体验。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 数据 ===== -->
+        <div class="section" id="stats">
+            <div class="section-title">量化成果</div>
+            <div class="stats-strip">
+                <div class="stat-item">
+                    <div class="number orange">74</div>
+                    <div class="label">自动化用例</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number green">100%</div>
+                    <div class="label">测试通过率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number blue">11</div>
+                    <div class="label">测试模块</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number orange">95%+</div>
+                    <div class="label">语音识别率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number green">5</div>
+                    <div class="label">预设主题</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number blue">2</div>
+                    <div class="label">跨平台覆盖</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 链接 ===== -->
+        <div class="section" id="links">
+            <div class="section-title">相关链接</div>
+            <div class="link-cards">
+                <a class="link-card" href="test_cases_report.html">
+                    <div class="lc-icon">🧾</div>
+                    <div>
+                        <div class="lc-title">测试用例报告</div>
+                        <div class="lc-desc">74个用例，11模块全覆盖</div>
+                    </div>
+                    <div class="lc-arrow">→</div>
+                </a>
+                <a class="link-card" href="test_report_v2.html">
+                    <div class="lc-icon">📊</div>
+                    <div>
+                        <div class="lc-title">自动化测试报告V2</div>
+                        <div class="lc-desc">测试结果 + 38张截图</div>
+                    </div>
+                    <div class="lc-arrow">→</div>
+                </a>
+                <a class="link-card" href="https://github.com/Lt0625/wechat-miniprogram-dev2" target="_blank">
+                    <div class="lc-icon">📂</div>
+                    <div>
+                        <div class="lc-title">GitHub 仓库</div>
+                        <div class="lc-desc">源码 + 需求文档</div>
+                    </div>
+                    <div class="lc-arrow">→</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>桔子记账 · 微信原生 + Flutter 跨平台 · 自动化测试驱动</p>
+    </div>
+
+    <script>
+        // NAV active state
+        const navLinks = document.querySelectorAll('.nav a:not(.back-btn)');
+        const sections = ['wechat','flutter','compare','highlights','stats','links'];
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.getBoundingClientRect().top <= 120) current = id;
+            });
+            navLinks.forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+            });
+        });
+    </script>
+</body>
+</html>
