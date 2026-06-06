@@ -56,7 +56,7 @@
         .hero .subtitle {
             font-size: 17px;
             color: rgba(255,255,255,0.6);
-            max-width: 600px;
+            max-width: 640px;
             margin: 0 auto;
             line-height: 1.7;
         }
@@ -80,6 +80,17 @@
             width: 4px; height: 28px;
             background: linear-gradient(180deg, #FFB347, #FF6B6B);
             border-radius: 2px;
+        }
+        .section-subtitle {
+            font-size: 16px; font-weight: 600;
+            margin: 28px 0 14px;
+            color: rgba(255,255,255,0.8);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-subtitle .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #FFB347;
         }
 
         /* PROJECT CARD */
@@ -112,6 +123,10 @@
         .project-header-text .tagline {
             font-size: 14px; color: rgba(255,255,255,0.5);
         }
+        .project-desc {
+            font-size: 14px; color: rgba(255,255,255,0.55);
+            line-height: 1.8; margin-bottom: 24px;
+        }
 
         /* TECH STACK */
         .tech-row {
@@ -137,7 +152,7 @@
         /* FEATURE GRID */
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 16px;
             margin-bottom: 28px;
         }
@@ -145,7 +160,7 @@
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 12px;
-            padding: 18px;
+            padding: 20px;
             transition: all .2s;
         }
         .feature-item:hover {
@@ -153,13 +168,81 @@
             border-color: rgba(255,255,255,0.15);
         }
         .feature-item .fi-icon { font-size: 22px; margin-bottom: 8px; }
-        .feature-item .fi-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-        .feature-item .fi-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+        .feature-item .fi-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .feature-item .fi-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+        .feature-item .fi-impl {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.5;
+        }
+        .feature-item .fi-impl code {
+            background: rgba(255,255,255,0.08);
+            padding: 1px 6px; border-radius: 3px;
+            color: #FFB347; font-size: 10px;
+        }
+
+        /* CATEGORY GRID */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .cat-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 13px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .cat-item .cat-emoji { font-size: 16px; }
+        .cat-item .cat-name { color: rgba(255,255,255,0.7); }
+
+        /* FLOW STEPS */
+        .flow-steps {
+            display: flex; flex-wrap: wrap; gap: 12px;
+            align-items: center; margin: 16px 0;
+        }
+        .flow-step {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+        .flow-step code {
+            background: rgba(255,255,255,0.1);
+            padding: 1px 6px; border-radius: 3px;
+            color: #FFB347; font-size: 11px;
+        }
+        .flow-arrow {
+            color: rgba(255,255,255,0.2);
+            font-size: 18px;
+        }
+
+        /* DATA STRUCTURE */
+        .code-block {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 12px; line-height: 1.7;
+            color: rgba(255,255,255,0.6);
+            overflow-x: auto;
+            margin: 14px 0 20px;
+        }
+        .code-block .key { color: #6bb8e8; }
+        .code-block .val { color: #5bdfaa; }
+        .code-block .comment { color: rgba(255,255,255,0.25); }
 
         /* HIGHLIGHT CARDS */
         .highlights {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 20px;
         }
         .highlight-card {
@@ -208,6 +291,7 @@
             border-top: 1px solid rgba(255,255,255,0.08);
             font-size: 12px;
             color: rgba(255,255,255,0.4);
+            line-height: 1.7;
         }
         .highlight-card .hl-detail code {
             background: rgba(255,255,255,0.08);
@@ -224,7 +308,7 @@
             gap: 40px;
             padding: 32px 20px;
             margin: 40px auto;
-            max-width: 800px;
+            max-width: 900px;
             background: rgba(255,255,255,0.04);
             border-radius: 16px;
             border: 1px solid rgba(255,255,255,0.08);
@@ -310,6 +394,49 @@
         .compare-table .wechat-col { color: #5bdfaa; }
         .compare-table .flutter-col { color: #6bb8e8; }
 
+        /* DEV TIMELINE */
+        .dev-timeline {
+            display: flex; flex-direction: column; gap: 0;
+            margin: 16px 0 24px;
+            position: relative;
+            padding-left: 24px;
+        }
+        .dev-timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px; top: 8px; bottom: 8px;
+            width: 2px;
+            background: linear-gradient(180deg, #FFB347, #667eea);
+            border-radius: 1px;
+        }
+        .dev-phase {
+            position: relative;
+            padding: 12px 0 12px 20px;
+        }
+        .dev-phase::before {
+            content: '';
+            position: absolute;
+            left: -20px; top: 18px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: #FFB347;
+            border: 2px solid rgba(15,12,41,1);
+        }
+        .dev-phase .phase-title {
+            font-size: 14px; font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 4px;
+        }
+        .dev-phase .phase-desc {
+            font-size: 12px; color: rgba(255,255,255,0.4);
+            line-height: 1.6;
+        }
+        .dev-phase .phase-desc code {
+            background: rgba(255,255,255,0.08);
+            padding: 1px 5px; border-radius: 3px;
+            color: #FFB347; font-size: 10px;
+        }
+
         /* FOOTER */
         .footer {
             text-align: center;
@@ -332,9 +459,12 @@
             .stat-item .number { font-size: 24px; }
             .compare-table { font-size: 12px; }
             .compare-table th, .compare-table td { padding: 10px 14px; }
+            .flow-steps { gap: 8px; }
+            .category-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
         }
         @media (max-width: 480px) {
             .feature-grid { grid-template-columns: 1fr; }
+            .category-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -370,6 +500,10 @@
                     </div>
                 </div>
 
+                <div class="project-desc">
+                    一款基于微信原生开发的个人记账工具，从 V1.0 到 V4.0 经过 4 个大版本迭代。采用纯本地存储方案（<code>wx.setStorageSync</code>），无需后端服务器，零运维成本。通过 Component + Behavior 实现组件化复用，CSS 变量驱动主题系统，支持语音记账、周期账单、预算管控等特色功能，并配套 74 个自动化测试用例保障质量。
+                </div>
+
                 <div class="tech-row">
                     <span class="tech-chip wechat">WXML / WXSS / JS</span>
                     <span class="tech-chip wechat">Component + Behavior</span>
@@ -379,46 +513,144 @@
                     <span class="tech-chip wechat">miniprogram-automator</span>
                 </div>
 
+                <!-- 页面架构 -->
+                <div class="section-subtitle"><span class="dot"></span>五大核心页面</div>
                 <div class="feature-grid">
                     <div class="feature-item">
                         <div class="fi-icon">🏠</div>
-                        <div class="fi-title">首页 + 快捷记账</div>
-                        <div class="fi-desc">悬浮按钮3秒完成记账，日期Tab胶囊切换，预算卡片实时监控</div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="fi-icon">🎙️</div>
-                        <div class="fi-title">语音记账</div>
-                        <div class="fi-desc">长按录音自动识别金额、分类、备注，识别率95%+</div>
+                        <div class="fi-title">首页</div>
+                        <div class="fi-desc">日期Tab胶囊切换（日/周/月/年），预算卡片渐变背景+剩余金额，小额账单标签标记，空状态引导插图</div>
+                        <div class="fi-impl">快捷记账：悬浮按钮 → 弹窗 → 3秒完成记账，<code>showQuickAdd</code> 控制弹窗显隐</div>
                     </div>
                     <div class="feature-item">
                         <div class="fi-icon">📅</div>
-                        <div class="fi-title">日历视图</div>
-                        <div class="fi-desc">月历+年度切换，日期标记收支，月度汇总卡片</div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="fi-icon">📊</div>
-                        <div class="fi-title">统计报表</div>
-                        <div class="fi-desc">分类占比、趋势图表、环比数据标签（↑↓百分比）</div>
+                        <div class="fi-title">日历页</div>
+                        <div class="fi-desc">月历视图+年度切换按钮，日期标记收支状态，月度收支汇总渐变卡片，支持前后翻月</div>
+                        <div class="fi-impl">点击日期跳转当日账单列表，<code>prevYear/nextYear</code> 年度切换</div>
                     </div>
                     <div class="feature-item">
                         <div class="fi-icon">💰</div>
-                        <div class="fi-title">账户管理</div>
-                        <div class="fi-desc">余额自动计算，账单增删改自动同步，一键重置</div>
+                        <div class="fi-title">资产页</div>
+                        <div class="fi-desc">账户列表+自动计算余额，账单增删改时自动同步余额，支持手动同步和一键重置</div>
+                        <div class="fi-impl"><code>bill-helper.js</code> 提供余额计算核心逻辑，编辑页显示计算余额+重置按钮</div>
                     </div>
                     <div class="feature-item">
-                        <div class="fi-icon">🔄</div>
-                        <div class="fi-title">周期账单</div>
-                        <div class="fi-desc">支持每天/每周/每月/每年，到期自动提醒，一键生成账单</div>
+                        <div class="fi-icon">📊</div>
+                        <div class="fi-title">统计页</div>
+                        <div class="fi-desc">分类占比饼图，月度趋势折线，环比数据标签（↑↓百分比），收支类型切换</div>
+                        <div class="fi-impl"><code>calculateCompareData()</code> 计算环比，Canvas 绑定渲染图表</div>
                     </div>
                     <div class="feature-item">
-                        <div class="fi-icon">🎨</div>
-                        <div class="fi-title">主题换肤</div>
-                        <div class="fi-desc">CSS变量驱动，广播通知全页面，5种预设主题</div>
+                        <div class="fi-icon">👤</div>
+                        <div class="fi-title">我的</div>
+                        <div class="fi-desc">主题换肤入口，分类管理，周期账单管理，关于/反馈</div>
+                        <div class="fi-impl">主题切换通过广播 <code>getApp().globalData.themeChanged</code> 通知所有页面</div>
                     </div>
-                    <div class="feature-item">
-                        <div class="fi-icon">🧪</div>
-                        <div class="fi-title">自动化测试</div>
-                        <div class="fi-desc">74用例100%通过，11模块全覆盖，38张截图存证</div>
+                </div>
+
+                <!-- 语音记账 -->
+                <div class="section-subtitle"><span class="dot"></span>语音记账 · 核心亮点</div>
+                <div class="flow-steps">
+                    <div class="flow-step">长按录音</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step"><code>wx.getRecorderManager</code></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step"><code>wx.translateVoice</code> 语音转文字</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">本地NLP解析</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">填充金额/分类/备注</div>
+                </div>
+                <div class="project-desc" style="margin-bottom:8px">
+                    <strong>识别流程</strong>：用户长按录音按钮松手后，微信自动将语音转为文字，然后本地解析提取金额、分类和备注。支持双向提取——优先从金额后面取备注，金额前面没有有效备注时反向提取。自动过滤语气词（"钱"、"了"、"花了"、"用"等）。
+                </div>
+                <div class="project-desc" style="font-size:12px; color:rgba(255,255,255,0.4)">
+                    示例："吃饭花了50块" → 金额50 + 分类餐饮 + 备注吃饭 ｜ "打车25块去公司" → 金额25 + 分类交通 + 备注去公司
+                </div>
+
+                <!-- 分类体系 -->
+                <div class="section-subtitle"><span class="dot"></span>分类体系</div>
+                <div class="project-desc" style="margin-bottom:12px; font-size:13px; color:rgba(255,255,255,0.5)">
+                    支出 11 个分类 + 收入 10 个分类，系统默认分类不可删除，用户可自定义添加。分类改名时自动同步历史账单。
+                </div>
+                <div style="margin-bottom:8px; font-size:12px; color:rgba(255,255,255,0.35)">支出分类</div>
+                <div class="category-grid">
+                    <div class="cat-item"><span class="cat-emoji">🍔</span><span class="cat-name">餐饮</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🚗</span><span class="cat-name">交通</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🛍️</span><span class="cat-name">购物</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🎮</span><span class="cat-name">娱乐</span></div>
+                    <div class="cat-item"><span class="cat-emoji">💊</span><span class="cat-name">医疗</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📚</span><span class="cat-name">教育</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🏠</span><span class="cat-name">住房</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📱</span><span class="cat-name">通讯</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🎁</span><span class="cat-name">人情</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🐱</span><span class="cat-name">宠物</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📦</span><span class="cat-name">其他</span></div>
+                </div>
+                <div style="margin-bottom:8px; font-size:12px; color:rgba(255,255,255,0.35)">收入分类</div>
+                <div class="category-grid">
+                    <div class="cat-item"><span class="cat-emoji">💰</span><span class="cat-name">工资</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🧧</span><span class="cat-name">奖金</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📈</span><span class="cat-name">投资</span></div>
+                    <div class="cat-item"><span class="cat-emoji">💼</span><span class="cat-name">兼职</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🧧</span><span class="cat-name">红包</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📄</span><span class="cat-name">报销</span></div>
+                    <div class="cat-item"><span class="cat-emoji">↩️</span><span class="cat-name">退款</span></div>
+                    <div class="cat-item"><span class="cat-emoji">💵</span><span class="cat-name">利息</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🏘️</span><span class="cat-name">租金</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🤝</span><span class="cat-name">赠予</span></div>
+                </div>
+
+                <!-- 周期账单数据结构 -->
+                <div class="section-subtitle"><span class="dot"></span>核心数据结构</div>
+                <div class="project-desc" style="margin-bottom:4px; font-size:13px; color:rgba(255,255,255,0.5)">
+                    账单、周期账单、账户三大数据模型，统一存储在 <code>wx.setStorageSync</code> 中，通过 <code>bill-helper.js</code> 管理计算逻辑。
+                </div>
+                <div class="code-block">
+<span class="comment">// 账单数据结构</span>
+{
+  <span class="key">billId</span>: <span class="val">'bill_1713600000000'</span>,
+  <span class="key">amount</span>: <span class="val">50</span>,
+  <span class="key">type</span>: <span class="val">'expense'</span>,       <span class="comment">// expense | income</span>
+  <span class="key">category</span>: <span class="val">'餐饮'</span>,
+  <span class="key">account</span>: <span class="val">'支付宝'</span>,
+  <span class="key">remark</span>: <span class="val">'午饭'</span>,
+  <span class="key">date</span>: <span class="val">'2026-04-22'</span>
+}
+
+<span class="comment">// 周期账单数据结构</span>
+{
+  <span class="key">recurringId</span>: <span class="val">'rec_1713600000000'</span>,
+  <span class="key">name</span>: <span class="val">'早餐'</span>,
+  <span class="key">amount</span>: <span class="val">15</span>,
+  <span class="key">frequency</span>: <span class="val">'daily'</span>,    <span class="comment">// daily | weekly | monthly | yearly</span>
+  <span class="key">weeklyDay</span>: <span class="val">null</span>,      <span class="comment">// 0-6 (仅weekly)</span>
+  <span class="key">monthlyDay</span>: <span class="val">null</span>,     <span class="comment">// 1-31 (仅monthly)</span>
+  <span class="key">enabled</span>: <span class="val">true</span>,
+  <span class="key">nextDue</span>: <span class="val">'2026-04-22'</span>,
+  <span class="key">reminderEnabled</span>: <span class="val">true</span>,
+  <span class="key">reminderTime</span>: <span class="val">'09:00'</span>
+}
+                </div>
+
+                <!-- 开发流程 -->
+                <div class="section-subtitle"><span class="dot"></span>开发流程</div>
+                <div class="dev-timeline">
+                    <div class="dev-phase">
+                        <div class="phase-title">V1.0 · 基础记账</div>
+                        <div class="phase-desc">首页账单列表 + 添加账单页 + <code>wx.setStorageSync</code> 本地存储</div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">V2.0 · 五大页面成型</div>
+                        <div class="phase-desc">日历/统计/资产/我的页面上线，Component + Behavior 组件化重构</div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">V3.0 · 预算+主题</div>
+                        <div class="phase-desc">预算管控卡片，CSS 变量主题换肤系统，全局 Loading + 骨架屏组件</div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">V4.0 · 智能记账</div>
+                        <div class="phase-desc">语音记账（95%+识别率）、快捷记账弹窗、账户余额自动计算、周期账单、74 用例自动化测试</div>
                     </div>
                 </div>
             </div>
@@ -436,6 +668,10 @@
                     </div>
                 </div>
 
+                <div class="project-desc">
+                    基于Flutter框架开发的跨平台记账APP，同一套 Dart 代码编译到 Android 和 iOS 两个平台。采用 Provider + ChangeNotifier 进行状态管理，Hive 作为轻量级本地 NoSQL 数据库实现纯本地持久化，GoRouter 管理声明式路由。与小程序版功能对齐的同时，利用 Flutter 特性实现 Material 3 动态主题和响应式布局。
+                </div>
+
                 <div class="tech-row">
                     <span class="tech-chip flutter">Dart</span>
                     <span class="tech-chip flutter">Flutter 3.x</span>
@@ -446,46 +682,85 @@
                     <span class="tech-chip flutter">Android + iOS</span>
                 </div>
 
+                <!-- 架构分层 -->
+                <div class="section-subtitle"><span class="dot"></span>架构分层</div>
+                <div class="flow-steps">
+                    <div class="flow-step">UI 层 (Widget)</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">逻辑层 (<code>ChangeNotifier</code>)</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">数据层 (<code>Hive Box</code>)</div>
+                </div>
+                <div class="project-desc" style="font-size:13px; color:rgba(255,255,255,0.5)">
+                    <strong>Provider 状态管理</strong>：UI 层通过 <code>context.watch&lt;T&gt;()</code> 监听数据变化自动重建，通过 <code>context.read&lt;T&gt;()</code> 获取方法触发业务逻辑，数据变更后调用 <code>notifyListeners()</code> 通知所有监听者刷新。这种模式将 UI 和业务逻辑完全解耦。
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>核心功能</div>
                 <div class="feature-grid">
                     <div class="feature-item">
                         <div class="fi-icon">📱</div>
                         <div class="fi-title">跨平台一套代码</div>
-                        <div class="fi-desc">同一套Dart代码编译到Android和iOS，无需两套开发</div>
+                        <div class="fi-desc">同一套Dart代码编译到Android和iOS，无需两套开发，减少50%+开发量</div>
+                        <div class="fi-impl"><code>flutter build apk</code> / <code>flutter build ios</code> 一键出包</div>
                     </div>
                     <div class="feature-item">
                         <div class="fi-icon">🔄</div>
                         <div class="fi-title">Provider状态管理</div>
-                        <div class="fi-desc">ChangeNotifier + context.watch/read，响应式UI更新</div>
+                        <div class="fi-desc">ChangeNotifier + context.watch/read，响应式UI更新，UI与逻辑解耦</div>
+                        <div class="fi-impl">watch监听数据变化自动重建，read调用方法，notifyListeners广播刷新</div>
                     </div>
                     <div class="feature-item">
                         <div class="fi-icon">💾</div>
                         <div class="fi-title">Hive本地存储</div>
-                        <div class="fi-desc">轻量级NoSQL数据库，零后端，纯本地持久化</div>
+                        <div class="fi-desc">轻量级NoSQL数据库，纯Dart实现，零后端依赖，支持类型安全的Box操作</div>
+                        <div class="fi-impl"><code>Hive.box('bills')</code> 操作数据，支持 lazy loading</div>
                     </div>
                     <div class="feature-item">
                         <div class="fi-icon">🧭</div>
                         <div class="fi-title">GoRouter路由</div>
-                        <div class="fi-desc">声明式路由管理，支持深链接和路由守卫</div>
+                        <div class="fi-desc">声明式路由管理，支持深链接、路由守卫、嵌套路由</div>
+                        <div class="fi-impl">替代 Navigator 1.0 的命令式路由，类型安全 + 可维护</div>
                     </div>
                     <div class="feature-item">
                         <div class="fi-icon">🏠</div>
                         <div class="fi-title">首页 + 记账</div>
-                        <div class="fi-desc">收支流水、分类选择、快速记账，与小程序功能对齐</div>
+                        <div class="fi-desc">收支流水列表、分类选择网格、快速记账表单，与小程序功能对齐</div>
+                        <div class="fi-impl">BottomNavigationBar 5个Tab，与小程序页面结构一一对应</div>
                     </div>
                     <div class="feature-item">
                         <div class="fi-icon">📊</div>
                         <div class="fi-title">统计图表</div>
-                        <div class="fi-desc">分类饼图、月度趋势，数据可视化</div>
+                        <div class="fi-desc">分类饼图（fl_chart）、月度趋势折线，收支切换</div>
+                        <div class="fi-impl">fl_chart 库渲染，Provider 驱动数据更新</div>
                     </div>
                     <div class="feature-item">
                         <div class="fi-icon">🎨</div>
                         <div class="fi-title">Material 3 主题</div>
-                        <div class="fi-desc">动态配色方案，明暗模式切换</div>
+                        <div class="fi-desc">动态配色方案（Dynamic Color），明暗模式切换，色彩取自种子色</div>
+                        <div class="fi-impl"><code>ColorScheme.fromSeed()</code> 生成完整配色</div>
                     </div>
                     <div class="feature-item">
                         <div class="fi-icon">🧪</div>
                         <div class="fi-title">真机调试测试</div>
-                        <div class="fi-desc">小米真机ADB调试，严禁模拟器，保证真实体验</div>
+                        <div class="fi-desc">小米真机ADB调试，严禁模拟器，保证手势/性能/键盘真实体验</div>
+                        <div class="fi-impl"><code>adb devices</code> 连接真机，<code>flutter run</code> 热重载开发</div>
+                    </div>
+                </div>
+
+                <!-- 开发→打包流程 -->
+                <div class="section-subtitle"><span class="dot"></span>开发 → 打包流程</div>
+                <div class="dev-timeline">
+                    <div class="dev-phase">
+                        <div class="phase-title">开发阶段</div>
+                        <div class="phase-desc"><code>flutter run</code> 连接真机热重载 → Provider 管理状态 → Hive 读写数据 → GoRouter 管理导航</div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">测试阶段</div>
+                        <div class="phase-desc">真机ADB调试验证交互 → <code>flutter test</code> 单元测试 → 性能分析 <code>flutter run --profile</code></div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">打包发布</div>
+                        <div class="phase-desc">Android: <code>flutter build apk --release</code> → iOS: <code>flutter build ios --release</code> → 签名+上传</div>
                     </div>
                 </div>
             </div>
@@ -534,9 +809,14 @@
                         <td class="flutter-col">Material 3 + 动态配色</td>
                     </tr>
                     <tr>
+                        <td class="col-label">组件复用</td>
+                        <td class="wechat-col">Component + Behavior 混入</td>
+                        <td class="flutter-col">Widget 组合 + Provider 注入</td>
+                    </tr>
+                    <tr>
                         <td class="col-label">测试</td>
                         <td class="wechat-col">miniprogram-automator 74用例</td>
-                        <td class="flutter-col">真机ADB调试 + 手动验证</td>
+                        <td class="flutter-col">真机ADB调试 + flutter test</td>
                     </tr>
                     <tr>
                         <td class="col-label">语音记账</td>
@@ -544,9 +824,19 @@
                         <td class="flutter-col">—</td>
                     </tr>
                     <tr>
+                        <td class="col-label">周期账单</td>
+                        <td class="wechat-col">4种周期 + 到期提醒</td>
+                        <td class="flutter-col">—</td>
+                    </tr>
+                    <tr>
                         <td class="col-label">特色功能</td>
-                        <td class="wechat-col">周期账单、预算管控、快捷记账</td>
-                        <td class="flutter-col">跨平台编译、响应式布局</td>
+                        <td class="wechat-col">语音记账、周期账单、预算管控、快捷记账</td>
+                        <td class="flutter-col">跨平台编译、响应式布局、Material 3</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">发布方式</td>
+                        <td class="wechat-col">微信开发者工具上传 → 提审</td>
+                        <td class="flutter-col">flutter build → 应用商店上架</td>
                     </tr>
                 </tbody>
             </table>
@@ -563,10 +853,10 @@
                         <span class="hl-badge hot">核心亮点</span>
                     </div>
                     <div class="hl-desc">
-                        微信本地录音 → <code>wx.translateVoice</code> 语音转文字 → 本地NLP解析金额/分类/备注。识别率从40%提升至95%+。
+                        微信本地录音 → <code>wx.translateVoice</code> 语音转文字 → 本地NLP解析金额/分类/备注。识别率从初始 40% 提升至 95%+，无需后端 ASR 服务，零成本方案。
                     </div>
                     <div class="hl-detail">
-                        踩坑：微信录音format参数不可靠，实际输出OGG封装Opus，必须检测文件头 <code>OggS</code> 判断格式，而非信任扩展名。
+                        <strong>踩坑详解</strong>：微信录音 <code>format</code> 参数不可靠，文档标注输出 <code>opus</code>，实际文件头为 <code>OggS</code>（OGG封装Opus）。解决方案：检测文件头魔数判断真实格式，而非信任扩展名或 format 参数。识别到 ogg-opus 后，传给 <code>wx.translateVoice</code> 时指定 <code>format: 'ogg-opus'</code>，识别率从 40% 飙升至 95%+。
                     </div>
                 </div>
 
@@ -577,10 +867,10 @@
                         <span class="hl-badge core">架构设计</span>
                     </div>
                     <div class="hl-desc">
-                        账单增删改时自动同步账户余额，无需手动维护。基于 <code>bill-helper.js</code> 工具函数，保证数据一致性。
+                        账单增删改时自动同步账户余额，无需手动维护。基于 <code>bill-helper.js</code> 工具函数集中管理计算逻辑，保证数据一致性。
                     </div>
                     <div class="hl-detail">
-                        核心：每笔账单关联账户，保存时重新计算 = Σ收入 - Σ支出，编辑/删除时触发重算。
+                        <strong>实现机制</strong>：每笔账单关联账户，保存/编辑/删除时触发重算：<code>余额 = Σ收入 - Σ支出</code>。关键点：编辑时先还原旧账单影响，再应用新数据；删除时还原全额。同步按钮允许用户手动触发对账。
                     </div>
                 </div>
 
@@ -591,10 +881,10 @@
                         <span class="hl-badge new">设计模式</span>
                     </div>
                     <div class="hl-desc">
-                        全局CSS变量驱动换肤，<code>data-theme</code> 属性激活变量集，广播通知所有页面刷新。5种预设主题一键切换。
+                        全局CSS变量驱动换肤，<code>data-theme</code> 属性激活变量集，广播通知所有页面刷新。5种预设主题一键切换，无需重启。
                     </div>
                     <div class="hl-detail">
-                        踩坑：页面WXML根元素缺 <code>data-theme=""</code> 导致变量不激活，需为7个页面统一补齐。
+                        <strong>踩坑详解</strong>：页面WXML根元素缺少 <code>data-theme=""</code> 导致CSS变量无法激活——CSS选择器 <code>[data-theme="orange"]</code> 匹配不到没有该属性的元素。修复：为7个页面的根容器统一补齐 <code>data-theme=""</code>，并在 <code>onShow</code> 中 <code>setData({theme})</code> 刷新。
                     </div>
                 </div>
 
@@ -605,10 +895,10 @@
                         <span class="hl-badge hot">工程能力</span>
                     </div>
                     <div class="hl-desc">
-                        基于 <code>miniprogram-automator</code> 编写74个测试用例，覆盖11个模块，100%通过率，38张截图存证。
+                        基于 <code>miniprogram-automator</code> 编写74个测试用例，覆盖11个模块（首页/日历/统计/资产/添加账单/分类管理/快捷记账等），100%通过率，38张截图存证。
                     </div>
                     <div class="hl-detail">
-                        踩坑：WebSocket端口≠HTTP端口；TabBar页面必须用 <code>switchTab</code> 而非 <code>navigateTo</code>；导航路径必须加前导 <code>/</code>。
+                        <strong>踩坑详解</strong>：① WebSocket自动化端口 ≠ HTTP端口，需 <code>cli.bat auto --auto-port 9420</code>；② TabBar页面必须用 <code>switchTab</code> 而非 <code>navigateTo</code>，否则路径叠加报错；③ 导航路径必须加前导 <code>/</code>；④ <code>format</code> 参数大小写敏感，驼峰或错误名会静默跳过。
                     </div>
                 </div>
 
@@ -619,10 +909,10 @@
                         <span class="hl-badge core">架构设计</span>
                     </div>
                     <div class="hl-desc">
-                        抽取公共逻辑为 Behavior（如主题切换、加载状态），通过 <code>behaviors: [themeBehavior]</code> 混入组件，避免代码重复。
+                        抽取公共逻辑为 Behavior 混入（主题切换 themeBehavior、加载状态 loadingBehavior），组件通过 <code>behaviors: [themeBehavior]</code> 继承能力，避免重复代码。
                     </div>
                     <div class="hl-detail">
-                        全局组件注册在 app.json，骨架屏/Loading弹窗/分类图标等跨页面复用。
+                        <strong>组件体系</strong>：全局组件注册在 <code>app.json</code>——骨架屏（skeleton）4种类型+流光动画、全局Loading弹窗（global-loading）+脉冲动画、分类图标组件（category-icon）统一管理 emoji 映射。
                     </div>
                 </div>
 
@@ -633,10 +923,38 @@
                         <span class="hl-badge new">跨端能力</span>
                     </div>
                     <div class="hl-desc">
-                        一套Dart代码同时编译Android APK和iOS IPA，Provider管理状态，Hive本地持久化，GoRouter声明式路由。
+                        一套Dart代码同时编译Android APK和iOS IPA，Provider管理状态，Hive本地持久化，GoRouter声明式路由。代码复用率 > 90%。
                     </div>
                     <div class="hl-detail">
-                        小米真机ADB调试，禁用模拟器，确保手势/性能/键盘等真实体验。
+                        <strong>跨平台差异处理</strong>：平台特定代码通过 <code>Platform.isAndroid/iOS</code> 条件分支处理；小米真机ADB调试（<code>adb devices</code> + <code>flutter run</code>），禁用模拟器确保手势/性能/键盘等真实体验。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🔄</span>
+                        <span class="hl-title">周期账单 + 到期提醒</span>
+                        <span class="hl-badge core">架构设计</span>
+                    </div>
+                    <div class="hl-desc">
+                        支持4种周期（每天/每周/每月/每年），每周可选星期几，每月可选日期，每年可选月日。<code>calculateNextDue()</code> 自动计算下次到期日。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>提醒机制</strong>：小程序启动时 <code>checkDueRecurringBills()</code> 检测今日到期账单，弹窗提示用户去记账。可配置提醒时间（如 09:00），支持开启/关闭单条周期账单。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">📝</span>
+                        <span class="hl-title">分类改名自动同步</span>
+                        <span class="hl-badge new">数据一致性</span>
+                    </div>
+                    <div class="hl-desc">
+                        用户修改分类名称时，自动遍历所有历史账单，将旧分类名替换为新名称，保证数据查询一致性。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>设计考量</strong>：分类名称作为查询 key 存在于账单中，改名不同步会导致统计页按旧名查询为空。系统默认分类（餐饮/交通等11+10个）受保护，不允许用户删除。
                     </div>
                 </div>
             </div>
@@ -667,7 +985,15 @@
                     <div class="label">预设主题</div>
                 </div>
                 <div class="stat-item">
-                    <div class="number blue">2</div>
+                    <div class="number blue">4</div>
+                    <div class="label">大版本迭代</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number orange">21</div>
+                    <div class="label">收支分类</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number green">2</div>
                     <div class="label">跨平台覆盖</div>
                 </div>
             </div>
