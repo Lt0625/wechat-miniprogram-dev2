@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flutter 记账 APP · 项目介绍</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* NAV */
+        .nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(15,12,41,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 0 24px;
+            display: flex; align-items: center; gap: 8px;
+            height: 52px; overflow-x: auto;
+        }
+        .nav a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 13px; font-weight: 500;
+            padding: 6px 14px; border-radius: 20px;
+            white-space: nowrap; transition: all .2s;
+        }
+        .nav a:hover, .nav a.active {
+            color: #6bb8e8;
+            background: rgba(4,116,189,0.1);
+        }
+        .nav .back-btn { margin-right: auto; color: rgba(255,255,255,0.5); }
+        .nav .back-btn:hover { color: #6bb8e8; }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 64px 20px 40px;
+        }
+        .hero h1 {
+            font-size: 40px; font-weight: 800;
+            background: linear-gradient(135deg, #6bb8e8, #0474BD);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        .hero .subtitle {
+            font-size: 17px;
+            color: rgba(255,255,255,0.6);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        /* SECTION */
+        .section { margin-top: 56px; }
+        .section-title {
+            font-size: 22px; font-weight: 700;
+            margin-bottom: 24px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-title::before {
+            content: '';
+            width: 4px; height: 28px;
+            background: linear-gradient(180deg, #6bb8e8, #0474BD);
+            border-radius: 2px;
+        }
+        .section-subtitle {
+            font-size: 16px; font-weight: 600;
+            margin: 28px 0 14px;
+            color: rgba(255,255,255,0.8);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-subtitle .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #6bb8e8;
+        }
+
+        /* PROJECT CARD */
+        .project-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        .project-desc {
+            font-size: 14px; color: rgba(255,255,255,0.55);
+            line-height: 1.8; margin-bottom: 24px;
+        }
+        .project-desc strong { color: rgba(255,255,255,0.8); }
+
+        /* TECH STACK */
+        .tech-row {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 28px;
+        }
+        .tech-chip {
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-size: 12px; font-weight: 500;
+            background: rgba(4,116,189,0.12);
+            border: 1px solid rgba(4,116,189,0.25);
+            color: #6bb8e8;
+        }
+
+        /* FEATURE GRID */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .feature-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all .2s;
+        }
+        .feature-item:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.15);
+        }
+        .feature-item .fi-icon { font-size: 22px; margin-bottom: 8px; }
+        .feature-item .fi-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .feature-item .fi-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+        .feature-item .fi-impl {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.5;
+        }
+        .feature-item .fi-impl code {
+            background: rgba(255,255,255,0.08);
+            padding: 1px 6px; border-radius: 3px;
+            color: #6bb8e8; font-size: 10px;
+        }
+
+        /* FLOW STEPS */
+        .flow-steps {
+            display: flex; flex-wrap: wrap; gap: 12px;
+            align-items: center; margin: 16px 0;
+        }
+        .flow-step {
+            background: rgba(4,116,189,0.08);
+            border: 1px solid rgba(4,116,189,0.2);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+        .flow-step code {
+            background: rgba(255,255,255,0.1);
+            padding: 1px 6px; border-radius: 3px;
+            color: #6bb8e8; font-size: 11px;
+        }
+        .flow-arrow { color: rgba(255,255,255,0.2); font-size: 18px; }
+
+        /* CODE BLOCK */
+        .code-block {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 12px; line-height: 1.7;
+            color: rgba(255,255,255,0.6);
+            overflow-x: auto;
+            margin: 14px 0 20px;
+        }
+        .code-block .key { color: #6bb8e8; }
+        .code-block .val { color: #5bdfaa; }
+        .code-block .comment { color: rgba(255,255,255,0.25); }
+        .code-block .highlight { color: #FFB347; }
+
+        /* HIGHLIGHT CARDS */
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        .highlight-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all .3s;
+        }
+        .highlight-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+        }
+        .highlight-card .hl-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 14px;
+        }
+        .highlight-card .hl-icon { font-size: 28px; }
+        .highlight-card .hl-title { font-size: 17px; font-weight: 700; }
+        .highlight-card .hl-badge {
+            font-size: 10px; font-weight: 600;
+            padding: 3px 10px; border-radius: 10px;
+            margin-left: auto;
+        }
+        .hl-badge.hot { background: linear-gradient(135deg, #f5af19, #f12711); color: white; }
+        .hl-badge.core { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+        .hl-badge.new { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .highlight-card .hl-desc {
+            font-size: 13px; color: rgba(255,255,255,0.55);
+            line-height: 1.7;
+        }
+        .highlight-card .hl-desc code {
+            background: rgba(255,255,255,0.08);
+            padding: 1px 6px; border-radius: 3px;
+            color: #6bb8e8; font-size: 11px;
+        }
+        .highlight-card .hl-detail {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.7;
+        }
+        .highlight-card .hl-detail code {
+            background: rgba(255,255,255,0.08);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #6bb8e8;
+        }
+
+        /* STATS BAR */
+        .stats-strip {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 32px 20px;
+            margin: 40px auto;
+            max-width: 900px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .stat-item { text-align: center; }
+        .stat-item .number { font-size: 32px; font-weight: 800; }
+        .stat-item .number.blue {
+            background: linear-gradient(135deg, #6bb8e8, #0474BD);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .number.green {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .number.orange {
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .label { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+        /* TABLE */
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin: 14px 0 20px;
+        }
+        .detail-table th {
+            text-align: left;
+            padding: 14px 20px;
+            font-weight: 600;
+            background: rgba(4,116,189,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #6bb8e8;
+            font-size: 13px;
+        }
+        .detail-table td {
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.65);
+        }
+        .detail-table tr:last-child td { border-bottom: none; }
+        .detail-table .col-label { color: rgba(255,255,255,0.4); font-weight: 500; width: 160px; }
+
+        /* DEV TIMELINE */
+        .dev-timeline {
+            display: flex; flex-direction: column; gap: 0;
+            margin: 16px 0 24px;
+            position: relative;
+            padding-left: 24px;
+        }
+        .dev-timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px; top: 8px; bottom: 8px;
+            width: 2px;
+            background: linear-gradient(180deg, #6bb8e8, #0474BD);
+            border-radius: 1px;
+        }
+        .dev-phase {
+            position: relative;
+            padding: 12px 0 12px 20px;
+        }
+        .dev-phase::before {
+            content: '';
+            position: absolute;
+            left: -20px; top: 18px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: #6bb8e8;
+            border: 2px solid rgba(15,12,41,1);
+        }
+        .dev-phase .phase-title {
+            font-size: 14px; font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 4px;
+        }
+        .dev-phase .phase-desc {
+            font-size: 12px; color: rgba(255,255,255,0.4);
+            line-height: 1.6;
+        }
+        .dev-phase .phase-desc code {
+            background: rgba(255,255,255,0.08);
+            padding: 1px 5px; border-radius: 3px;
+            color: #6bb8e8; font-size: 10px;
+        }
+
+        /* LINK CARDS */
+        .link-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .link-card {
+            display: flex; align-items: center; gap: 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 22px 24px;
+            text-decoration: none; color: #fff;
+            transition: all .3s;
+        }
+        .link-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .link-card .lc-icon { font-size: 32px; flex-shrink: 0; }
+        .link-card .lc-title { font-size: 15px; font-weight: 600; }
+        .link-card .lc-desc { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+        .link-card .lc-arrow { margin-left: auto; font-size: 18px; color: rgba(255,255,255,0.25); }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255,255,255,0.25);
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 28px; }
+            .project-card { padding: 24px; }
+            .feature-grid { grid-template-columns: 1fr 1fr; }
+            .highlights { grid-template-columns: 1fr; }
+            .stats-strip { gap: 20px; flex-wrap: wrap; }
+            .stat-item .number { font-size: 24px; }
+            .flow-steps { gap: 8px; }
+        }
+        @media (max-width: 480px) {
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAV -->
+    <nav class="nav">
+        <a href="index.html" class="back-btn">← 返回首页</a>
+        <a href="#overview" class="active">概览</a>
+        <a href="#architecture">架构设计</a>
+        <a href="#features">核心功能</a>
+        <a href="#provider">Provider详解</a>
+        <a href="#dev">开发流程</a>
+        <a href="#highlights">技术亮点</a>
+        <a href="#stats">量化成果</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h1>🔵 Flutter 记账 APP</h1>
+        <div class="subtitle">Flutter 跨平台开发 · Dart 语言 · 一套代码 Android + iOS 双端运行 · Provider 状态管理 · Hive 本地持久化</div>
+    </div>
+
+    <div class="container">
+
+        <!-- ===== 项目概览 ===== -->
+        <div class="section" id="overview">
+            <div class="section-title">项目概览</div>
+            <div class="project-card">
+                <div class="project-desc">
+                    基于 <strong>Flutter</strong> 框架开发的跨平台记账APP，同一套 <strong>Dart</strong> 代码编译到 <strong>Android 和 iOS</strong> 两个平台，代码复用率 &gt; 90%。采用 <strong>Provider + ChangeNotifier</strong> 进行响应式状态管理，<strong>Hive</strong> 作为轻量级本地 NoSQL 数据库实现纯本地持久化，<strong>GoRouter</strong> 管理声明式路由。与小程序版功能对齐的同时，利用 Flutter 特性实现 <strong>Material 3</strong> 动态主题和响应式布局。
+                </div>
+                <div class="project-desc">
+                    开发过程中坚持<strong>真机调试</strong>（小米设备 ADB 连接），严禁使用模拟器，确保手势交互、性能表现、软键盘行为等均为真实体验。通过 <code>flutter run --profile</code> 进行性能分析，保障 60fps 流畅度。
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>技术栈</div>
+                <div class="tech-row">
+                    <span class="tech-chip">Dart</span>
+                    <span class="tech-chip">Flutter 3.x</span>
+                    <span class="tech-chip">Provider + ChangeNotifier</span>
+                    <span class="tech-chip">Hive (NoSQL)</span>
+                    <span class="tech-chip">GoRouter</span>
+                    <span class="tech-chip">Material 3</span>
+                    <span class="tech-chip">fl_chart 图表</span>
+                    <span class="tech-chip">Android + iOS 双端</span>
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>技术选型理由</div>
+                <table class="detail-table">
+                    <thead><tr><th>选型</th><th>理由</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-label">Flutter vs React Native</td>
+                            <td>自绘引擎无需桥接，性能接近原生；Dart 强类型+空安全，编译时捕获错误；Widget 组合模式灵活度高于 RN 的组件映射</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">Provider vs Bloc/Riverpod</td>
+                            <td>Provider 是官方推荐方案，学习曲线平缓；ChangeNotifier 模式直觉友好，适合中小型项目；Bloc 过重，Riverpod 编译时安全但学习成本高</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">Hive vs SharedPreferences/SQLite</td>
+                            <td>Hive 是纯 Dart 实现的 NoSQL 数据库，无需原生插件，类型安全的 Box 操作，支持 lazy loading，性能优于 SQLite 的 ORM 开销</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">GoRouter vs Navigator 1.0</td>
+                            <td>声明式路由，支持深链接、路由守卫、嵌套路由、重定向；Navigator 1.0 命令式 push/pop 难以维护复杂导航栈</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== 架构设计 ===== -->
+        <div class="section" id="architecture">
+            <div class="section-title">架构设计</div>
+            <div class="project-card">
+                <div class="section-subtitle"><span class="dot"></span>三层架构</div>
+                <div class="flow-steps">
+                    <div class="flow-step" style="border-color:rgba(107,184,232,0.4); background:rgba(4,116,189,0.12)">
+                        <strong>UI 层</strong> (Widget)<br>
+                        <span style="font-size:11px;color:rgba(255,255,255,0.4)">展示界面 + 用户交互</span>
+                    </div>
+                    <span class="flow-arrow">⇄</span>
+                    <div class="flow-step" style="border-color:rgba(91,223,170,0.4); background:rgba(7,193,96,0.12)">
+                        <strong>逻辑层</strong> (<code>ChangeNotifier</code>)<br>
+                        <span style="font-size:11px;color:rgba(255,255,255,0.4)">业务逻辑 + 状态管理</span>
+                    </div>
+                    <span class="flow-arrow">⇄</span>
+                    <div class="flow-step" style="border-color:rgba(255,179,71,0.4); background:rgba(255,179,71,0.12)">
+                        <strong>数据层</strong> (<code>Hive Box</code>)<br>
+                        <span style="font-size:11px;color:rgba(255,255,255,0.4)">本地持久化存储</span>
+                    </div>
+                </div>
+
+                <div class="project-desc">
+                    <strong>数据流向</strong>：UI 层通过 <code>context.watch&lt;T&gt;()</code> 监听逻辑层数据变化自动重建，通过 <code>context.read&lt;T&gt;()</code> 调用逻辑层方法触发业务操作。逻辑层操作 Hive Box 读写数据，数据变更后调用 <code>notifyListeners()</code> 通知所有监听者刷新 UI。这种模式将 UI 和业务逻辑<strong>完全解耦</strong>。
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>目录结构</div>
+                <div class="code-block">
+<span class="comment">// Flutter 项目目录结构</span>
+lib/
+├── <span class="key">main.dart</span>                  <span class="comment">// 入口 + Provider 注册</span>
+├── <span class="key">models/</span>                     <span class="comment">// 数据模型</span>
+│   ├── bill.dart              <span class="comment">// 账单模型</span>
+│   ├── account.dart           <span class="comment">// 账户模型</span>
+│   └── category.dart          <span class="comment">// 分类模型</span>
+├── <span class="key">providers/</span>                  <span class="comment">// ChangeNotifier 状态管理</span>
+│   ├── bill_provider.dart     <span class="comment">// 账单状态</span>
+│   ├── account_provider.dart  <span class="comment">// 账户状态</span>
+│   └── theme_provider.dart    <span class="comment">// 主题状态</span>
+├── <span class="key">screens/</span>                    <span class="comment">// 页面</span>
+│   ├── home_screen.dart       <span class="comment">// 首页</span>
+│   ├── calendar_screen.dart   <span class="comment">// 日历页</span>
+│   ├── stats_screen.dart      <span class="comment">// 统计页</span>
+│   ├── account_screen.dart    <span class="comment">// 资产页</span>
+│   └── profile_screen.dart    <span class="comment">// 我的</span>
+├── <span class="key">widgets/</span>                    <span class="comment">// 可复用组件</span>
+│   ├── bill_card.dart         <span class="comment">// 账单卡片</span>
+│   └── category_grid.dart     <span class="comment">// 分类选择网格</span>
+└── <span class="key">router/</span>                     <span class="comment">// 路由配置</span>
+    └── app_router.dart        <span class="comment">// GoRouter 声明式路由</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 核心功能 ===== -->
+        <div class="section" id="features">
+            <div class="section-title">核心功能</div>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="fi-icon">📱</div>
+                    <div class="fi-title">跨平台一套代码</div>
+                    <div class="fi-desc">同一套Dart代码编译到Android和iOS，无需两套开发，减少50%+开发量。代码复用率 &gt; 90%</div>
+                    <div class="fi-impl">
+                        <code>flutter build apk</code> / <code>flutter build ios</code> 一键出包<br>
+                        平台差异通过 <code>Platform.isAndroid/iOS</code> 条件分支处理
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">🏠</div>
+                    <div class="fi-title">首页 + 记账</div>
+                    <div class="fi-desc">收支流水列表、分类选择网格、快速记账表单，与小程序功能对齐</div>
+                    <div class="fi-impl">
+                        <code>BottomNavigationBar</code> 5个Tab<br>
+                        首页展示当日/当周/当月账单列表
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">📅</div>
+                    <div class="fi-title">日历视图</div>
+                    <div class="fi-desc">月历视图+日期标记收支状态，点击日期查看当日账单，月度汇总</div>
+                    <div class="fi-impl">
+                        自定义 Calendar Widget + Provider 驱动数据更新<br>
+                        支持前后翻月
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">📊</div>
+                    <div class="fi-title">统计图表</div>
+                    <div class="fi-desc">分类饼图、月度趋势折线，收支切换Tab，数据实时计算</div>
+                    <div class="fi-impl">
+                        <code>fl_chart</code> 库渲染图表<br>
+                        Provider 驱动数据更新，切换月份自动刷新
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">💰</div>
+                    <div class="fi-title">资产管理</div>
+                    <div class="fi-desc">账户列表+余额计算，账单增删改时自动同步余额</div>
+                    <div class="fi-impl">
+                        <code>AccountProvider</code> 管理账户状态<br>
+                        余额 = Σ收入 - Σ支出，自动计算
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">🎨</div>
+                    <div class="fi-title">Material 3 主题</div>
+                    <div class="fi-desc">动态配色方案（Dynamic Color），明暗模式切换，色彩取自种子色</div>
+                    <div class="fi-impl">
+                        <code>ColorScheme.fromSeed()</code> 生成完整配色<br>
+                        <code>ThemeProvider</code> 管理主题状态，<code>notifyListeners()</code> 切换
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">🧭</div>
+                    <div class="fi-title">GoRouter 路由</div>
+                    <div class="fi-desc">声明式路由管理，支持深链接、路由守卫、嵌套路由、重定向</div>
+                    <div class="fi-impl">
+                        替代 Navigator 1.0 的命令式路由<br>
+                        类型安全 + 可维护 + 支持 URL 导航
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">🧪</div>
+                    <div class="fi-title">真机调试测试</div>
+                    <div class="fi-desc">小米真机ADB调试，严禁模拟器，保证手势/性能/键盘真实体验</div>
+                    <div class="fi-impl">
+                        <code>adb devices</code> 连接真机<br>
+                        <code>flutter run</code> 热重载开发<br>
+                        <code>flutter run --profile</code> 性能分析
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Provider 详解 ===== -->
+        <div class="section" id="provider">
+            <div class="section-title">Provider 状态管理详解</div>
+            <div class="project-card">
+                <div class="project-desc">
+                    Provider 是 Flutter 官方推荐的状态管理方案。核心理念是<strong>将 UI 和业务逻辑分离</strong>——UI 层只负责展示和监听，逻辑层负责数据处理和通知。本项目通过 ChangeNotifier + context.watch/read + notifyListeners 三件套实现完整的响应式状态管理。
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>Provider 工作机制</div>
+                <div class="flow-steps">
+                    <div class="flow-step">UI 层 <code>context.watch&lt;BillProvider&gt;()</code></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">监听数据变化</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">数据变化 → 自动重建 Widget</div>
+                </div>
+                <div class="flow-steps">
+                    <div class="flow-step">UI 层 <code>context.read&lt;BillProvider&gt;()</code></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">调用业务方法</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">方法内 <code>notifyListeners()</code></div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">所有 watch 的 Widget 刷新</div>
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>核心代码示例</div>
+                <div class="code-block">
+<span class="comment">// 1. Provider 定义（逻辑层）</span>
+<span class="key">class</span> <span class="highlight">BillProvider</span> <span class="key">extends</span> ChangeNotifier {
+  List&lt;Bill&gt; _bills = [];
+
+  <span class="comment">// watch 监听的数据</span>
+  List&lt;Bill&gt; <span class="key">get</span> bills =&gt; _bills;
+
+  <span class="comment">// read 调用的方法</span>
+  <span class="key">void</span> <span class="highlight">addBill</span>(Bill bill) {
+    _bills.add(bill);
+    _saveToHive();          <span class="comment">// 持久化到 Hive</span>
+    <span class="highlight">notifyListeners</span>();    <span class="comment">// 通知所有监听者</span>
+  }
+}
+
+<span class="comment">// 2. UI 层监听</span>
+Widget build(BuildContext context) {
+  <span class="key">final</span> bills = context.<span class="highlight">watch</span>&lt;BillProvider&gt;().bills;
+  <span class="comment">// bills 变化时 Widget 自动重建</span>
+}
+
+<span class="comment">// 3. UI 层调用方法</span>
+onPressed: () {
+  context.<span class="highlight">read</span>&lt;BillProvider&gt;().addBill(newBill);
+  <span class="comment">// addBill 内部 notifyListeners → 自动刷新</span>
+}
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>watch vs read 关键区别</div>
+                <table class="detail-table">
+                    <thead><tr><th>方法</th><th>作用</th><th>使用场景</th><th>是否触发重建</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-label"><code>context.watch&lt;T&gt;()</code></td>
+                            <td>监听数据变化</td>
+                            <td>build() 方法内，需要根据数据渲染 UI</td>
+                            <td style="color:#5bdfaa">✅ 是</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label"><code>context.read&lt;T&gt;()</code></td>
+                            <td>获取 Provider 引用</td>
+                            <td>事件回调（onPressed 等），调用方法</td>
+                            <td style="color:#FF6B6B">❌ 否</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-subtitle"><span class="dot"></span>Provider 注册（main.dart）</div>
+                <div class="code-block">
+<span class="key">void</span> main() <span class="key">async</span> {
+  <span class="key">await</span> Hive.initFlutter();
+
+  runApp(
+    <span class="highlight">MultiProvider</span>(
+      providers: [
+        <span class="highlight">ChangeNotifierProvider</span>(create: (_) =&gt; BillProvider()),
+        <span class="highlight">ChangeNotifierProvider</span>(create: (_) =&gt; AccountProvider()),
+        <span class="highlight">ChangeNotifierProvider</span>(create: (_) =&gt; ThemeProvider()),
+      ],
+      child: <span class="key">const</span> MyApp(),
+    ),
+  );
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 开发流程 ===== -->
+        <div class="section" id="dev">
+            <div class="section-title">开发流程</div>
+            <div class="project-card">
+                <div class="section-subtitle"><span class="dot"></span>开发 → 测试 → 打包 完整流程</div>
+                <div class="dev-timeline">
+                    <div class="dev-phase">
+                        <div class="phase-title">1. 开发阶段</div>
+                        <div class="phase-desc">
+                            <code>flutter run</code> 连接小米真机热重载开发<br>
+                            Provider 管理状态 → Hive 读写数据 → GoRouter 管理导航<br>
+                            热重载 <code>r</code> 秒级生效，开发效率极高
+                        </div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">2. 调试阶段</div>
+                        <div class="phase-desc">
+                            真机 ADB 调试验证交互（<code>adb devices</code> + <code>flutter run</code>）<br>
+                            DevTools 性能分析：Widget 重建次数、内存占用、帧率监控<br>
+                            <code>flutter run --profile</code> 性能模式测试
+                        </div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">3. 测试阶段</div>
+                        <div class="phase-desc">
+                            <code>flutter test</code> 单元测试 + Widget 测试<br>
+                            真机手动验证手势交互、软键盘、返回键等<br>
+                            严禁模拟器，确保真实体验
+                        </div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">4. 打包发布</div>
+                        <div class="phase-desc">
+                            Android: <code>flutter build apk --release</code> → 签名 → 上架应用商店<br>
+                            iOS: <code>flutter build ios --release</code> → Xcode Archive → 上传 App Store Connect<br>
+                            双端同一套代码，出包命令不同
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>跨平台差异处理</div>
+                <table class="detail-table">
+                    <thead><tr><th>差异点</th><th>处理方式</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-label">平台特定UI</td>
+                            <td><code>Platform.isAndroid/iOS</code> 条件分支，如 iOS 用 Cupertino 风格导航栏</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">权限申请</td>
+                            <td>Android 在 AndroidManifest.xml 声明，iOS 在 Info.plist 声明，Dart 层统一调用</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">返回键行为</td>
+                            <td>Android 物理返回键由 <code>WillPopScope</code> 统一拦截处理</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">状态栏/安全区</td>
+                            <td><code>SafeArea</code> + <code>MediaQuery</code> 自动适配刘海屏/圆角</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">本地存储路径</td>
+                            <td>Hive 自动处理，<code>Hive.initFlutter()</code> 无需手动指定路径</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== 技术亮点 ===== -->
+        <div class="section" id="highlights">
+            <div class="section-title">技术亮点</div>
+            <div class="highlights">
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">📱</span>
+                        <span class="hl-title">一套代码双端运行</span>
+                        <span class="hl-badge hot">核心能力</span>
+                    </div>
+                    <div class="hl-desc">
+                        同一套 Dart 代码编译 Android APK 和 iOS IPA，代码复用率 &gt; 90%。Flutter 自绘引擎无需桥接，性能接近原生。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>关键点</strong>：平台特定代码通过 <code>Platform.isAndroid/iOS</code> 条件分支处理；小米真机 ADB 调试（<code>adb devices</code> + <code>flutter run</code>），禁用模拟器确保真实体验。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🔄</span>
+                        <span class="hl-title">Provider 响应式状态管理</span>
+                        <span class="hl-badge core">架构设计</span>
+                    </div>
+                    <div class="hl-desc">
+                        ChangeNotifier + <code>context.watch/read</code>，UI 与逻辑完全解耦。watch 监听数据自动重建，read 调用方法不重建，<code>notifyListeners()</code> 广播刷新。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>设计原则</strong>：build() 内只用 watch 获取数据，事件回调用 read 调用方法。避免在 build() 中误用 read 导致数据变化不刷新。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">💾</span>
+                        <span class="hl-title">Hive 纯本地持久化</span>
+                        <span class="hl-badge core">架构设计</span>
+                    </div>
+                    <div class="hl-desc">
+                        纯 Dart 实现的 NoSQL 数据库，零后端依赖，类型安全的 Box 操作，支持 lazy loading 和加密。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>选型优势</strong>：无需原生插件，跨平台零适配；比 SharedPreferences 支持复杂对象；比 SQLite 省去 ORM 开销。<code>Hive.box('bills')</code> 直接操作，<code>put/get/delete</code> API 简洁。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🧭</span>
+                        <span class="hl-title">GoRouter 声明式路由</span>
+                        <span class="hl-badge new">工程实践</span>
+                    </div>
+                    <div class="hl-desc">
+                        声明式路由管理，支持深链接、路由守卫、嵌套路由、重定向。替代 Navigator 1.0 的命令式 push/pop。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>优势</strong>：类型安全，路由表集中管理，支持 URL 导航，便于维护复杂导航栈。对比 Navigator 1.0 的 <code>push/pop</code> 黑盒操作，GoRouter 的声明式路由可读性更强。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🎨</span>
+                        <span class="hl-title">Material 3 动态主题</span>
+                        <span class="hl-badge new">视觉体验</span>
+                    </div>
+                    <div class="hl-desc">
+                        <code>ColorScheme.fromSeed()</code> 从种子色生成完整配色方案，支持明暗模式切换，Dynamic Color 动态取色。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>实现</strong>：<code>ThemeProvider</code> 管理 <code>ThemeMode</code>（light/dark/system），切换时 <code>notifyListeners()</code> 刷新全局主题。Material 3 组件自动适配配色。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🧪</span>
+                        <span class="hl-title">真机调试 + 性能分析</span>
+                        <span class="hl-badge core">工程能力</span>
+                    </div>
+                    <div class="hl-desc">
+                        严格真机调试（小米设备 ADB），严禁模拟器。<code>flutter run --profile</code> 性能分析，DevTools 监控帧率/内存/Widget重建。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>原因</strong>：模拟器无法模拟真实手势（滑动/长按）、软键盘遮挡、返回键行为、性能差异。真机调试确保发布前体验一致。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 量化成果 ===== -->
+        <div class="section" id="stats">
+            <div class="section-title">量化成果</div>
+            <div class="stats-strip">
+                <div class="stat-item">
+                    <div class="number blue">2</div>
+                    <div class="label">跨平台覆盖</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number green">90%+</div>
+                    <div class="label">代码复用率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number orange">60fps</div>
+                    <div class="label">流畅度</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number blue">5</div>
+                    <div class="label">核心页面</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number green">3</div>
+                    <div class="label">Provider 状态</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number orange">Material 3</div>
+                    <div class="label">设计规范</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 相关链接 ===== -->
+        <div class="section" id="links">
+            <div class="section-title">相关链接</div>
+            <div class="link-cards">
+                <a class="link-card" href="miniprogram-intro.html">
+                    <div class="lc-icon">🟢</div>
+                    <div>
+                        <div class="lc-title">桔子记账小程序介绍</div>
+                        <div class="lc-desc">同一产品的微信原生版本</div>
+                    </div>
+                    <div class="lc-arrow">→</div>
+                </a>
+                <a class="link-card" href="test_cases_report.html">
+                    <div class="lc-icon">🧾</div>
+                    <div>
+                        <div class="lc-title">测试用例报告</div>
+                        <div class="lc-desc">74个用例，11模块全覆盖</div>
+                    </div>
+                    <div class="lc-arrow">→</div>
+                </a>
+                <a class="link-card" href="test_report_v2.html">
+                    <div class="lc-icon">📊</div>
+                    <div>
+                        <div class="lc-title">自动化测试报告V2</div>
+                        <div class="lc-desc">测试结果 + 38张截图</div>
+                    </div>
+                    <div class="lc-arrow">→</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>🔵 Flutter 记账 APP · Dart · Provider · Hive · Material 3 · Android + iOS</p>
+    </div>
+
+    <script>
+        const navLinks = document.querySelectorAll('.nav a:not(.back-btn)');
+        const sections = ['overview','architecture','features','provider','dev','highlights','stats'];
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.getBoundingClientRect().top <= 120) current = id;
+            });
+            navLinks.forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>桔子记账小程序 · 项目介绍</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* NAV */
+        .nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(15,12,41,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 0 24px;
+            display: flex; align-items: center; gap: 8px;
+            height: 52px; overflow-x: auto;
+        }
+        .nav a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 13px; font-weight: 500;
+            padding: 6px 14px; border-radius: 20px;
+            white-space: nowrap; transition: all .2s;
+        }
+        .nav a:hover, .nav a.active {
+            color: #5bdfaa;
+            background: rgba(7,193,96,0.1);
+        }
+        .nav .back-btn { margin-right: auto; color: rgba(255,255,255,0.5); }
+        .nav .back-btn:hover { color: #5bdfaa; }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 64px 20px 40px;
+        }
+        .hero h1 {
+            font-size: 40px; font-weight: 800;
+            background: linear-gradient(135deg, #5bdfaa, #07C160);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        .hero .subtitle {
+            font-size: 17px;
+            color: rgba(255,255,255,0.6);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        /* SECTION */
+        .section { margin-top: 56px; }
+        .section-title {
+            font-size: 22px; font-weight: 700;
+            margin-bottom: 24px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-title::before {
+            content: '';
+            width: 4px; height: 28px;
+            background: linear-gradient(180deg, #5bdfaa, #07C160);
+            border-radius: 2px;
+        }
+        .section-subtitle {
+            font-size: 16px; font-weight: 600;
+            margin: 28px 0 14px;
+            color: rgba(255,255,255,0.8);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-subtitle .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #5bdfaa;
+        }
+
+        /* PROJECT CARD */
+        .project-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        .project-desc {
+            font-size: 14px; color: rgba(255,255,255,0.55);
+            line-height: 1.8; margin-bottom: 24px;
+        }
+        .project-desc strong { color: rgba(255,255,255,0.8); }
+
+        /* TECH STACK */
+        .tech-row {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 28px;
+        }
+        .tech-chip {
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-size: 12px; font-weight: 500;
+            background: rgba(7,193,96,0.12);
+            border: 1px solid rgba(7,193,96,0.25);
+            color: #5bdfaa;
+        }
+
+        /* FEATURE GRID */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .feature-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all .2s;
+        }
+        .feature-item:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.15);
+        }
+        .feature-item .fi-icon { font-size: 22px; margin-bottom: 8px; }
+        .feature-item .fi-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .feature-item .fi-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+        .feature-item .fi-impl {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.5;
+        }
+        .feature-item .fi-impl code {
+            background: rgba(255,255,255,0.08);
+            padding: 1px 6px; border-radius: 3px;
+            color: #5bdfaa; font-size: 10px;
+        }
+
+        /* FLOW STEPS */
+        .flow-steps {
+            display: flex; flex-wrap: wrap; gap: 12px;
+            align-items: center; margin: 16px 0;
+        }
+        .flow-step {
+            background: rgba(7,193,96,0.08);
+            border: 1px solid rgba(7,193,96,0.2);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+        .flow-step code {
+            background: rgba(255,255,255,0.1);
+            padding: 1px 6px; border-radius: 3px;
+            color: #5bdfaa; font-size: 11px;
+        }
+        .flow-arrow { color: rgba(255,255,255,0.2); font-size: 18px; }
+
+        /* CATEGORY GRID */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .cat-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 13px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .cat-item .cat-emoji { font-size: 16px; }
+        .cat-item .cat-name { color: rgba(255,255,255,0.7); }
+
+        /* CODE BLOCK */
+        .code-block {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 12px; line-height: 1.7;
+            color: rgba(255,255,255,0.6);
+            overflow-x: auto;
+            margin: 14px 0 20px;
+        }
+        .code-block .key { color: #6bb8e8; }
+        .code-block .val { color: #5bdfaa; }
+        .code-block .comment { color: rgba(255,255,255,0.25); }
+
+        /* HIGHLIGHT CARDS */
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        .highlight-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all .3s;
+        }
+        .highlight-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+        }
+        .highlight-card .hl-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 14px;
+        }
+        .highlight-card .hl-icon { font-size: 28px; }
+        .highlight-card .hl-title { font-size: 17px; font-weight: 700; }
+        .highlight-card .hl-badge {
+            font-size: 10px; font-weight: 600;
+            padding: 3px 10px; border-radius: 10px;
+            margin-left: auto;
+        }
+        .hl-badge.hot { background: linear-gradient(135deg, #f5af19, #f12711); color: white; }
+        .hl-badge.core { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+        .hl-badge.new { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .highlight-card .hl-desc {
+            font-size: 13px; color: rgba(255,255,255,0.55);
+            line-height: 1.7;
+        }
+        .highlight-card .hl-desc code {
+            background: rgba(255,255,255,0.08);
+            padding: 1px 6px; border-radius: 3px;
+            color: #5bdfaa; font-size: 11px;
+        }
+        .highlight-card .hl-detail {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.7;
+        }
+        .highlight-card .hl-detail code {
+            background: rgba(255,255,255,0.08);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #5bdfaa;
+        }
+
+        /* STATS BAR */
+        .stats-strip {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 32px 20px;
+            margin: 40px auto;
+            max-width: 900px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .stat-item { text-align: center; }
+        .stat-item .number {
+            font-size: 32px; font-weight: 800;
+        }
+        .stat-item .number.green {
+            background: linear-gradient(135deg, #5bdfaa, #07C160);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .number.orange {
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .number.purple {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .label { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+        /* DEV TIMELINE */
+        .dev-timeline {
+            display: flex; flex-direction: column; gap: 0;
+            margin: 16px 0 24px;
+            position: relative;
+            padding-left: 24px;
+        }
+        .dev-timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px; top: 8px; bottom: 8px;
+            width: 2px;
+            background: linear-gradient(180deg, #5bdfaa, #07C160);
+            border-radius: 1px;
+        }
+        .dev-phase {
+            position: relative;
+            padding: 12px 0 12px 20px;
+        }
+        .dev-phase::before {
+            content: '';
+            position: absolute;
+            left: -20px; top: 18px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: #5bdfaa;
+            border: 2px solid rgba(15,12,41,1);
+        }
+        .dev-phase .phase-title {
+            font-size: 14px; font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 4px;
+        }
+        .dev-phase .phase-desc {
+            font-size: 12px; color: rgba(255,255,255,0.4);
+            line-height: 1.6;
+        }
+        .dev-phase .phase-desc code {
+            background: rgba(255,255,255,0.08);
+            padding: 1px 5px; border-radius: 3px;
+            color: #5bdfaa; font-size: 10px;
+        }
+
+        /* LINK CARDS */
+        .link-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .link-card {
+            display: flex; align-items: center; gap: 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 22px 24px;
+            text-decoration: none; color: #fff;
+            transition: all .3s;
+        }
+        .link-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .link-card .lc-icon { font-size: 32px; flex-shrink: 0; }
+        .link-card .lc-title { font-size: 15px; font-weight: 600; }
+        .link-card .lc-desc { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+        .link-card .lc-arrow { margin-left: auto; font-size: 18px; color: rgba(255,255,255,0.25); }
+
+        /* TABLE */
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin: 14px 0 20px;
+        }
+        .detail-table th {
+            text-align: left;
+            padding: 14px 20px;
+            font-weight: 600;
+            background: rgba(7,193,96,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #5bdfaa;
+            font-size: 13px;
+        }
+        .detail-table td {
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.65);
+        }
+        .detail-table tr:last-child td { border-bottom: none; }
+        .detail-table .col-label { color: rgba(255,255,255,0.4); font-weight: 500; width: 140px; }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255,255,255,0.25);
+            font-size: 12px;
+        }
+        .footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
+        .footer a:hover { color: #5bdfaa; }
+
+        /* PILL GROUP */
+        .pill-group {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin: 12px 0;
+        }
+        .pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(7,193,96,0.06);
+            border: 1px solid rgba(7,193,96,0.15);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+        .pill .pill-icon { font-size: 14px; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 28px; }
+            .project-card { padding: 24px; }
+            .feature-grid { grid-template-columns: 1fr 1fr; }
+            .highlights { grid-template-columns: 1fr; }
+            .stats-strip { gap: 20px; flex-wrap: wrap; }
+            .stat-item .number { font-size: 24px; }
+            .flow-steps { gap: 8px; }
+            .category-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        }
+        @media (max-width: 480px) {
+            .feature-grid { grid-template-columns: 1fr; }
+            .category-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAV -->
+    <nav class="nav">
+        <a href="index.html" class="back-btn">← 返回首页</a>
+        <a href="#overview" class="active">概览</a>
+        <a href="#pages">核心页面</a>
+        <a href="#voice">语音记账</a>
+        <a href="#categories">分类体系</a>
+        <a href="#data">数据结构</a>
+        <a href="#dev">开发流程</a>
+        <a href="#highlights">技术亮点</a>
+        <a href="#stats">量化成果</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h1>🟢 桔子记账小程序</h1>
+        <div class="subtitle">微信原生开发 · 纯本地存储 · 零后端依赖 · 4个大版本迭代 · 74个自动化测试用例</div>
+    </div>
+
+    <div class="container">
+
+        <!-- ===== 项目概览 ===== -->
+        <div class="section" id="overview">
+            <div class="section-title">项目概览</div>
+            <div class="project-card">
+                <div class="project-desc">
+                    桔子记账是一款基于<strong>微信原生开发</strong>的个人记账工具，从 V1.0 到 V4.0 经过 4 个大版本迭代。采用<strong>纯本地存储方案</strong>（<code>wx.setStorageSync</code>），无需后端服务器，零运维成本，用户数据完全保存在本地，保障隐私安全。
+                </div>
+                <div class="project-desc">
+                    技术架构上，通过 <strong>Component + Behavior</strong> 实现组件化复用，CSS 变量驱动主题换肤系统，<strong>Behavior 混入</strong>模式抽取主题切换、加载状态等公共逻辑。特色功能包括<strong>语音记账</strong>（识别率 95%+）、<strong>周期账单</strong>与到期提醒、<strong>预算管控</strong>与快捷记账。配套 <strong>74 个自动化测试用例</strong>（miniprogram-automator），100% 通过率，11 个模块全覆盖。
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>技术栈</div>
+                <div class="tech-row">
+                    <span class="tech-chip">WXML / WXSS / JavaScript</span>
+                    <span class="tech-chip">Component + Behavior</span>
+                    <span class="tech-chip">微信云开发</span>
+                    <span class="tech-chip">wx.setStorageSync 本地存储</span>
+                    <span class="tech-chip">CSS 变量主题换肤</span>
+                    <span class="tech-chip">wx.translateVoice 语音识别</span>
+                    <span class="tech-chip">miniprogram-automator 测试</span>
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>技术选型理由</div>
+                <table class="detail-table">
+                    <thead><tr><th>选型</th><th>理由</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-label">微信原生 vs uni-app</td>
+                            <td>纯微信生态，无需跨端适配，性能最优；Component+Behavior 原生组件化足够灵活</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">本地存储 vs 云数据库</td>
+                            <td>零后端成本，零运维，数据隐私保障；10MB 存储上限对记账场景完全够用</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">wx.translateVoice vs 第三方ASR</td>
+                            <td>免费调用，无需注册第三方服务，微信原生API稳定性高；配合本地NLP解析实现零成本语音记账</td>
+                        </tr>
+                        <tr>
+                            <td class="col-label">CSS变量 vs CSS预处理器</td>
+                            <td>小程序不支持Sass/Less编译，CSS变量是原生方案，运行时切换主题无需重新编译</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== 五大核心页面 ===== -->
+        <div class="section" id="pages">
+            <div class="section-title">五大核心页面</div>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="fi-icon">🏠</div>
+                    <div class="fi-title">首页</div>
+                    <div class="fi-desc">日期Tab胶囊切换（日/周/月/年），预算卡片渐变背景+剩余金额，小额账单标签（&lt;10元标记"小额"），空状态引导插图+文案</div>
+                    <div class="fi-impl">
+                        <strong>快捷记账</strong>：悬浮按钮 → 弹窗 → 3秒完成记账，<code>showQuickAdd</code> 控制弹窗显隐<br>
+                        <strong>日期切换</strong>：胶囊样式Tab，<code>switchDateTab()</code> 切换时间维度<br>
+                        <strong>预算卡片</strong>：渐变背景（红色系），<code>remainingBudget</code> 计算剩余
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">📅</div>
+                    <div class="fi-title">日历页</div>
+                    <div class="fi-desc">月历视图+年度切换按钮，日期标记收支状态（有收入/支出标记不同颜色），月度收支汇总渐变卡片</div>
+                    <div class="fi-impl">
+                        <strong>年度切换</strong>：<code>prevYear/nextYear</code> 按钮跨年查看<br>
+                        <strong>月度汇总</strong>：渐变背景卡片，自动计算当月收支总额<br>
+                        <strong>日期交互</strong>：点击日期跳转当日账单列表
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">💰</div>
+                    <div class="fi-title">资产页</div>
+                    <div class="fi-desc">账户列表+自动计算余额，账单增删改时自动同步余额，支持手动同步按钮和一键重置</div>
+                    <div class="fi-impl">
+                        <strong>余额计算</strong>：<code>bill-helper.js</code> 提供 <code>calculateBalance()</code> 核心逻辑<br>
+                        <strong>自动同步</strong>：保存/编辑/删除账单时触发余额重算<br>
+                        <strong>重置功能</strong>：编辑页显示计算余额+重置按钮
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">📊</div>
+                    <div class="fi-title">统计页</div>
+                    <div class="fi-desc">分类占比饼图，月度趋势折线，环比数据标签（↑↓百分比），收支类型切换Tab</div>
+                    <div class="fi-impl">
+                        <strong>环比计算</strong>：<code>calculateCompareData()</code> 对比上期数据<br>
+                        <strong>图表渲染</strong>：Canvas 绑定 <code>bindbindbindbindbindbindbindbindbindbindbindbindbindtouchend</code> → 重绘<br>
+                        <strong>单位适配</strong>：Canvas 字体从 rpx 改为 px 避免缩放问题
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">👤</div>
+                    <div class="fi-title">我的</div>
+                    <div class="fi-desc">主题换肤入口（5种预设主题），分类管理（增删改+改名同步），周期账单管理，关于/反馈</div>
+                    <div class="fi-impl">
+                        <strong>主题切换</strong>：广播 <code>getApp().globalData.themeChanged</code> 通知所有页面<br>
+                        <strong>分类改名同步</strong>：遍历历史账单替换旧分类名<br>
+                        <strong>周期账单入口</strong>：跳转 <code>pages/recurring/recurring</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-subtitle"><span class="dot"></span>其他关键页面</div>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="fi-icon">➕</div>
+                    <div class="fi-title">添加账单页</div>
+                    <div class="fi-desc">金额输入框¥前缀，语音按钮右侧缩小放置，分类选择网格，账户选择带图标，保存时自动更新余额+重复检测</div>
+                    <div class="fi-impl">
+                        <strong>重复检测</strong>：<code>bill-helper.checkDuplicate()</code> 保存前检测同金额同分类同日期的重复账单<br>
+                        <strong>余额联动</strong>：保存时调用 <code>updateAccountBalance()</code> 自动刷新关联账户
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">🔄</div>
+                    <div class="fi-title">周期账单管理页</div>
+                    <div class="fi-desc">支持4种周期（每天/每周/每月/每年），可配置具体日期，支持开启/关闭，到期提醒弹窗</div>
+                    <div class="fi-impl">
+                        <strong>计算到期</strong>：<code>calculateNextDue()</code> 自动推算下次到期日<br>
+                        <strong>到期检测</strong>：<code>app.js → checkDueRecurringBills()</code> 启动时检测今日到期
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="fi-icon">🏷️</div>
+                    <div class="fi-title">分类管理页</div>
+                    <div class="fi-desc">增删改分类，系统默认分类保护（不可删除），分类改名自动同步历史账单</div>
+                    <div class="fi-impl">
+                        <strong>改名同步</strong>：遍历全部账单，将旧分类名替换为新名称<br>
+                        <strong>默认保护</strong>：<code>isDefaultCategory</code> 标记，UI层禁用删除按钮
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 语音记账 ===== -->
+        <div class="section" id="voice">
+            <div class="section-title">语音记账 · 核心亮点</div>
+            <div class="project-card">
+                <div class="project-desc">
+                    语音记账是本项目最具技术深度的功能。用户长按录音按钮说话，松手后微信自动将语音转为文字，然后本地 NLP 解析提取金额、分类和备注，实现<strong>3秒完成记账</strong>的极致体验。识别率从初始 40% 提升至 95%+，<strong>零后端成本</strong>。
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>完整识别流程</div>
+                <div class="flow-steps">
+                    <div class="flow-step">1. 长按录音按钮</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">2. <code>wx.getRecorderManager()</code> 录音</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">3. <code>wx.translateVoice()</code> 语音转文字</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">4. 本地NLP解析金额/分类/备注</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">5. 自动填充表单</div>
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>备注提取规则（双向提取）</div>
+                <div class="project-desc">
+                    <strong>规则1</strong>：优先从<strong>金额后面</strong>提取备注<br>
+                    <strong>规则2</strong>：如果金额后面没有有效备注，从<strong>金额前面</strong>提取<br>
+                    <strong>规则3</strong>：自动过滤语气词——"钱"、"了"、"的"、"花了"、"用"等
+                </div>
+                <table class="detail-table">
+                    <thead><tr><th>语音输入</th><th>识别金额</th><th>识别备注</th><th>自动分类</th></tr></thead>
+                    <tbody>
+                        <tr><td>"吃饭花了50块"</td><td>50</td><td>吃饭</td><td>餐饮🍔</td></tr>
+                        <tr><td>"花了200块钱去吃肯德基"</td><td>200</td><td>去吃肯德基</td><td>餐饮🍔</td></tr>
+                        <tr><td>"打车25块去公司"</td><td>25</td><td>去公司</td><td>交通🚗</td></tr>
+                        <tr><td>"房租3000"</td><td>3000</td><td>房租</td><td>住房🏠</td></tr>
+                        <tr><td>"充话费50"</td><td>50</td><td>充话费</td><td>通讯📱</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="section-subtitle"><span class="dot"></span>录音格式踩坑（面试高频）</div>
+                <div class="project-desc">
+                    <strong>问题</strong>：微信小程序的 <code>format</code> 参数不可靠。文档标注输出 <code>opus</code>，但实际录音文件的二进制头部是 <code>OggS</code>（OGG 封装 Opus 编码），即真实格式是 <code>ogg-opus</code> 而非 <code>opus</code>。<br><br>
+                    <strong>根因</strong>：微信小程序的录音 <code>format</code> 参数只是个"建议"，实际格式由客户端决定，不能信任。<br><br>
+                    <strong>解决方案</strong>：检测文件头魔数（前4字节 <code>0x4F676753</code> = "OggS"）判断真实格式，而非信任扩展名或 format 参数。识别到 ogg-opus 后，传给 <code>wx.translateVoice</code> 时指定 <code>format: 'ogg-opus'</code>。<br><br>
+                    <strong>效果</strong>：识别率从 <strong>40% → 95%+</strong>，提升超过一倍。
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 分类体系 ===== -->
+        <div class="section" id="categories">
+            <div class="section-title">分类体系</div>
+            <div class="project-card">
+                <div class="project-desc">
+                    支出 11 个分类 + 收入 10 个分类，系统默认分类不可删除，用户可自定义添加。分类改名时自动遍历历史账单同步替换，保证数据查询一致性。
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>支出分类（11个）</div>
+                <div class="category-grid">
+                    <div class="cat-item"><span class="cat-emoji">🍔</span><span class="cat-name">餐饮</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🚗</span><span class="cat-name">交通</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🛍️</span><span class="cat-name">购物</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🎮</span><span class="cat-name">娱乐</span></div>
+                    <div class="cat-item"><span class="cat-emoji">💊</span><span class="cat-name">医疗</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📚</span><span class="cat-name">教育</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🏠</span><span class="cat-name">住房</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📱</span><span class="cat-name">通讯</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🎁</span><span class="cat-name">人情</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🐱</span><span class="cat-name">宠物</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📦</span><span class="cat-name">其他</span></div>
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>收入分类（10个）</div>
+                <div class="category-grid">
+                    <div class="cat-item"><span class="cat-emoji">💰</span><span class="cat-name">工资</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🧧</span><span class="cat-name">奖金</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📈</span><span class="cat-name">投资</span></div>
+                    <div class="cat-item"><span class="cat-emoji">💼</span><span class="cat-name">兼职</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🧧</span><span class="cat-name">红包</span></div>
+                    <div class="cat-item"><span class="cat-emoji">📄</span><span class="cat-name">报销</span></div>
+                    <div class="cat-item"><span class="cat-emoji">↩️</span><span class="cat-name">退款</span></div>
+                    <div class="cat-item"><span class="cat-emoji">💵</span><span class="cat-name">利息</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🏘️</span><span class="cat-name">租金</span></div>
+                    <div class="cat-item"><span class="cat-emoji">🤝</span><span class="cat-name">赠予</span></div>
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>分类管理规则</div>
+                <table class="detail-table">
+                    <thead><tr><th>规则</th><th>说明</th></tr></thead>
+                    <tbody>
+                        <tr><td class="col-label">默认分类保护</td><td>21个系统默认分类（11支出+10收入）不允许删除，防止统计数据丢失</td></tr>
+                        <tr><td class="col-label">分类改名同步</td><td>修改分类名时自动遍历全部历史账单，将旧分类名替换为新名称</td></tr>
+                        <tr><td class="col-label">图标映射</td><td><code>utils/config.js → iconMap</code> 统一管理分类名称→emoji映射，全局复用</td></tr>
+                        <tr><td class="col-label">自定义分类</td><td>用户可添加自定义分类，自定义分类可删除（删除前检查是否有历史账单引用）</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== 数据结构 ===== -->
+        <div class="section" id="data">
+            <div class="section-title">核心数据结构</div>
+            <div class="project-card">
+                <div class="project-desc">
+                    三大核心数据模型，统一存储在 <code>wx.setStorageSync</code> 中，通过 <code>bill-helper.js</code> 管理计算逻辑，<code>utils/config.js</code> 管理默认配置。
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>账单数据</div>
+                <div class="code-block">
+<span class="comment">// 存储键：bills（数组）</span>
+{
+  <span class="key">billId</span>: <span class="val">'bill_1713600000000'</span>,    <span class="comment">// 唯一ID，时间戳生成</span>
+  <span class="key">amount</span>: <span class="val">50</span>,                     <span class="comment">// 金额</span>
+  <span class="key">type</span>: <span class="val">'expense'</span>,               <span class="comment">// 类型：expense | income</span>
+  <span class="key">category</span>: <span class="val">'餐饮'</span>,               <span class="comment">// 分类名称（关联iconMap）</span>
+  <span class="key">account</span>: <span class="val">'支付宝'</span>,              <span class="comment">// 关联账户名称</span>
+  <span class="key">remark</span>: <span class="val">'午饭'</span>,                <span class="comment">// 备注</span>
+  <span class="key">date</span>: <span class="val">'2026-04-22'</span>,             <span class="comment">// 日期</span>
+  <span class="key">createTime</span>: <span class="val">'2026-04-22T12:00:00'</span> <span class="comment">// 创建时间</span>
+}
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>周期账单数据</div>
+                <div class="code-block">
+<span class="comment">// 存储键：recurringBills（数组）</span>
+{
+  <span class="key">recurringId</span>: <span class="val">'rec_1713600000000'</span>,  <span class="comment">// 唯一ID</span>
+  <span class="key">name</span>: <span class="val">'早餐'</span>,                    <span class="comment">// 名称</span>
+  <span class="key">amount</span>: <span class="val">15</span>,                       <span class="comment">// 金额</span>
+  <span class="key">type</span>: <span class="val">'expense'</span>,                 <span class="comment">// 类型</span>
+  <span class="key">category</span>: <span class="val">'餐饮'</span>,                 <span class="comment">// 分类</span>
+  <span class="key">account</span>: <span class="val">'支付宝'</span>,                <span class="comment">// 账户</span>
+  <span class="key">frequency</span>: <span class="val">'daily'</span>,               <span class="comment">// 周期：daily|weekly|monthly|yearly</span>
+  <span class="key">weeklyDay</span>: <span class="val">null</span>,                  <span class="comment">// 星期几（0-6，仅weekly）</span>
+  <span class="key">monthlyDay</span>: <span class="val">null</span>,                 <span class="comment">// 几号（1-31，仅monthly）</span>
+  <span class="key">yearlyMonth</span>: <span class="val">null</span>,                <span class="comment">// 几月（1-12，仅yearly）</span>
+  <span class="key">yearlyDay</span>: <span class="val">null</span>,                   <span class="comment">// 几号（1-31，仅yearly）</span>
+  <span class="key">enabled</span>: <span class="val">true</span>,                     <span class="comment">// 是否启用</span>
+  <span class="key">nextDue</span>: <span class="val">'2026-04-22'</span>,           <span class="comment">// 下次到期日</span>
+  <span class="key">reminderEnabled</span>: <span class="val">true</span>,            <span class="comment">// 是否开启提醒</span>
+  <span class="key">reminderTime</span>: <span class="val">'09:00'</span>,            <span class="comment">// 提醒时间</span>
+  <span class="key">createTime</span>: <span class="val">'2026-04-21T10:00:00'</span>
+}
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>账户数据</div>
+                <div class="code-block">
+<span class="comment">// 存储键：accounts（数组）</span>
+{
+  <span class="key">accountId</span>: <span class="val">'acc_1713600000000'</span>,
+  <span class="key">name</span>: <span class="val">'支付宝'</span>,
+  <span class="key">icon</span>: <span class="val">'💳'</span>,
+  <span class="key">balance</span>: <span class="val">2580.50</span>,      <span class="comment">// 余额（由 bill-helper 自动计算）</span>
+  <span class="key">isDefault</span>: <span class="val">true</span>          <span class="comment">// 是否默认账户</span>
+}
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>核心工具函数（bill-helper.js）</div>
+                <table class="detail-table">
+                    <thead><tr><th>函数</th><th>功能</th></tr></thead>
+                    <tbody>
+                        <tr><td class="col-label"><code>calculateBalance()</code></td><td>根据账户关联的收支账单计算余额：Σ收入 - Σ支出</td></tr>
+                        <tr><td class="col-label"><code>updateAccountBalance()</code></td><td>账单增删改时触发余额重算，编辑时先还原旧账单再应用新数据</td></tr>
+                        <tr><td class="col-label"><code>checkDuplicate()</code></td><td>检测同金额+同分类+同日期的重复账单，防止误记</td></tr>
+                        <tr><td class="col-label"><code>calculateNextDue()</code></td><td>根据周期类型和参数，推算周期账单的下次到期日</td></tr>
+                        <tr><td class="col-label"><code>syncCategoryName()</code></td><td>分类改名时遍历全部账单，批量替换旧分类名</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== 开发流程 ===== -->
+        <div class="section" id="dev">
+            <div class="section-title">开发流程</div>
+            <div class="project-card">
+                <div class="section-subtitle"><span class="dot"></span>版本迭代历程</div>
+                <div class="dev-timeline">
+                    <div class="dev-phase">
+                        <div class="phase-title">V1.0 · 基础记账</div>
+                        <div class="phase-desc">首页账单列表 + 添加账单页 + <code>wx.setStorageSync</code> 本地存储，跑通核心记账流程</div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">V2.0 · 五大页面成型</div>
+                        <div class="phase-desc">日历/统计/资产/我的页面上线，Component + Behavior 组件化重构，抽取公共逻辑为 Behavior 混入</div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">V3.0 · 预算+主题</div>
+                        <div class="phase-desc">预算管控卡片（红色渐变+剩余金额），CSS 变量主题换肤系统（5种预设），全局 Loading + 骨架屏组件</div>
+                    </div>
+                    <div class="dev-phase">
+                        <div class="phase-title">V4.0 · 智能记账</div>
+                        <div class="phase-desc">语音记账（95%+识别率）、快捷记账弹窗（3秒完成）、账户余额自动计算、周期账单+到期提醒、74 用例自动化测试</div>
+                    </div>
+                </div>
+
+                <div class="section-subtitle"><span class="dot"></span>开发→发版流程</div>
+                <div class="flow-steps">
+                    <div class="flow-step">微信开发者工具编码</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step"><code>miniprogram-automator</code> 自动化测试</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">小米真机ADB预览验证</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">开发者工具上传代码</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">微信公众平台提审</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">审核通过 → 发布上线</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 技术亮点 ===== -->
+        <div class="section" id="highlights">
+            <div class="section-title">技术亮点</div>
+            <div class="highlights">
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🎙️</span>
+                        <span class="hl-title">语音记账</span>
+                        <span class="hl-badge hot">核心亮点</span>
+                    </div>
+                    <div class="hl-desc">
+                        微信本地录音 → <code>wx.translateVoice</code> 语音转文字 → 本地NLP解析金额/分类/备注。识别率从 40% → 95%+，零后端ASR成本。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>踩坑</strong>：录音 format 参数不可靠，文档写 opus 实际是 ogg-opus。检测文件头魔数判断真实格式后，识别率飙升。支持双向备注提取，自动过滤语气词。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">💰</span>
+                        <span class="hl-title">账户余额自动计算</span>
+                        <span class="hl-badge core">架构设计</span>
+                    </div>
+                    <div class="hl-desc">
+                        账单增删改时自动同步账户余额，无需手动维护。基于 <code>bill-helper.js</code> 集中管理计算逻辑，保证数据一致性。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>机制</strong>：每笔账单关联账户，保存/编辑/删除时触发重算：余额 = Σ收入 - Σ支出。编辑时先还原旧账单影响，再应用新数据；删除时还原全额。同步按钮允许用户手动对账。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🎨</span>
+                        <span class="hl-title">CSS变量主题系统</span>
+                        <span class="hl-badge new">设计模式</span>
+                    </div>
+                    <div class="hl-desc">
+                        全局CSS变量驱动换肤，<code>data-theme</code> 属性激活变量集，广播通知所有页面刷新。5种预设主题一键切换，无需重启。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>踩坑</strong>：7个页面WXML根元素缺少 <code>data-theme=""</code> 导致CSS变量无法激活——选择器 <code>[data-theme="orange"]</code> 匹配不到没有该属性的元素。修复：补齐属性 + <code>onShow</code> 中 <code>setData({theme})</code> 刷新。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🧪</span>
+                        <span class="hl-title">全链路自动化测试</span>
+                        <span class="hl-badge hot">工程能力</span>
+                    </div>
+                    <div class="hl-desc">
+                        基于 <code>miniprogram-automator</code> 编写74个测试用例，覆盖11个模块，100%通过率，38张截图存证。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>踩坑</strong>：① WebSocket端口≠HTTP端口，需 <code>cli.bat auto --auto-port 9420</code>；② TabBar页面必须用 <code>switchTab</code> 而非 <code>navigateTo</code>；③ 导航路径必须加前导 <code>/</code>；④ action名称大小写敏感。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🔄</span>
+                        <span class="hl-title">Component + Behavior 复用</span>
+                        <span class="hl-badge core">架构设计</span>
+                    </div>
+                    <div class="hl-desc">
+                        抽取公共逻辑为 Behavior 混入（主题切换 themeBehavior、加载状态 loadingBehavior），组件通过 <code>behaviors: [themeBehavior]</code> 继承能力，避免重复代码。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>组件体系</strong>：全局注册组件——骨架屏（skeleton）4种类型+流光动画、全局Loading（global-loading）+脉冲动画、分类图标组件（category-icon）统一管理 emoji 映射。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">🔄</span>
+                        <span class="hl-title">周期账单 + 到期提醒</span>
+                        <span class="hl-badge core">架构设计</span>
+                    </div>
+                    <div class="hl-desc">
+                        支持4种周期（每天/每周/每月/每年），可配置具体日期，<code>calculateNextDue()</code> 自动推算到期日，启动时检测到期弹窗提醒。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>提醒机制</strong>：<code>app.js → checkDueRecurringBills()</code> 小程序启动时检测今日到期账单，弹窗提示用户去记账。可配置提醒时间，支持开启/关闭单条。
+                    </div>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="hl-header">
+                        <span class="hl-icon">📝</span>
+                        <span class="hl-title">分类改名自动同步</span>
+                        <span class="hl-badge new">数据一致性</span>
+                    </div>
+                    <div class="hl-desc">
+                        用户修改分类名称时，自动遍历所有历史账单，将旧分类名替换为新名称，保证数据查询一致性。
+                    </div>
+                    <div class="hl-detail">
+                        <strong>设计考量</strong>：分类名作为查询key存在于账单中，改名不同步会导致统计页按旧名查询为空。系统默认分类受保护不可删除。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 量化成果 ===== -->
+        <div class="section" id="stats">
+            <div class="section-title">量化成果</div>
+            <div class="stats-strip">
+                <div class="stat-item">
+                    <div class="number green">74</div>
+                    <div class="label">自动化用例</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number green">100%</div>
+                    <div class="label">测试通过率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number orange">95%+</div>
+                    <div class="label">语音识别率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number purple">4</div>
+                    <div class="label">大版本迭代</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number green">11</div>
+                    <div class="label">测试模块</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number orange">21</div>
+                    <div class="label">收支分类</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number purple">5</div>
+                    <div class="label">预设主题</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 相关链接 ===== -->
+        <div class="section" id="links">
+            <div class="section-title">相关链接</div>
+            <div class="link-cards">
+                <a class="link-card" href="flutter-intro.html">
+                    <div class="lc-icon">🔵</div>
+                    <div>
+                        <div class="lc-title">Flutter 记账 APP 介绍</div>
+                        <div class="lc-desc">同一产品的跨平台版本</div>
+                    </div>
+                    <div class="lc-arrow">→</div>
+                </a>
+                <a class="link-card" href="test_cases_report.html">
+                    <div class="lc-icon">🧾</div>
+                    <div>
+                        <div class="lc-title">测试用例报告</div>
+                        <div class="lc-desc">74个用例，11模块全覆盖</div>
+                    </div>
+                    <div class="lc-arrow">→</div>
+                </a>
+                <a class="link-card" href="test_report_v2.html">
+                    <div class="lc-icon">📊</div>
+                    <div>
+                        <div class="lc-title">自动化测试报告V2</div>
+                        <div class="lc-desc">测试结果 + 38张截图</div>
+                    </div>
+                    <div class="lc-arrow">→</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>🟢 桔子记账小程序 · 微信原生开发 · 自动化测试驱动 · V4.0</p>
+    </div>
+
+    <script>
+        const navLinks = document.querySelectorAll('.nav a:not(.back-btn)');
+        const sections = ['overview','pages','voice','categories','data','dev','highlights','stats'];
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.getBoundingClientRect().top <= 120) current = id;
+            });
+            navLinks.forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+            });
+        });
+    </script>
+</body>
+</html>
