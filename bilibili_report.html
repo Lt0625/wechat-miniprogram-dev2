@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>胜利文绉绉 · 2026年度数据分析报告</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f1923;color:#e0e0e0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;line-height:1.6}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0f1923}::-webkit-scrollbar-thumb{background:#1a2a3a;border-radius:3px}
+.navbar{background:#0a1520;padding:12px 30px;display:flex;align-items:center;border-bottom:1px solid #1a2a3a;position:sticky;top:0;z-index:100}
+.navbar .logo{font-size:18px;font-weight:700;color:#00a1d6}.navbar .logo span{color:#e0e0e0;font-weight:400;margin-left:8px;font-size:14px}
+.container{max-width:1400px;margin:0 auto;padding:20px 30px 40px}
+.section{margin-bottom:30px}
+.section-title{font-size:20px;font-weight:700;color:#00a1d6;margin-bottom:16px;padding-left:12px;border-left:3px solid #00a1d6}
+.card{background:#1a2a3a;border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(0,161,214,0.1)}
+.card-lg{padding:30px;text-align:center}
+.card-lg h1{font-size:28px;color:#fff;margin-bottom:8px}.card-lg .subtitle{color:#8899aa;font-size:14px}
+.stats-row{display:flex;gap:16px;flex-wrap:wrap;margin:20px 0}
+.stat-card{flex:1;min-width:140px;background:#162435;border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(0,161,214,0.15)}
+.stat-card .icon{font-size:24px;margin-bottom:4px}.stat-card .value{font-size:22px;font-weight:700;color:#00a1d6}.stat-card .label{font-size:12px;color:#8899aa;margin-top:2px}
+.quarter-btns{display:flex;gap:8px;margin:16px 0;justify-content:center}
+.q-btn{padding:8px 24px;border-radius:20px;border:1px solid #00a1d6;background:transparent;color:#00a1d6;cursor:pointer;font-size:14px;transition:all .2s}
+.q-btn:hover,.q-btn.active{background:#00a1d6;color:#fff}
+.chart-grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g1{grid-template-columns:1fr}
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}}
+.chart-box{background:#1a2a3a;border-radius:12px;padding:16px;border:1px solid rgba(0,161,214,0.1)}
+.chart-box h3{font-size:14px;color:#8899aa;margin-bottom:10px;text-align:center}
+.chart-wrap{position:relative;width:100%;overflow:visible}
+.chart-wrap canvas{width:100%!important}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+.compare-card{background:#162435;border-radius:10px;padding:20px;text-align:center}
+.compare-card h4{color:#00a1d6;font-size:16px;margin-bottom:10px}.compare-card .big{font-size:32px;font-weight:700;color:#fff}.compare-card .sub{font-size:12px;color:#8899aa;margin-top:4px}
+.table-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.table-controls input,.table-controls select{background:#162435;border:1px solid #2a3a4a;color:#e0e0e0;padding:8px 12px;border-radius:6px;font-size:13px}
+.table-controls input{flex:1;min-width:200px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#162435;color:#00a1d6;padding:10px 8px;text-align:left;position:sticky;top:0;font-weight:600}
+td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.05)}
+tr:hover{background:rgba(0,161,214,0.05)}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.tag-q{background:rgba(0,161,214,0.2);color:#00a1d6}
+.tag-ex{background:rgba(76,175,80,0.2);color:#4caf50}
+.tag-sc{background:rgba(255,152,0,0.2);color:#ff9800}
+.tag-ho{background:rgba(156,39,176,0.2);color:#ce93d8}
+.tag-da{background:rgba(244,67,54,0.2);color:#ef9a9a}
+.tag-ev{background:rgba(255,235,59,0.2);color:#fff176}
+.tag-te{background:rgba(33,150,243,0.2);color:#90caf9}
+.tag-co{background:rgba(255,87,34,0.2);color:#ffab91}
+.tag-gn{background:rgba(158,158,158,0.2);color:#bdbdbd}
+.tag-s-通用{background:rgba(96,125,139,0.3);color:#90a4ae;border:1px solid rgba(96,125,139,0.5)}
+.tag-s-技术科普{background:rgba(0,188,212,0.3);color:#4dd0e1;border:1px solid rgba(0,188,212,0.5)}
+.tag-s-上手体验{background:rgba(76,175,80,0.3);color:#81c784;border:1px solid rgba(76,175,80,0.5)}
+.tag-s-深度解析{background:rgba(255,152,0,0.3);color:#ffb74d;border:1px solid rgba(255,152,0,0.5)}
+.tag-s-活动探展{background:rgba(156,39,176,0.3);color:#ce93d8;border:1px solid rgba(156,39,176,0.5)}
+.tag-s-拆解{background:rgba(233,30,99,0.3);color:#f06292;border:1px solid rgba(233,30,99,0.5)}
+.tag-s-对比横评{background:rgba(33,150,243,0.3);color:#64b5f6;border:1px solid rgba(33,150,243,0.5)}
+.pagination{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.pagination button{background:#162435;border:1px solid #2a3a4a;color:#e0e0e0;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+.pagination button.active,.pagination button:hover{background:#00a1d6;border-color:#00a1d6;color:#fff}
+.table-wrap{max-height:600px;overflow:auto;border-radius:8px;border:1px solid #1a2a3a}
+.play-great{color:#4caf50;font-weight:700}.play-good{color:#2196f3;font-weight:600}.play-normal{color:#999}
+.float-nav{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:4px}
+.float-nav a{display:block;padding:6px 12px;background:rgba(26,42,58,0.9);color:#8899aa;text-decoration:none;font-size:11px;border-radius:6px;border:1px solid #2a3a4a;transition:all 0.2s;white-space:nowrap}
+.float-nav a:hover,.float-nav a.active{background:#00a1d6;color:#fff;border-color:#00a1d6}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="logo">胜利文绉绉<span>· 2026年度数据分析报告</span></div>
+</div>
+
+<nav class="float-nav" id="float-nav">
+  <a href="#sec-overview" data-section="sec-overview">概览</a>
+  <a href="#sec-compare" data-section="sec-compare">季度对比</a>
+  <a href="#sec-script" data-section="sec-script">脚本分析</a>
+  <a href="#sec-play" data-section="sec-play">播放分析</a>
+  <a href="#sec-trend" data-section="sec-trend">趋势分析</a>
+  <a href="#sec-category" data-section="sec-category">品类分析</a>
+  <a href="#sec-brand" data-section="sec-brand">品牌分析</a>
+  <a href="#sec-interaction" data-section="sec-interaction">互动分析</a>
+  <a href="#sec-videolist" data-section="sec-videolist">视频列表</a>
+</nav>
+
+<div class="container">
+  <div class="section" id="sec-overview">
+    <div class="card card-lg">
+      <h1>胜利文绉绉 2026年度数据分析</h1>
+      <div class="subtitle" id="overview-subtitle"></div>
+      <div class="quarter-btns">
+        <button class="q-btn active" onclick="setQuarter('all')">全年</button>
+        <button class="q-btn" onclick="setQuarter('Q1')">第一季度</button>
+        <button class="q-btn" onclick="setQuarter('Q2')">第二季度</button>
+      </div>
+    </div>
+    <div class="stats-row" id="stats-row"></div>
+  </div>
+
+  <div class="section" id="sec-compare"><div class="section-title">季度对比</div>
+    <div class="card" id="compare-card"></div>
+    <div class="chart-grid g2">
+      <div class="chart-box"><h3>季度播放量对比</h3><div class="chart-wrap"><canvas id="c_compare_play"></canvas></div></div>
+      <div class="chart-box"><h3>季度视频数量对比</h3><div class="chart-wrap"><canvas id="c_compare_count"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-script"><div class="section-title">脚本模式分析</div>
+    <div class="chart-grid g3">
+      <div class="chart-box"><h3>标题模式分布</h3><div class="chart-wrap" style="height:300px"><canvas id="c_pattern"></canvas></div></div>
+      <div class="chart-box"><h3>视频结构类型</h3><div class="chart-wrap" style="height:300px"><canvas id="c_structure"></canvas></div></div>
+      <div class="chart-box"><h3>标题长度分布</h3><div class="chart-wrap" style="height:300px"><canvas id="c_titlelen"></canvas></div></div>
+    </div>
+    <div class="chart-grid g3" style="margin-top:16px">
+      <div class="chart-box"><h3>标题含品牌 vs 播放量</h3><div class="chart-wrap" style="height:300px"><canvas id="c_brand_title"></canvas></div></div>
+      <div class="chart-box"><h3>标题含数字 vs 播放量</h3><div class="chart-wrap" style="height:300px"><canvas id="c_number_title"></canvas></div></div>
+      <div class="chart-box"><h3>结构类型 vs 平均播放量</h3><div class="chart-wrap" style="height:300px"><canvas id="c_struct_play"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-play"><div class="section-title">播放分析</div>
+    <div class="chart-grid g2">
+      <div class="chart-box"><h3>播放量分布</h3><div class="chart-wrap" style="height:300px"><canvas id="c_play_dist"></canvas></div></div>
+      <div class="chart-box"><h3>播放量Top10</h3><div class="chart-wrap" style="height:350px"><canvas id="c_play_top10"></canvas></div></div>
+      <div class="chart-box"><h3>播放量与弹幕量关系</h3><div class="chart-wrap" style="height:320px"><canvas id="c_play_danmaku"></canvas></div></div>
+      <div class="chart-box"><h3>播放量与评论量关系</h3><div class="chart-wrap" style="height:320px"><canvas id="c_play_comment"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-trend"><div class="section-title">趋势分析</div>
+    <div class="chart-grid g1">
+      <div class="chart-box"><h3>播放量趋势折线图</h3><div class="chart-wrap" style="height:350px"><canvas id="c_trend_play"></canvas></div></div>
+    </div>
+    <div class="chart-grid g2" style="margin-top:16px">
+      <div class="chart-box"><h3>品类播放量趋势对比</h3><div class="chart-wrap" style="height:350px"><canvas id="c_trend_category"></canvas></div></div>
+      <div class="chart-box"><h3>互动率趋势折线图</h3><div class="chart-wrap" style="height:350px"><canvas id="c_trend_interact"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-category"><div class="section-title">品类分析</div>
+    <div class="chart-grid g2">
+      <div class="chart-box"><h3>品类分布</h3><div class="chart-wrap" style="height:300px"><canvas id="c_cat_dist"></canvas></div></div>
+      <div class="chart-box"><h3>品类平均播放量</h3><div class="chart-wrap" style="height:300px"><canvas id="c_cat_play"></canvas></div></div>
+      <div class="chart-box"><h3>品类视频数量</h3><div class="chart-wrap" style="height:300px"><canvas id="c_cat_count"></canvas></div></div>
+      <div class="chart-box"><h3>品类平均互动率</h3><div class="chart-wrap" style="height:300px"><canvas id="c_cat_interact"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-brand"><div class="section-title">品牌分析</div>
+    <div class="chart-grid g2">
+      <div class="chart-box"><h3>品牌分布</h3><div class="chart-wrap" style="height:300px"><canvas id="c_brand_dist"></canvas></div></div>
+      <div class="chart-box"><h3>品牌平均播放量</h3><div class="chart-wrap" style="height:300px"><canvas id="c_brand_play"></canvas></div></div>
+      <div class="chart-box"><h3>品牌视频数量</h3><div class="chart-wrap" style="height:300px"><canvas id="c_brand_count"></canvas></div></div>
+      <div class="chart-box"><h3>品牌品类覆盖</h3><div class="chart-wrap" style="height:300px"><canvas id="c_brand_cat"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-interaction"><div class="section-title">互动分析</div>
+    <div class="chart-grid g2">
+      <div class="chart-box"><h3>评论率分布</h3><div class="chart-wrap" style="height:300px"><canvas id="c_cr_dist"></canvas></div></div>
+      <div class="chart-box"><h3>弹幕率分布</h3><div class="chart-wrap" style="height:300px"><canvas id="c_dr_dist"></canvas></div></div>
+      <div class="chart-box"><h3>时长分布</h3><div class="chart-wrap" style="height:300px"><canvas id="c_dur_dist"></canvas></div></div>
+      <div class="chart-box"><h3>互动率 vs 播放量</h3><div class="chart-wrap" style="height:320px"><canvas id="c_interact_play"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-videolist"><div class="section-title">视频列表</div>
+    <div class="card">
+      <div class="table-controls">
+        <input type="text" id="search-input" placeholder="搜索标题..." oninput="renderTable()">
+        <select id="filter-cat" onchange="renderTable()"><option value="">全部品类</option></select>
+        <select id="filter-brand" onchange="renderTable()"><option value="">全部品牌</option></select>
+        <select id="filter-struct" onchange="renderTable()"><option value="">全部结构</option></select>
+      </div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>标题</th><th>播放量</th><th>评论</th><th>弹幕</th><th>时长</th><th>日期</th><th>品类</th><th>模式</th>
+        </tr></thead><tbody id="table-body"></tbody></table>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+Chart.register(ChartDataLabels);
+Chart.defaults.set('plugins.datalabels', { display: false });
+const RAW_DATA = {"totalCount":379,"scrapedCount":40,"videos":[{"bvid":"BV1CXJA6AEJe","title":"无线耳机还能卷什么？ HDC 2026 似乎给了一些新的方向","play":306600,"comment":488,"danmaku":875,"duration":"10:10","date":"2026-06-14","title_patterns":["question","number"],"video_structure":"general","title_length_category":"long","has_brand_in_title":false,"has_number_in_title":true,"category":"耳机","brand":"其他","play_wan":30.7,"comment_rate":0.159,"danmaku_rate":0.285},{"bvid":"BV1z8Ev65Ewo","title":"兼顾越野和城市通勤，新能源硬派方盒子到底应该怎么选？","play":414418,"comment":607,"danmaku":1089,"duration":"07:09","date":"2026-06-11","title_patterns":["question","emotion","science"],"video_structure":"science","title_length_category":"medium","has_brand_in_title":false,"has_number_in_title":false,"category":"其他","brand":"其他","play_wan":41.4,"comment_rate":0.146,"danmaku_rate":0.263},{"bvid":"BV1VAVf6WEg8","title":"华为最薄平板！MatePad Pro Max 究竟是怎么做到的？","play":1242664,"comment":1559,"danmaku":1354,"duration":"11:54","date":"2026-06-01","title_patterns":["question","exclamation","brand","emotion","science"],"video_structure":"science","title_length_category":"long","has_brand_in_title":true,"has_number_in_title":false,"category":"手机","brand":"华为","play_wan":124.3,"comment_rate":0.125,"danmaku_rate":0.109},{"bvid":"BV11SVn6iE32","title":"最轻薄的 Ultra？三星Galaxy S26 Ultra 上手体验","play":1316914,"comment":566,"danmaku":1328,"duration":"09:15","date":"2026-05-31","title_patterns":["question","number","brand","emotion"],"video_structure":"hands_on","title_length_category":"long","has_brand_in_title":true,"has_number_in_title":true,"category":"手机","brand":"三星","play_wan":131.7,"comment_rate":0.043,"danmaku_rate":0.101},{"bvid":"BV1YgLF68ESs","title":"看到的和手机拍的是两回事？手机影像专业化还缺哪些东西","play":906627,"comment":431,"danmaku":1334,"duration":"15:19","date":"2026-05-18","title_patterns":["question"],"video_structure":"general","title_length_category":"medium","has_brand_in_title":false,"has_number_in_title":false,"category":"手机","brand":"其他","play_wan":90.7,"comment_rate":0.048,"danmaku_rate":0.147},{"bvid":"BV1Go9eBDEm2","title":"20X长焦之外还有啥？华为Pura 90 Pro Max 上手体验","play":814331,"comment":1233,"danmaku":1524,"duration":"09:48","date":"2026-04-30","title_patterns":["question","number","brand"],"video_structure":"hands_on","title_length_category":"long","has_brand_in_title":true,"has_number_in_title":true,"category":"手机","brand":"华为","play_wan":81.4,"comment_rate":0.151,"danmaku_rate":0.187},{"bvid":"BV1EV96B5EQW","title":"边聊天也能边导航，添加/切换途经点全程语音操作？全新的鸿蒙座舱小艺智能体到底怎么样","play":822083,"comment":543,"danmaku":1465,"duration":"07:06","date":"2026-04-28","title_patterns":["question","emotion","science"],"video_structure":"science","title_length_category":"long","has_brand_in_title":false,"has_number_in_title":false,"category":"汽车","brand":"华为","play_wan":82.2,"comment_rate":0.066,"danmaku_rate":0.178},{"bvid":"BV1BtdSBkEET","title":"辅助驾驶的决策过程也能可视化？试驾全新坦克700 Hi4-Z","play":844181,"comment":362,"danmaku":1223,"duration":"09:40","date":"2026-04-21","title_patterns":["question","number","emotion"],"video_structure":"general","title_length_category":"long","has_brand_in_title":false,"has_number_in_title":true,"category":"汽车","brand":"其他","play_wan":84.4,"comment_rate":0.043,"danmaku_rate":0.145},{"bvid":"BV1Hsd6B9ESK","title":"鸿蒙小圆本，好AI、好用？华为MateBook 14 鸿蒙版上手体验","play":451319,"comment":1096,"danmaku":1298,"duration":"06:48","date":"2026-04-20","title_patterns":["question","number","brand"],"video_structure":"hands_on","title_length_category":"long","has_brand_in_title":true,"has_number_in_title":true,"category":"手机","brand":"华为","play_wan":45.1,"comment_rate":0.243,"danmaku_rate":0.288},{"bvid":"BV1SqoKB6EH8","title":"业界最轻AI眼镜，35.5g裸机，华为首款 AI 眼镜好用吗？","play":587309,"comment":815,"danmaku":1618,"duration":"08:55","date":"2026-04-20","title_patterns":["question","number","brand","emotion"],"video_structure":"general","title_length_category":"long","has_brand_in_title":true,"has_number_in_title":true,"category":"AI/眼镜","brand":"华为","play_wan":58.7,"comment_rate":0.139,"danmaku_rate":0.275},{"bvid":"BV1xq4y1W7Gu","title":"与飞机相同技术理念？智己LS8的全线控底盘是什么样的？","play":1077000,"comment":981,"danmaku":1460,"duration":"09:29","date":"2026-04-16","title_patterns":["question","number","science"],"video_structure":"deep_analysis","title_length_category":"medium","has_brand_in_title":false,"has_number_in_title":true,"category":"汽车","brand":"其他","play_wan":107.7,"comment_rate":0.091,"danmaku_rate":0.136},{"bvid":"BV1kw4y1W7Gu","title":"20 万预算就买到带华为乾崑全家桶的大 6 座 SUV ？华境S已正式开启预订","play":1018000,"comment":1363,"danmaku":1305,"duration":"06:08","date":"2026-04-12","title_patterns":["question","number","brand"],"video_structure":"general","title_length_category":"long","has_brand_in_title":true,"has_number_in_title":true,"category":"汽车","brand":"华为","play_wan":101.8,"comment_rate":0.134,"danmaku_rate":0.128},{"bvid":"BV1jq4y1W7Gu","title":"内存涨价，手机只能跟涨？华为在鸿蒙上的超空间内存技术行不行","play":675000,"comment":1931,"danmaku":1531,"duration":"07:34","date":"2026-04-07","title_patterns":["question","brand"],"video_structure":"deep_analysis","title_length_category":"medium","has_brand_in_title":true,"has_number_in_title":false,"category":"手机","brand":"华为","play_wan":67.5,"comment_rate":0.286,"danmaku_rate":0.227},{"bvid":"BV1hp4y1W7Gu","title":"别墅级的MPV长啥样？别克至境世家纯电版体验","play":1076000,"comment":1430,"danmaku":1017,"duration":"09:36","date":"2026-04-02","title_patterns":["question"],"video_structure":"hands_on","title_length_category":"medium","has_brand_in_title":false,"has_number_in_title":false,"category":"汽车","brand":"其他","play_wan":107.6,"comment_rate":0.133,"danmaku_rate":0.095},{"bvid":"BV1gq4y1W7Gu","title":"电视光源被重做了一遍？AWE探展｜海信UX2026实看","play":426000,"comment":1212,"danmaku":1017,"duration":"10:17","date":"2026-03-27","title_patterns":["question","number"],"video_structure":"event","title_length_category":"medium","has_brand_in_title":false,"has_number_in_title":true,"category":"显示器/电视","brand":"其他","play_wan":42.6,"comment_rate":0.285,"danmaku_rate":0.239},{"bvid":"BV1dr4y1W7Gu","title":"华为联合美的出空调了？带你体验AWE 2026的科技新机","play":540000,"comment":1231,"danmaku":1231,"duration":"05:23","date":"2026-03-25","title_patterns":["question","number","brand"],"video_structure":"hands_on","title_length_category":"medium","has_brand_in_title":true,"has_number_in_title":true,"category":"智能家居/家电","brand":"华为","play_wan":54.0,"comment_rate":0.228,"danmaku_rate":0.228},{"bvid":"BV1es4y1W7Gu","title":"时隔五年！华为新发布的显示器用起来到底怎么样？华为MateView GT 显示器首发评测","play":489000,"comment":1620,"danmaku":1620,"duration":"08:11","date":"2026-03-24","title_patterns":["question","exclamation","brand","emotion","science"],"video_structure":"hands_on","title_length_category":"long","has_brand_in_title":true,"has_number_in_title":false,"category":"手机","brand":"华为","play_wan":48.9,"comment_rate":0.331,"danmaku_rate":0.331},{"bvid":"BV1ft4y1W7Gu","title":"你手上的智能手表真的\"准\"吗？华为WATCH GT Runner 2定位技术解析","play":1146000,"comment":900,"danmaku":1347,"duration":"06:46","date":"2026-03-20","title_patterns":["question","number","brand","emotion"],"video_structure":"deep_analysis","title_length_category":"long","has_brand_in_title":true,"has_number_in_title":true,"category":"手表","brand":"华为","play_wan":114.6,"comment_rate":0.079,"danmaku_rate":0.118},{"bvid":"BV1gu4y1W7Gu","title":"更轻更薄，还更耐用？荣耀 Magic V6 首发评测、拆解","play":566000,"comment":1305,"danmaku":1305,"duration":"07:10","date":"2026-03-10","title_patterns":["question","number","brand","emotion"],"video_structure":"hands_on","title_length_category":"medium","has_brand_in_title":true,"has_number_in_title":true,"category":"手机","brand":"荣耀","play_wan":56.6,"comment_rate":0.231,"danmaku_rate":0.231},{"bvid":"BV1hv4y1W7Gu","title":"意料之外的体验？深度体验深蓝L06辅助驾驶","play":2077000,"comment":1522,"danmaku":1859,"duration":"09:37","date":"2026-02-28","title_patterns":["question","number"],"video_structure":"hands_on","title_length_category":"medium","has_brand_in_title":false,"has_number_in_title":true,"category":"汽车","brand":"其他","play_wan":207.7,"comment_rate":0.073,"danmaku_rate":0.09},{"bvid":"BV1iw4y1W7Gu","title":"如何向失控说再见？HUAWEI XMC乾崑数字底盘引擎专治过年返乡烂路","play":1039000,"comment":588,"danmaku":1296,"duration":"06:25","date":"2026-02-12","title_patterns":["question","science"],"video_structure":"science","title_length_category":"long","has_brand_in_title":false,"has_number_in_title":false,"category":"汽车","brand":"华为","play_wan":103.9,"comment_rate":0.057,"danmaku_rate":0.125},{"bvid":"BV1jx4y1W7Gu","title":"鸿燕六翼天线，通信体验如何？荣耀Power2 信号实测","play":723000,"comment":687,"danmaku":1088,"duration":"07:10","date":"2026-01-24","title_patterns":["question","number","brand","science"],"video_structure":"hands_on","title_length_category":"medium","has_brand_in_title":true,"has_number_in_title":true,"category":"其他","brand":"荣耀","play_wan":72.3,"comment_rate":0.095,"danmaku_rate":0.15},{"bvid":"BV1ky4y1W7Gu","title":"拆解实测，徕芬 i2 到底是不是一次\"真升级？\"","play":726000,"comment":861,"danmaku":861,"duration":"07:59","date":"2026-01-21","title_patterns":["question","number","emotion"],"video_structure":"teardown","title_length_category":"medium","has_brand_in_title":false,"has_number_in_title":true,"category":"拆解","brand":"其他","play_wan":72.6,"comment_rate":0.119,"danmaku_rate":0.119},{"bvid":"BV1lz4y1W7Gu","title":"19999的三星三折叠，是不是半成品？Galaxy Z Trifold深度评测","play":636000,"comment":1818,"danmaku":1818,"duration":"18:14","date":"2026-01-15","title_patterns":["question","number","brand"],"video_structure":"hands_on","title_length_category":"long","has_brand_in_title":true,"has_number_in_title":true,"category":"手机","brand":"三星","play_wan":63.6,"comment_rate":0.286,"danmaku_rate":0.286}]};
+
+let currentQuarter = 'all';
+let currentPage = 1;
+const PAGE_SIZE = 15;
+const charts = {};
+
+const PATTERN_LABELS = {question:'疑问句',exclamation:'感叹句',emotion:'情感表达',number:'数字',brand:'品牌提及',science:'科技解析',comparison:'对比'};
+const STRUCTURE_LABELS = {hands_on:'上手体验',deep_analysis:'深度解析',general:'通用',science:'技术科普',event:'活动探展',teardown:'拆解',comparison:'对比横评'};
+const TITLELEN_LABELS = {short:'短标题',medium:'中等标题',long:'长标题'};
+const STRUCTURE_COLORS = ['#00a1d6','#ff9800','#4caf50','#e91e63','#ffeb3b','#2196f3','#ff5722'];
+const CATEGORY_COLORS = ['#00a1d6','#4caf50','#ff9800','#e91e63','#9c27b0','#00bcd4','#ff5722','#795548','#607d8b','#3f51b5'];
+
+function getFiltered() {
+  const vids = RAW_DATA.videos;
+  if (currentQuarter === 'all') return vids;
+  if (currentQuarter === 'Q1') return vids.filter(v => { const m = parseInt(v.date.split('-')[1]); return m >= 1 && m <= 3; });
+  if (currentQuarter === 'Q2') return vids.filter(v => { const m = parseInt(v.date.split('-')[1]); return m >= 4 && m <= 6; });
+  return vids;
+}
+
+function setQuarter(q) {
+  currentQuarter = q;
+  currentPage = 1;
+  document.querySelectorAll('.q-btn').forEach(b => b.classList.toggle('active', b.textContent.includes(q === 'all' ? '全年' : q === 'Q1' ? '第一季度' : '第二季度')));
+  renderAll();
+}
+
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function groupBy(arr, key) {
+  const m = {};
+  arr.forEach(item => { const k = item[key]; (m[k] = m[k] || []).push(item); });
+  return m;
+}
+
+function avg(arr, field) { return arr.length ? arr.reduce((s, v) => s + v[field], 0) / arr.length : 0; }
+function sum(arr, field) { return arr.reduce((s, v) => s + v[field], 0); }
+
+function countPatterns(videos) {
+  const c = {};
+  videos.forEach(v => v.title_patterns.forEach(p => { c[p] = (c[p] || 0) + 1; }));
+  return c;
+}
+
+function makeDoughnut(canvasId, labels, values, colors, centerText) {
+  destroyChart(canvasId);
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  const total = values.reduce((a, b) => a + b, 0);
+  charts[canvasId] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderColor: '#1a2a3a',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 30, bottom: 20, left: 20, right: 20 } },
+      plugins: {
+        legend: { display: false },
+        datalabels: {
+          display: true,
+          color: '#fff',
+          font: { size: 10, weight: 'bold' },
+          clip: false,
+          formatter: (val, ctx) => {
+            const label = ctx.chart.data.labels[ctx.dataIndex];
+            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+            const pct = ((val / total) * 100).toFixed(1);
+            return label + ' ' + pct + '%';
+          },
+          anchor: 'end',
+          align: 'end',
+          offset: 16
+        }
+      }
+    },
+    plugins: [ChartDataLabels, {
+      id: 'centerText',
+      beforeDraw: function(chart) {
+        if (centerText) {
+          const {width, height, ctx} = chart;
+          ctx.restore();
+          const fontSize = 18;
+          ctx.font = 'bold ' + fontSize + 'px sans-serif';
+          ctx.textBaseline = 'middle';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#fff';
+          ctx.fillText(centerText, width / 2, height / 2);
+          ctx.save();
+        }
+      }
+    }]
+  });
+}
+
+function makePie(canvasId, labels, values, colors, centerText) {
+  destroyChart(canvasId);
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  const total = values.reduce((a, b) => a + b, 0);
+  charts[canvasId] = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderColor: '#1a2a3a',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 30, bottom: 30, left: 60, right: 40 } },
+      plugins: {
+        legend: { display: false },
+        datalabels: {
+          display: true,
+          color: '#fff',
+          font: { size: 10, weight: 'bold' },
+          clip: false,
+          formatter: (val, ctx) => {
+            const label = ctx.chart.data.labels[ctx.dataIndex];
+            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+            const pct = ((val / total) * 100).toFixed(1);
+            return label + ' ' + pct + '%';
+          },
+          anchor: 'end',
+          align: 'end',
+          offset: 16
+        }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+}
+
+function makeBar(canvasId, labels, datasets, opts) {
+  destroyChart(canvasId);
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  charts[canvasId] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: opts.horizontal ? 'y' : 'x',
+      plugins: {
+        legend: opts.legend || { display: datasets.length > 1, labels: { color: '#8899aa', font: { size: 11 } } },
+        datalabels: opts.datalabels || {
+          display: function(ctx) { return ctx.dataset.data[ctx.dataIndex] > 0; },
+          color: '#e0e0e0',
+          anchor: opts.horizontal ? 'end' : 'end',
+          align: opts.horizontal ? 'right' : 'top',
+          font: { size: 11, weight: 'bold' },
+          formatter: (val) => typeof val === 'number' ? val.toFixed(1) : val
+        }
+      },
+      layout: {
+        padding: opts.horizontal ? { right: 30 } : { top: 30 }
+      },
+      scales: {
+        x: { ticks: { color: '#8899aa', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#8899aa', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+}
+
+function makeScatter(canvasId, data, xLabel, yLabel) {
+  destroyChart(canvasId);
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  charts[canvasId] = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        data: data,
+        backgroundColor: 'rgba(0,161,214,0.6)',
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        datalabels: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const v = ctx.raw;
+              return (v.title || '') + ' | 播放:' + v.x + '万 | ' + yLabel + ':' + v.y;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { title: { display: true, text: xLabel, color: '#8899aa' }, ticks: { color: '#8899aa' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { title: { display: true, text: yLabel, color: '#8899aa' }, ticks: { color: '#8899aa' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+}
+
+function renderOverview(videos) {
+  const totalPlay = sum(videos, 'play');
+  const totalComment = sum(videos, 'comment');
+  const totalDanmaku = sum(videos, 'danmaku');
+  const avgPlay = avg(videos, 'play_wan');
+  const avgCommentRate = avg(videos, 'comment_rate');
+  const avgDanmakuRate = avg(videos, 'danmaku_rate');
+  const dates = videos.map(v => v.date).sort();
+  const dateRange = dates.length ? dates[0] + ' ~ ' + dates[dates.length - 1] : '-';
+  document.getElementById('overview-subtitle').textContent = '数据范围: ' + dateRange + ' | 共 ' + videos.length + ' 个视频';
+
+  const stats = [
+    {icon:'🎬',value:videos.length,label:'视频总数'},
+    {icon:'▶️',value:(totalPlay/10000).toFixed(1)+'万',label:'总播放量'},
+    {icon:'📊',value:avgPlay.toFixed(1)+'万',label:'平均播放量'},
+    {icon:'💬',value:totalComment.toLocaleString(),label:'总评论数'},
+    {icon:'🔥',value:totalDanmaku.toLocaleString(),label:'总弹幕数'},
+    {icon:'📈',value:(avgCommentRate*100).toFixed(1)+'%',label:'平均评论率'},
+    {icon:'⚡',value:(avgDanmakuRate*100).toFixed(1)+'%',label:'平均弹幕率'}
+  ];
+  document.getElementById('stats-row').innerHTML = stats.map(s =>
+    '<div class="stat-card"><div class="icon">'+s.icon+'</div><div class="value">'+s.value+'</div><div class="label">'+s.label+'</div></div>'
+  ).join('');
+}
+
+function renderCompare(videos) {
+  const all = RAW_DATA.videos;
+  const q1 = all.filter(v => { const m = parseInt(v.date.split('-')[1]); return v.date.startsWith('2026-') && m >= 1 && m <= 3; });
+  const q2 = all.filter(v => { const m = parseInt(v.date.split('-')[1]); return v.date.startsWith('2026-') && m >= 4 && m <= 6; });
+
+  const q1Play = (sum(q1, 'play_wan')).toFixed(1);
+  const q2Play = (sum(q2, 'play_wan')).toFixed(1);
+  const q1Avg = avg(q1, 'play_wan').toFixed(1);
+  const q2Avg = avg(q2, 'play_wan').toFixed(1);
+  const q1Comment = avg(q1, 'comment_rate');
+  const q2Comment = avg(q2, 'comment_rate');
+
+  document.getElementById('compare-card').innerHTML =
+    '<div class="compare-grid">' +
+    '<div class="compare-card"><h4>第一季度 (1-3月)</h4><div class="big">' + q1.length + ' 个视频</div><div class="sub">总播放 ' + q1Play + '万 | 均播放 ' + q1Avg + '万 | 评论率 ' + (q1Comment*100).toFixed(1) + '%</div></div>' +
+    '<div class="compare-card"><h4>第二季度 (4-6月)</h4><div class="big">' + q2.length + ' 个视频</div><div class="sub">总播放 ' + q2Play + '万 | 均播放 ' + q2Avg + '万 | 评论率 ' + (q2Comment*100).toFixed(1) + '%</div></div>' +
+    '</div>';
+
+  makeBar('c_compare_play', ['第一季度', '第二季度'], [{
+    data: [parseFloat(q1Play), parseFloat(q2Play)],
+    backgroundColor: ['#00a1d6', '#4caf50'],
+    borderRadius: 6
+  }], {});
+
+  makeBar('c_compare_count', ['第一季度', '第二季度'], [{
+    data: [q1.length, q2.length],
+    backgroundColor: ['#00a1d6', '#4caf50'],
+    borderRadius: 6
+  }], {});
+}
+
+function renderScriptMode(videos) {
+  const pc = countPatterns(videos);
+  const pLabels = Object.keys(pc).map(k => PATTERN_LABELS[k] || k);
+  const pValues = Object.values(pc);
+  makeDoughnut('c_pattern', pLabels, pValues, CATEGORY_COLORS.slice(0, pLabels.length), videos.length + '个');
+
+  const sc = groupBy(videos, 'video_structure');
+  const sLabels = Object.keys(sc).map(k => STRUCTURE_LABELS[k] || k);
+  const sValues = Object.keys(sc).map(k => sc[k].length);
+  makeDoughnut('c_structure', sLabels, sValues, STRUCTURE_COLORS.slice(0, sLabels.length), videos.length + '个');
+
+  const tl = groupBy(videos, 'title_length_category');
+  const tlLabels = Object.keys(tl).map(k => TITLELEN_LABELS[k] || k);
+  const tlValues = Object.keys(tl).map(k => tl[k].length);
+  makePie('c_titlelen', tlLabels, tlValues, ['#4caf50', '#ff9800', '#f44336'].slice(0, tlLabels.length), videos.length + '个');
+
+  const brandYes = videos.filter(v => v.has_brand_in_title);
+  const brandNo = videos.filter(v => !v.has_brand_in_title);
+  makeBar('c_brand_title', ['含品牌', '不含品牌'], [{
+    data: [avg(brandYes, 'play_wan'), avg(brandNo, 'play_wan')],
+    backgroundColor: ['#00a1d6', '#4caf50'],
+    borderRadius: 6,
+    label: '平均播放量(万)'
+  }], {});
+
+  const numYes = videos.filter(v => v.has_number_in_title);
+  const numNo = videos.filter(v => !v.has_number_in_title);
+  makeBar('c_number_title', ['含数字', '不含数字'], [{
+    data: [avg(numYes, 'play_wan'), avg(numNo, 'play_wan')],
+    backgroundColor: ['#ff9800', '#2196f3'],
+    borderRadius: 6,
+    label: '平均播放量(万)'
+  }], {});
+
+  const structGroups = groupBy(videos, 'video_structure');
+  const sKeys = Object.keys(structGroups);
+  const sNames = sKeys.map(k => STRUCTURE_LABELS[k] || k);
+  const sAvg = sKeys.map(k => avg(structGroups[k], 'play_wan'));
+  makeBar('c_struct_play', sNames, [{
+    data: sAvg,
+    backgroundColor: STRUCTURE_COLORS.slice(0, sNames.length),
+    borderRadius: 6,
+    label: '平均播放量(万)'
+  }], {});
+}
+
+function renderPlayAnalysis(videos) {
+  const bins = [
+    {label:'0-50万',min:0,max:50},{label:'50-100万',min:50,max:100},{label:'100-150万',min:100,max:150},
+    {label:'150-200万',min:150,max:200},{label:'200万+',min:200,max:9999}
+  ];
+  const binCounts = bins.map(b => videos.filter(v => v.play_wan >= b.min && v.play_wan < b.max).length);
+  makeBar('c_play_dist', bins.map(b => b.label), [{
+    data: binCounts, backgroundColor: '#00a1d6', borderRadius: 6, label: '视频数'
+  }], {});
+
+  const sorted = [...videos].sort((a, b) => b.play - a.play).slice(0, 10);
+  makeBar('c_play_top10', sorted.map(v => v.title.length > 20 ? v.title.substring(0, 20) + '...' : v.title), [{
+    data: sorted.map(v => v.play_wan),
+    backgroundColor: sorted.map((_, i) => i === 0 ? '#ff9800' : i < 3 ? '#00a1d6' : '#4caf50'),
+    borderRadius: 6, label: '播放量(万)'
+  }], { horizontal: true });
+
+  makeScatter('c_play_danmaku', videos.map(v => ({x: v.play_wan, y: v.danmaku_rate, title: v.title.substring(0, 15)})), '播放量(万)', '弹幕率(%)');
+  makeScatter('c_play_comment', videos.map(v => ({x: v.play_wan, y: v.comment_rate, title: v.title.substring(0, 15)})), '播放量(万)', '评论率(%)');
+}
+
+function renderTrends(videos) {
+  const sorted = [...videos].sort((a, b) => a.date.localeCompare(b.date));
+
+  destroyChart('c_trend_play');
+  const ctx1 = document.getElementById('c_trend_play').getContext('2d');
+  const ptColors = sorted.map(v => v.play_wan > 100 ? '#4caf50' : v.play_wan > 50 ? '#2196f3' : '#999');
+  const ptBg = sorted.map(v => v.play_wan > 100 ? '#4caf50' : v.play_wan > 50 ? '#2196f3' : '#999');
+  const ma3 = sorted.map((_, i) => {
+    if (i < 2) return null;
+    return (sorted[i-2].play_wan + sorted[i-1].play_wan + sorted[i].play_wan) / 3;
+  });
+  charts['c_trend_play'] = new Chart(ctx1, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        type: 'scatter',
+        label: '播放量',
+        data: sorted.map((v, i) => ({x: i, y: v.play_wan})),
+        pointBackgroundColor: ptBg,
+        pointBorderColor: ptColors,
+        pointRadius: 7,
+        pointHoverRadius: 9,
+        showLine: true,
+        borderColor: 'rgba(0,161,214,0.3)',
+        borderWidth: 1,
+        fill: false
+      }, {
+        type: 'scatter',
+        label: '3期移动平均',
+        data: sorted.map((v, i) => ma3[i] !== null ? ({x: i, y: ma3[i]}) : null).filter(Boolean),
+        showLine: true,
+        borderColor: '#ff9800',
+        borderWidth: 2,
+        borderDash: [5, 5],
+        pointRadius: 0,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, labels: { color: '#8899aa' } },
+        datalabels: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return sorted[ctx.raw.x].date + ' | ' + ctx.raw.y.toFixed(1) + '万';
+            }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#8899aa', maxTicksLimit: 12, callback: function(val, idx) { return sorted[val] ? sorted[val].date.substring(5) : ''; } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { title: { display: true, text: '播放量(万)', color: '#8899aa' }, ticks: { color: '#8899aa' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+
+  const catGroups = groupBy(videos, 'category');
+  const months = [...new Set(sorted.map(v => v.date.substring(0, 7)))].sort();
+  const catColors = CATEGORY_COLORS;
+  const datasets2 = Object.keys(catGroups).map((cat, ci) => {
+    const catVids = catGroups[cat];
+    const monthData = months.map(m => {
+      const mv = catVids.filter(v => v.date.startsWith(m));
+      return sum(mv, 'play_wan');
+    });
+    return {
+      label: cat,
+      data: monthData,
+      borderColor: catColors[ci % catColors.length],
+      backgroundColor: catColors[ci % catColors.length],
+      borderWidth: 2,
+      tension: 0.3,
+      pointRadius: 4,
+      fill: false
+    };
+  });
+
+  makeBar('c_trend_category', months, datasets2, {});
+
+  destroyChart('c_trend_interact');
+  const ctx3 = document.getElementById('c_trend_interact').getContext('2d');
+  charts['c_trend_interact'] = new Chart(ctx3, {
+    type: 'line',
+    data: {
+      labels: sorted.map(v => v.date),
+      datasets: [{
+        label: '评论率(%)',
+        data: sorted.map(v => (v.comment_rate * 100)),
+        borderColor: '#00a1d6',
+        backgroundColor: 'rgba(0,161,214,0.1)',
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 4,
+        yAxisID: 'y'
+      }, {
+        label: '弹幕率(%)',
+        data: sorted.map(v => (v.danmaku_rate * 100)),
+        borderColor: '#ff9800',
+        backgroundColor: 'rgba(255,152,0,0.1)',
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 4,
+        yAxisID: 'y1'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#8899aa' } }, datalabels: { display: false } },
+      scales: {
+        x: { ticks: { color: '#8899aa', maxTicksLimit: 12 }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { position: 'left', title: { display: true, text: '评论率(%)', color: '#00a1d6' }, ticks: { color: '#00a1d6' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y1: { position: 'right', title: { display: true, text: '弹幕率(%)', color: '#ff9800' }, ticks: { color: '#ff9800' }, grid: { drawOnChartArea: false } }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+}
+
+function renderCategory(videos) {
+  const groups = groupBy(videos, 'category');
+  const keys = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+  const labels = keys;
+  const counts = keys.map(k => groups[k].length);
+
+  makeDoughnut('c_cat_dist', labels, counts, CATEGORY_COLORS.slice(0, labels.length), videos.length + '个');
+
+  makeBar('c_cat_play', labels, [{
+    data: keys.map(k => avg(groups[k], 'play_wan')),
+    backgroundColor: CATEGORY_COLORS.slice(0, labels.length),
+    borderRadius: 6, label: '平均播放量(万)'
+  }], {});
+
+  makeBar('c_cat_count', labels, [{
+    data: counts,
+    backgroundColor: CATEGORY_COLORS.slice(0, labels.length),
+    borderRadius: 6, label: '视频数'
+  }], {});
+
+  makeBar('c_cat_interact', labels, [{
+    data: keys.map(k => avg(groups[k], 'comment_rate') * 100),
+    backgroundColor: 'rgba(0,161,214,0.7)',
+    borderRadius: 6, label: '评论率(%)'
+  }, {
+    data: keys.map(k => avg(groups[k], 'danmaku_rate') * 100),
+    backgroundColor: 'rgba(255,152,0,0.7)',
+    borderRadius: 6, label: '弹幕率(%)'
+  }], {});
+}
+
+function renderBrand(videos) {
+  const groups = groupBy(videos, 'brand');
+  const keys = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+
+  makeDoughnut('c_brand_dist', keys, keys.map(k => groups[k].length), CATEGORY_COLORS.slice(0, keys.length), videos.length + '个');
+
+  makeBar('c_brand_play', keys, [{
+    data: keys.map(k => avg(groups[k], 'play_wan')),
+    backgroundColor: CATEGORY_COLORS.slice(0, keys.length),
+    borderRadius: 6, label: '平均播放量(万)'
+  }], {});
+
+  makeBar('c_brand_count', keys, [{
+    data: keys.map(k => groups[k].length),
+    backgroundColor: CATEGORY_COLORS.slice(0, keys.length),
+    borderRadius: 6, label: '视频数'
+  }], {});
+
+  const brandCats = {};
+  keys.forEach(k => { brandCats[k] = [...new Set(groups[k].map(v => v.category))]; });
+  const allCats = [...new Set(videos.map(v => v.category))].sort();
+  makeBar('c_brand_cat', keys, allCats.map((cat, ci) => ({
+    label: cat,
+    data: keys.map(k => brandCats[k].includes(cat) ? 1 : 0),
+    backgroundColor: CATEGORY_COLORS[ci % CATEGORY_COLORS.length],
+    borderRadius: 4
+  })), { datalabels: { display: false }, legend: { display: true, position: 'bottom', labels: { color: '#8899aa', font: { size: 11 } } } });
+}
+
+function renderInteraction(videos) {
+  const crBins = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35];
+  const crLabels = crBins.slice(0, -1).map((b, i) => (b * 100).toFixed(0) + '-' + (crBins[i + 1] * 100).toFixed(0) + '%');
+  const crLast = (crBins[crBins.length - 1] * 100).toFixed(0) + '%+';
+  crLabels.push(crLast);
+  const crCounts = crBins.map((b, i) => {
+    const max = i < crBins.length - 1 ? crBins[i + 1] : 1;
+    return videos.filter(v => v.comment_rate >= b && v.comment_rate < max).length;
+  });
+  crCounts[crCounts.length - 1] = videos.filter(v => v.comment_rate >= crBins[crBins.length - 1]).length;
+  makeBar('c_cr_dist', crLabels, [{ data: crCounts, backgroundColor: '#00a1d6', borderRadius: 6, label: '视频数' }], {});
+
+  const drBins = [0, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 1];
+  const drLabels = drBins.slice(0, -1).map((b, i) => (b * 100).toFixed(0) + '-' + (drBins[i + 1] * 100).toFixed(0) + '%');
+  const drCounts = drBins.slice(0, -1).map((b, i) => videos.filter(v => v.danmaku_rate >= b && v.danmaku_rate < drBins[i + 1]).length);
+  makeBar('c_dr_dist', drLabels, [{ data: drCounts, backgroundColor: '#ff9800', borderRadius: 6, label: '视频数' }], {});
+
+  function parseDur(d) { const p = d.split(':'); return parseInt(p[0]) * 60 + parseInt(p[1]); }
+  const durBins = ['0-5分钟', '5-8分钟', '8-10分钟', '10-15分钟', '15分钟+'];
+  const durRanges = [[0, 300], [300, 480], [480, 600], [600, 900], [900, 99999]];
+  const durCounts = durRanges.map(r => videos.filter(v => { const s = parseDur(v.duration); return s >= r[0] && s < r[1]; }).length);
+  makeBar('c_dur_dist', durBins, [{ data: durCounts, backgroundColor: '#4caf50', borderRadius: 6, label: '视频数' }], {});
+
+  makeScatter('c_interact_play', videos.map(v => ({x: v.play_wan, y: ((v.comment_rate + v.danmaku_rate) / 2) * 100, title: v.title.substring(0, 15)})), '播放量(万)', '互动率(%)');
+}
+
+let tableData = [];
+function renderTable() {
+  const videos = getFiltered();
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const cat = document.getElementById('filter-cat').value;
+  const brand = document.getElementById('filter-brand').value;
+  const struct = document.getElementById('filter-struct').value;
+
+  tableData = videos.filter(v => {
+    if (search && !v.title.toLowerCase().includes(search)) return false;
+    if (cat && v.category !== cat) return false;
+    if (brand && v.brand !== brand) return false;
+    if (struct && v.video_structure !== struct) return false;
+    return true;
+  }).sort((a, b) => b.date.localeCompare(a.date));
+
+  const totalPages = Math.ceil(tableData.length / PAGE_SIZE) || 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page = tableData.slice(start, start + PAGE_SIZE);
+
+  const structTagClass = (s) => {
+    const m = {question:'tag-q',exclamation:'tag-ex',emotion:'tag-ho',number:'tag-sc',brand:'tag-da',science:'tag-ev',comparison:'tag-co'};
+    return m[s] || 'tag-gn';
+  };
+
+  const structColorMap = {general:'#607d8b',science:'#00bcd4',hands_on:'#4caf50',deep_analysis:'#ff9800',event:'#9c27b0',teardown:'#e91e63',comparison:'#2196f3'};
+  document.getElementById('table-body').innerHTML = page.map(v => {
+    const playClass = v.play_wan > 100 ? 'play-great' : v.play_wan > 50 ? 'play-good' : 'play-normal';
+    const structLabel = STRUCTURE_LABELS[v.video_structure] || v.video_structure;
+    const structTag = '<span class="tag tag-s-' + structLabel + '">' + structLabel + '</span>';
+    const patternTags = (v.title_patterns || []).map(p => '<span class="tag ' + structTagClass(p) + '">' + (PATTERN_LABELS[p] || p) + '</span>').join('');
+    return '<tr><td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + v.title + '">' + v.title + '</td>' +
+      '<td class="' + playClass + '">' + v.play_wan.toFixed(1) + '万</td>' +
+      '<td>' + v.comment.toLocaleString() + '</td>' +
+      '<td>' + v.danmaku.toLocaleString() + '</td>' +
+      '<td>' + v.duration + '</td>' +
+      '<td>' + v.date + '</td>' +
+      '<td>' + v.category + '</td>' +
+      '<td style="white-space:nowrap">' + structTag + patternTags + '</td></tr>';
+  }).join('');
+
+  let pg = '';
+  for (let i = 1; i <= totalPages; i++) {
+    pg += '<button class="' + (i === currentPage ? 'active' : '') + '" onclick="goPage(' + i + ')">' + i + '</button>';
+  }
+  document.getElementById('pagination').innerHTML = pg + '<span style="color:#8899aa;font-size:12px;margin-left:8px">共 ' + tableData.length + ' 条</span>';
+}
+
+function goPage(p) { currentPage = p; renderTable(); }
+
+function populateFilters() {
+  const videos = getFiltered();
+  const cats = [...new Set(videos.map(v => v.category))].sort();
+  const brands = [...new Set(videos.map(v => v.brand))].sort();
+  const structs = [...new Set(videos.map(v => v.video_structure))].sort();
+
+  const catSel = document.getElementById('filter-cat');
+  cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; catSel.appendChild(o); });
+
+  const brandSel = document.getElementById('filter-brand');
+  brands.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; brandSel.appendChild(o); });
+
+  const structSel = document.getElementById('filter-struct');
+  structs.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = STRUCTURE_LABELS[s] || s; structSel.appendChild(o); });
+}
+
+function renderAll() {
+  const videos = getFiltered();
+  ['filter-cat', 'filter-brand', 'filter-struct'].forEach(id => {
+    const sel = document.getElementById(id);
+    while (sel.options.length > 1) sel.remove(1);
+  });
+  populateFilters();
+  renderOverview(videos);
+  renderCompare(videos);
+  renderScriptMode(videos);
+  renderPlayAnalysis(videos);
+  renderTrends(videos);
+  renderCategory(videos);
+  renderBrand(videos);
+  renderInteraction(videos);
+  renderTable();
+}
+
+renderAll();
+
+const floatNavLinks = document.querySelectorAll('.float-nav a');
+const sectionIds = Array.from(floatNavLinks).map(a => a.getAttribute('data-section'));
+
+function updateFloatNav() {
+  let currentSection = sectionIds[0];
+  for (const id of sectionIds) {
+    const el = document.getElementById(id);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      if (rect.top <= window.innerHeight / 2) {
+        currentSection = id;
+      }
+    }
+  }
+  floatNavLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('data-section') === currentSection);
+  });
+}
+
+window.addEventListener('scroll', updateFloatNav);
+updateFloatNav();
+</script>
+</body>
+</html>
